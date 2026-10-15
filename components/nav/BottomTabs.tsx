@@ -11,7 +11,7 @@ export function BottomTabs() {
   return (
     <nav
       aria-label="주 메뉴"
-      className="fixed inset-x-0 bottom-0 z-10 bg-paper pb-[env(safe-area-inset-bottom)] lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-10 bg-paper-texture pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
       <SketchLine className="absolute inset-x-3 top-0" />
       <ul className="mx-auto flex h-[74px] max-w-[480px] items-center justify-around">

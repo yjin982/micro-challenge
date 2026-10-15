@@ -45,6 +45,13 @@
   --font-hand: var(--font-gaegu), cursive;
 }
 
+/* 도화지 텍스처. 화면 배경과 하단 탭에만 쓰고, 카드는 무늬 없는 bg-paper */
+@utility bg-paper-texture {
+  background-color: var(--color-paper);
+  background-image: url("/images/paper-texture.png");
+  background-size: 320px 320px;
+}
+
 /* components/ui/CrayonFilters.tsx의 SVG 필터 */
 @utility filter-crayon {
   filter: url(#crayon);

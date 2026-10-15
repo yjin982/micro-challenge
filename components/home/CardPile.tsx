@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/Skeleton";
+import Image from "next/image";
 import { SketchFrame } from "@/components/ui/sketch";
 
 // 뽑기 전 카드 더미: 기울어진 카드 두 장 위에 누를 수 있는 앞 카드.
@@ -17,12 +17,22 @@ export function CardPile() {
         className="absolute inset-x-0 top-0 bottom-1 flex flex-col items-center justify-center gap-2.5 bg-paper"
       >
         <SketchFrame />
-        <span
-          aria-hidden
-          className="absolute -top-2.5 left-1/2 h-[22px] w-[74px] -translate-x-1/2 -rotate-4 bg-crayon-yellow/55"
+        <Image
+          src="/images/decor/tape.svg"
+          alt=""
+          width={74}
+          height={22}
+          className="absolute -top-2.5 left-1/2 -translate-x-1/2 -rotate-4"
         />
-        {/* 마스코트: 티라노 기본 포즈 */}
-        <Skeleton className="h-[112px] w-32 rounded-2xl lg:h-[122px] lg:w-[140px]" />
+        {/* 버튼의 aria-label이 내용을 설명하므로 장식 이미지로 둔다 */}
+        <Image
+          src="/images/mascot/basic.png"
+          alt=""
+          width={190}
+          height={165}
+          loading="eager"
+          className="h-auto w-32 lg:w-[140px]"
+        />
         <span className="font-hand text-[26px] font-bold lg:text-[28px]">눌러서 오늘의 미션 뽑기</span>
         <span className="text-[13px] text-ink-muted">어떤 미션이 나올까?</span>
       </button>

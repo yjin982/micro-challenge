@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className={`${gaegu.variable} ${notoSansKr.variable} h-full antialiased`}>
-      <body className="min-h-full bg-paper font-sans text-ink">
+      <body className="min-h-full bg-paper-texture font-sans text-ink">
         <CrayonFilters />
         <DesktopHeader />
         {children}
