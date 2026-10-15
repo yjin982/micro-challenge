@@ -15,7 +15,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`flex h-[54px] w-full items-center justify-center rounded-sketch-btn font-hand text-2xl font-bold ${variants[variant]} ${className}`}
+      className={`flex h-13.5 w-full items-center justify-center rounded-sketch-btn whitespace-nowrap font-hand text-2xl font-bold ${variants[variant]} ${className}`}
       {...props}
     />
   );

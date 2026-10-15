@@ -4,7 +4,7 @@ import { SketchFrame } from "@/components/ui/sketch";
 // 뽑기 전 카드 더미: 기울어진 카드 두 장 위에 누를 수 있는 앞 카드.
 export function CardPile() {
   return (
-    <div className="relative mx-auto h-[300px] w-full max-w-[342px] lg:h-[330px] lg:max-w-[400px]">
+    <div className="relative mx-auto h-75 w-full max-w-85.5 lg:h-auto lg:min-h-82.5 lg:max-w-100 lg:flex-1">
       <div className="absolute inset-x-2.5 inset-y-2 rotate-4 bg-paper">
         <SketchFrame tone="faint" />
       </div>
@@ -31,9 +31,11 @@ export function CardPile() {
           width={190}
           height={165}
           loading="eager"
-          className="h-auto w-32 lg:w-[140px]"
+          className="h-auto w-32 lg:w-35"
         />
-        <span className="font-hand text-[26px] font-bold lg:text-[28px]">눌러서 오늘의 미션 뽑기</span>
+        <span className="font-hand text-[26px] font-bold lg:text-[28px]">
+          눌러서 오늘의 미션 뽑기
+        </span>
         <span className="text-[13px] text-ink-muted">어떤 미션이 나올까?</span>
       </button>
     </div>

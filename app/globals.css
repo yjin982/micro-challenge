@@ -37,6 +37,7 @@
   --radius-sketch-alt: 30px 20px 34px 22px / 20px 34px 22px 30px;
   --radius-sketch-sm: 16px 22px 14px 24px / 22px 14px 24px 16px;
   --radius-sketch-btn: 18px 24px 16px 26px / 24px 16px 26px 18px;
+  --radius-sketch-day: 14px 18px 12px 16px;
 }
 
 /* next/font가 <html>에 심는 변수를 참조 */

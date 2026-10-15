@@ -14,7 +14,7 @@ export function BottomTabs() {
       className="fixed inset-x-0 bottom-0 z-10 bg-paper-texture pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
       <SketchLine className="absolute inset-x-3 top-0" />
-      <ul className="mx-auto flex h-[74px] max-w-[480px] items-center justify-around">
+      <ul className="mx-auto flex h-18.5 max-w-120 items-center justify-around">
         {NAV_ITEMS.map(({ href, label, Icon }) => {
           const current = pathname === href;
           return (
@@ -26,7 +26,7 @@ export function BottomTabs() {
                   current ? "font-bold text-primary" : "text-ink"
                 }`}
               >
-                <Icon className={`size-[26px] ${navIconClass}`} />
+                <Icon className={`size-6.5 ${navIconClass}`} />
                 {label}
               </button>
             </li>

@@ -1,21 +1,19 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { SketchLine } from "@/components/ui/sketch";
 import { NAV_ITEMS, navIconClass } from "./nav-items";
 
 // 데스크톱 상단 헤더. 지금은 이동 동작 없이 버튼 모양만 둔다.
-export function DesktopHeader() {
+export function DesktopHeader({ dateLabel }: { dateLabel: string }) {
   const pathname = usePathname();
 
   return (
     <header className="hidden lg:block">
-      <div className="relative mx-auto flex h-[84px] max-w-[1088px] items-center justify-between px-6">
+      <div className="relative mx-auto flex h-21 max-w-272 items-center justify-between px-6">
         <div className="flex items-baseline gap-3.5">
           <p className="font-hand text-[32px] font-bold leading-none">밍기적 챌린지</p>
-          {/* 오늘 날짜(/api/today의 date) */}
-          <Skeleton className="h-4 w-28" />
+          <p className="text-sm text-ink-muted">{dateLabel}</p>
         </div>
         <nav aria-label="주 메뉴">
           <ul className="flex gap-1">
@@ -30,7 +28,7 @@ export function DesktopHeader() {
                       current ? "font-bold text-primary" : "text-ink"
                     }`}
                   >
-                    <Icon className={`size-[22px] ${navIconClass}`} />
+                    <Icon className={`size-5.5 ${navIconClass}`} />
                     {label}
                     {current && <SketchLine tone="primary" className="absolute inset-x-3 bottom-0.5" />}
                   </button>

@@ -30,7 +30,7 @@ export function SketchFrame({
 const lineTones = {
   ink: "border-t-2 border-ink-muted",
   faint: "border-t-[1.5px] border-line",
-  primary: "border-t-[3px] border-primary",
+  primary: "border-t-3 border-primary",
 } as const;
 
 export function SketchLine({
