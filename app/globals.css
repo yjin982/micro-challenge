@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* 디자인 기준값: 기획서 '비주얼 컨셉 > 디자인 기준값' 표 */
+@theme {
+  --color-paper: #ffffff;
+  --color-ink: #3a3a3a;
+  --color-ink-muted: #6b6b6b;
+  --color-line: #9a9a9a;
+  --color-line-faint: #c8c8c8;
+  --color-skeleton: #ececec;
+
+  --color-primary: #4f7a4c;
+
+  --color-crayon-orange: #f4a259;
+  --color-crayon-yellow: #f6c85f;
+  --color-crayon-green: #8cc084;
+  --color-crayon-sky: #7fb7e6;
+  --color-crayon-purple: #b39ddb;
+
+  --color-sunday: #c44a5a;
+  --color-saturday: #3f6fa8;
+  --color-chip-today: #fff2d1;
+  --color-chip-streak: #e4f1df;
+  --color-chip-streak-ink: #2f5e2c;
+  --color-badge-challenge: #fbe3e6;
+  --color-badge-challenge-ink: #8a3340;
+
+  --color-stamp-p01: #e0626f;
+  --color-stamp-p02: #4a82d8;
+  --color-stamp-p03: #e0626f;
+  --color-stamp-p04: #5a9e4f;
+  --color-stamp-p05: #ee6fa6;
+  --color-stamp-p06: #f2b600;
+
+  /* 손그림 테두리용 비대칭 모서리 */
+  --radius-sketch: 22px 30px 20px 34px / 30px 20px 34px 22px;
+  --radius-sketch-alt: 30px 20px 34px 22px / 20px 34px 22px 30px;
+  --radius-sketch-sm: 16px 22px 14px 24px / 22px 14px 24px 16px;
+  --radius-sketch-btn: 18px 24px 16px 26px / 24px 16px 26px 18px;
 }
 
+/* next/font가 <html>에 심는 변수를 참조 */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-noto-sans-kr), sans-serif;
+  --font-hand: var(--font-gaegu), cursive;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* components/ui/CrayonFilters.tsx의 SVG 필터 */
+@utility filter-crayon {
+  filter: url(#crayon);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility filter-crayon-sm {
+  filter: url(#crayon-sm);
 }
