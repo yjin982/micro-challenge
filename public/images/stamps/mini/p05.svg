@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="60" height="60"><defs><filter id="stampRough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/></filter></defs><g style="filter: url(#stampRough); fill: none; stroke: #EE6FA6; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round">
+<circle cx="100" cy="100" r="88"></circle>
+<g transform="translate(100 102) scale(1.45) translate(-100 -126)">
+<path d="M100 98 L108 118 L130 120 L113 133 L118 154 L100 142 L82 154 L87 133 L70 120 L92 118 Z"></path>
+</g>
+</g></svg>

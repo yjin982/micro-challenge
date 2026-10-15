@@ -56,10 +56,17 @@ lib/
 types/                  database.ts(`supabase gen types` 결과)
 supabase/
   migrations/           서버 설계의 SQL 초안 1~6. 시드(7)는 supabase/seed.sql
-public/
-  mascot/               마스코트 포즈 6종(투명 PNG)
-  textures/             도화지 텍스처(320px 타일)
+public/images/
+  mascot/               마스코트 포즈 6종(투명 PNG): basic(기본), happy(신남), think(고민 중),
+                        done(완료), doing(도전 중), drink(음료 마시기)
+  stamps/               도장 p01–p06 SVG(지름 190px, Gaegu 서브셋 내장). png/에 @2x·@4x
+  stamps/mini/          달력·최근 기록용 작은 도장 SVG(문구 없음). png/에 @2x
+  decor/                낙서 장식(꽃, 하트, 음표, 반짝이, 별, 소용돌이, 테이프)
+  lines/                구분선(크레용, 점선, 물결)
+  paper-texture.png     도화지 텍스처(320px 타일)
 ```
+
+앱 아이콘은 Next.js 파일 규칙에 따라 `app/icon.png`(512px)과 `app/apple-icon.png`(192px)에 둔다. 하단 탭 아이콘은 선택 상태에 따라 색(`currentColor`)을 바꿔야 해서 SVG 파일 대신 `components/nav/nav-items.tsx`에 인라인으로 둔다.
 
 4단계(`/settings`, `/admin`)용 폴더는 만들지 않았다.
 

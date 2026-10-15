@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="60" height="60"><defs><filter id="stampRough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/></filter></defs><g style="filter: url(#stampRough); fill: none; stroke: #4A82D8; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round">
+<circle cx="100" cy="100" r="88"></circle>
+<g transform="translate(100 100) scale(1.3) translate(-100 -118)">
+<path d="M72 118 Q72 90 100 90 Q128 90 128 118 Q128 146 100 146 Q72 146 72 118 Z"></path>
+<path d="M80 97 Q66 92 62 106 Q58 122 65 133 Q71 139 74 128 Q74 112 79 103"></path>
+<path d="M120 97 Q134 92 138 106 Q142 122 135 133 Q129 139 126 128 Q126 112 121 103"></path>
+<path d="M84 112 Q89 110.5 94 112.5" style="stroke-width: 3"></path>
+<path d="M85.5 113 Q89 119.5 92.8 113.3 Z" style="fill: #4A82D8; stroke-width: 1.5"></path>
+<path d="M106 112.5 Q111 110.5 116 112" style="stroke-width: 3"></path>
+<path d="M107.2 113.3 Q111 119.5 114.5 113 Z" style="fill: #4A82D8; stroke-width: 1.5"></path>
+<path d="M107 104 Q112 99.5 118 102.5" style="stroke-width: 2.6"></path>
+<path d="M94.5 123.5 Q100 121 105.5 123.5 Q104 129 100 129 Q96 129 94.5 123.5 Z" style="fill: #4A82D8; stroke-width: 2"></path>
+<path d="M100 129 L100 133 M100 133 Q107 137.5 113 130.5 M100 133 Q96.5 134.5 93.5 133.5" style="stroke-width: 3"></path>
+</g>
+</g></svg>
