@@ -3,11 +3,17 @@ import { formatMonthLabel } from "@/lib/date";
 const chevronClass =
   "size-5.5 fill-none stroke-ink stroke-[2.4] [stroke-linecap:round] [stroke-linejoin:round] filter-crayon-sm";
 
-// 이전·다음 달 이동. 지금은 동작 없이 버튼 모양만 두고, 이번 달이라 다음 달은 비활성이다.
-export function MonthNav({ month }: { month: string }) {
+// 이전·다음 달 이동. 지금은 동작 없이 버튼 모양만 둔다.
+// 처음 쓴 달이면 이전 달이, 이번 달이면 다음 달이 비활성이다(지금은 항상 이번 달).
+export function MonthNav({ month, canGoPrev }: { month: string; canGoPrev: boolean }) {
   return (
     <div className="-mx-1 flex items-center justify-between lg:mx-0 lg:justify-start lg:gap-1">
-      <button type="button" aria-label="이전 달" className="flex size-11 items-center justify-center">
+      <button
+        type="button"
+        aria-label="이전 달"
+        disabled={!canGoPrev}
+        className="flex size-11 items-center justify-center disabled:opacity-35"
+      >
         <svg viewBox="0 0 24 24" aria-hidden className={chevronClass}>
           <path d="M15 5 L8 12 L15 19" />
         </svg>

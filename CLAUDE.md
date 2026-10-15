@@ -57,8 +57,9 @@ types/                  database.ts(`supabase gen types` 결과)
 supabase/
   migrations/           서버 설계의 SQL 초안 1~6. 시드(7)는 supabase/seed.sql
 public/images/
-  mascot/               마스코트 포즈 6종(투명 PNG): basic(기본), happy(신남), think(고민 중),
-                        done(완료), doing(도전 중), drink(음료 마시기)
+  mascot/               마스코트 포즈 8종(투명 PNG): basic(기본), happy(신남), think(고민 중),
+                        done(완료), doing(도전 중), drink(음료 마시기),
+                        reading(책 읽기, 페이지 불러오는 중), sleeping(자는 중)
   stamps/               도장 p01–p06 SVG(지름 190px, Gaegu 서브셋 내장). png/에 @2x·@4x
   stamps/mini/          달력·최근 기록용 작은 도장 SVG(문구 없음). png/에 @2x
   decor/                낙서 장식(꽃, 하트, 음표, 반짝이, 별, 소용돌이, 테이프)

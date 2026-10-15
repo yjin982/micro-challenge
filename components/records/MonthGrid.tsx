@@ -12,6 +12,7 @@ const variants = {
     cell: "h-13",
     today: "inset-x-1.5",
     label: "text-[11px]",
+    future: "text-ink-muted",
   },
   // 기록 화면의 큰 달력
   records: {
@@ -20,6 +21,8 @@ const variants = {
     cell: "h-13 lg:h-17.5",
     today: "inset-x-0.5 lg:inset-x-2",
     label: "text-[11px] lg:text-xs",
+    // 아직 오지 않은 날은 흐리게
+    future: "text-ink-faint",
   },
 } as const;
 
@@ -61,7 +64,11 @@ export function MonthGrid({
                   className={`absolute inset-y-px rounded-sketch-day border-2 border-primary filter-crayon-sm ${styles.today}`}
                 />
               )}
-              {cell && <span className={`leading-4 text-ink-muted ${styles.label}`}>{cell.day}</span>}
+              {cell && (
+                <span className={`leading-4 ${styles.label} ${cell.date > today ? styles.future : "text-ink-muted"}`}>
+                  {cell.day}
+                </span>
+              )}
             </div>
           );
         })}
