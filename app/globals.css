@@ -39,6 +39,19 @@
   --radius-sketch-sm: 16px 22px 14px 24px / 22px 14px 24px 16px;
   --radius-sketch-btn: 18px 24px 16px 26px / 24px 16px 26px 18px;
   --radius-sketch-day: 14px 18px 12px 16px;
+
+  /* 페이지 불러오는 중: 책 읽는 마스코트가 위아래로 살짝 움직인다 */
+  --animate-read-bob: read-bob 2.4s ease-in-out infinite;
+
+  @keyframes read-bob {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
 }
 
 /* next/font가 <html>에 심는 변수를 참조 */

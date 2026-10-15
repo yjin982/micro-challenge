@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Gaegu, Noto_Sans_KR } from "next/font/google";
 import { BottomTabs } from "@/components/nav/BottomTabs";
 import { DesktopHeader } from "@/components/nav/DesktopHeader";
+import { TodayLabel } from "@/components/nav/TodayLabel";
 import { CrayonFilters } from "@/components/ui/CrayonFilters";
-import { formatDayLabel } from "@/lib/date";
-import { getToday } from "@/lib/today";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { Suspense } from "react";
 import "./globals.css";
 
 const gaegu = Gaegu({
@@ -23,14 +24,18 @@ export const metadata: Metadata = {
   description: "하루 1개, 아주 작은 미션을 뽑아 해내고 도장을 모으는 그림일기 챌린지",
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const today = await getToday();
-
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className={`${gaegu.variable} ${notoSansKr.variable} h-full antialiased`}>
       <body className="min-h-full bg-paper-texture font-sans text-ink">
         <CrayonFilters />
-        <DesktopHeader dateLabel={formatDayLabel(today)} />
+        <DesktopHeader
+          date={
+            <Suspense fallback={<Skeleton className="h-4 w-28" />}>
+              <TodayLabel />
+            </Suspense>
+          }
+        />
         {children}
         <BottomTabs />
       </body>
