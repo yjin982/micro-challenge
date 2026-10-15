@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { SketchFrame } from "@/components/ui/sketch";
 
@@ -11,9 +12,9 @@ export function RecentRecords() {
         <h2 id="recent-records-title" className="font-hand text-[22px] font-bold lg:text-2xl">
           최근 기록
         </h2>
-        <button type="button" className="text-[13px] text-ink-muted">
+        <Link href="/records" className="text-[13px] text-ink-muted">
           전체 보기
-        </button>
+        </Link>
       </div>
       <ul className="grid grid-cols-3 gap-3 lg:gap-3.5">
         {Array.from({ length: RECENT_COUNT }, (_, i) => (

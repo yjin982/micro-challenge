@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SketchLine } from "@/components/ui/sketch";
 import { NAV_ITEMS, navIconClass } from "./nav-items";
 
-// 모바일 하단 탭. 지금은 이동 동작 없이 버튼 모양만 둔다.
+// 모바일 하단 탭.
 export function BottomTabs() {
   const pathname = usePathname();
 
@@ -19,8 +20,8 @@ export function BottomTabs() {
           const current = pathname === href;
           return (
             <li key={href}>
-              <button
-                type="button"
+              <Link
+                href={href}
                 aria-current={current ? "page" : undefined}
                 className={`flex min-h-12 min-w-16 flex-col items-center justify-center gap-0.5 text-xs ${
                   current ? "font-bold text-primary" : "text-ink"
@@ -28,7 +29,7 @@ export function BottomTabs() {
               >
                 <Icon className={`size-6.5 ${navIconClass}`} />
                 {label}
-              </button>
+              </Link>
             </li>
           );
         })}

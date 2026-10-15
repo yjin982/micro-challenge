@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SketchLine } from "@/components/ui/sketch";
 import { NAV_ITEMS, navIconClass } from "./nav-items";
 
-// 데스크톱 상단 헤더. 지금은 이동 동작 없이 버튼 모양만 둔다.
+// 데스크톱 상단 헤더.
 export function DesktopHeader({ dateLabel }: { dateLabel: string }) {
   const pathname = usePathname();
 
@@ -21,8 +22,8 @@ export function DesktopHeader({ dateLabel }: { dateLabel: string }) {
               const current = pathname === href;
               return (
                 <li key={href}>
-                  <button
-                    type="button"
+                  <Link
+                    href={href}
                     aria-current={current ? "page" : undefined}
                     className={`relative flex items-center gap-2 px-4 py-3 text-[15px] ${
                       current ? "font-bold text-primary" : "text-ink"
@@ -31,7 +32,7 @@ export function DesktopHeader({ dateLabel }: { dateLabel: string }) {
                     <Icon className={`size-5.5 ${navIconClass}`} />
                     {label}
                     {current && <SketchLine tone="primary" className="absolute inset-x-3 bottom-0.5" />}
-                  </button>
+                  </Link>
                 </li>
               );
             })}
