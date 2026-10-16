@@ -32,6 +32,10 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# 참고용 외부 문서(공공데이터포털 활용가이드 등)는 올리지 않는다
+.claude/*.docx
 
 # vercel
 .vercel

@@ -1,4 +1,4 @@
-import { addDays, format, getDay, getDaysInMonth, parseISO, startOfMonth } from "date-fns";
+import { addDays, addMonths, format, getDay, getDaysInMonth, parseISO, startOfMonth } from "date-fns";
 import { ko } from "date-fns/locale";
 
 // 모든 함수는 서버가 준 날짜 문자열(YYYY-MM-DD)을 받는다. 화면에서 현재 시각으로 날짜를 계산하지 않는다.
@@ -11,6 +11,11 @@ export function formatDayLabel(date: string): string {
 // "2026년 10월"
 export function formatMonthLabel(date: string): string {
   return format(parseISO(date), "yyyy년 M월");
+}
+
+// "2026-10" → 앞뒤 달("2026-09", "2026-11")
+export function shiftMonth(month: string, amount: number): string {
+  return format(addMonths(parseISO(`${month}-01`), amount), "yyyy-MM");
 }
 
 export type CalendarCell = { date: string; day: number } | null;

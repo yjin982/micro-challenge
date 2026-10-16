@@ -4,11 +4,13 @@ import { RecentRecords } from "@/components/home/RecentRecords";
 import { RerollDots } from "@/components/home/RerollDots";
 import { Button } from "@/components/ui/Button";
 import { formatDayLabel } from "@/lib/date";
+import { getHolidays } from "@/lib/holidays";
 import { getToday } from "@/lib/today";
 
 // 홈 · 뽑기 전(state: not_drawn). 버튼은 아직 동작하지 않는다.
 export default async function Home() {
   const today = await getToday();
+  const holidays = await getHolidays(today);
 
   return (
     <main className="mx-auto w-full max-w-120 px-6 pt-6.5 pb-28 lg:flex lg:max-w-272 lg:gap-16 lg:pt-9 lg:pb-12">
@@ -66,7 +68,7 @@ export default async function Home() {
 
       <div className="lg:min-w-0 lg:flex-1">
         <div className="hidden lg:block">
-          <CalendarCard today={today} />
+          <CalendarCard today={today} holidays={holidays} />
         </div>
         <RecentRecords />
       </div>

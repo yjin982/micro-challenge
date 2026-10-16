@@ -1,36 +1,62 @@
-import { formatMonthLabel } from "@/lib/date";
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { formatMonthLabel, shiftMonth } from "@/lib/date";
 
 const chevronClass =
   "size-5.5 fill-none stroke-ink stroke-[2.4] [stroke-linecap:round] [stroke-linejoin:round] filter-crayon-sm";
 
-// 이전·다음 달 이동. 지금은 동작 없이 버튼 모양만 둔다.
-// 처음 쓴 달이면 이전 달이, 이번 달이면 다음 달이 비활성이다(지금은 항상 이번 달).
-export function MonthNav({ month, canGoPrev }: { month: string; canGoPrev: boolean }) {
+// 이번 달은 쿼리 없이 /records, 지난달은 /records?month=YYYY-MM
+function monthHref(month: string, currentMonth: string) {
+  return month === currentMonth ? "/records" : `/records?month=${month}`;
+}
+
+// 이전·다음 달 이동. 이번 달이면 다음 달이 비활성이고, 이전 달은 canGoPrev가 막는다.
+export function MonthNav({
+  month,
+  currentMonth,
+  canGoPrev,
+}: {
+  month: string;
+  currentMonth: string;
+  canGoPrev: boolean;
+}) {
   return (
     <div className="-mx-1 flex items-center justify-between lg:mx-0 lg:justify-start lg:gap-1">
-      <button
-        type="button"
-        aria-label="이전 달"
-        disabled={!canGoPrev}
-        className="flex size-11 items-center justify-center disabled:opacity-35"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden className={chevronClass}>
-          <path d="M15 5 L8 12 L15 19" />
-        </svg>
-      </button>
+      <NavArrow label="이전 달" href={canGoPrev ? monthHref(shiftMonth(month, -1), currentMonth) : null}>
+        <path d="M15 5 L8 12 L15 19" />
+      </NavArrow>
       <h2 id="records-month" className="text-center font-hand text-2xl font-bold lg:min-w-37.5 lg:text-3xl">
-        {formatMonthLabel(month)}
+        {formatMonthLabel(`${month}-01`)}
       </h2>
-      <button
-        type="button"
-        aria-label="다음 달"
-        disabled
-        className="flex size-11 items-center justify-center disabled:opacity-35"
+      <NavArrow
+        label="다음 달"
+        href={month < currentMonth ? monthHref(shiftMonth(month, 1), currentMonth) : null}
       >
-        <svg viewBox="0 0 24 24" aria-hidden className={chevronClass}>
-          <path d="M9 5 L16 12 L9 19" />
-        </svg>
-      </button>
+        <path d="M9 5 L16 12 L9 19" />
+      </NavArrow>
     </div>
+  );
+}
+
+// 갈 곳이 없으면 링크 대신 흐린 아이콘만 둔다.
+function NavArrow({ label, href, children }: { label: string; href: string | null; children: ReactNode }) {
+  const icon = (
+    <svg viewBox="0 0 24 24" aria-hidden className={chevronClass}>
+      {children}
+    </svg>
+  );
+  const className = "flex size-11 items-center justify-center";
+
+  if (!href) {
+    return (
+      <span role="link" aria-label={label} aria-disabled="true" className={`${className} opacity-35`}>
+        {icon}
+      </span>
+    );
+  }
+  return (
+    <Link href={href} aria-label={label} scroll={false} className={className}>
+      {icon}
+    </Link>
   );
 }
