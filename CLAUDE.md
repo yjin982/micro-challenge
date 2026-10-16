@@ -49,11 +49,14 @@ components/
   ui/                   손그림 카드 테두리, 버튼, 칩·배지, 구분선 등 공통 요소
   stamp/                도장 컴포넌트(p01–p06, mini)
   nav/                  모바일 하단 탭, 데스크톱 상단 헤더
+  auth/                 앱을 열 때 익명 로그인(화면 없음)
   home/                 홈 전용(카드 더미·스택, 완료 연출, 연속 달성, 최근 기록)
   records/              기록 전용(월간 캘린더, 날짜 상세)
 lib/
   supabase/             @supabase/ssr 클라이언트(server.ts, client.ts)
-types/                  database.ts(`supabase gen types` 결과)
+  api.ts                브라우저용 API 호출 도우미(익명 로그인, 401 재시도)
+  api-server.ts         Route Handler 공통 처리(세션 확인 → RPC), api-error.ts 에러 코드 → HTTP
+types/                  api.ts(API 응답 타입), database.ts(`supabase gen types` 결과, 아직 없음)
 supabase/
   migrations/           서버 설계의 SQL 초안 1~6. 시드(7)는 supabase/seed.sql
 public/images/
