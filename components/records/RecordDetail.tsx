@@ -1,5 +1,5 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
+import { Stamp } from "@/components/stamp/Stamp";
 import { ButtonLink } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { SketchFrame } from "@/components/ui/sketch";
@@ -48,14 +48,7 @@ export function RecordDetail({ detail }: { detail: RecordDetailData | null }) {
           </p>
           <p className={titleClass}>{detail.missionText}</p>
         </div>
-        <Image
-          src={`/images/stamps/${detail.stampId}.svg`}
-          alt="완료 도장"
-          width={190}
-          height={190}
-          loading="eager"
-          className="size-24 shrink-0 lg:mt-1.5 lg:size-42.5"
-        />
+        <Stamp variant={detail.stampId} className="size-24 shrink-0 lg:mt-1.5 lg:size-42.5" />
       </Card>
     );
   }

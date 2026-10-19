@@ -52,6 +52,20 @@
       transform: translateY(-3px);
     }
   }
+
+  /* 미션 꺼내는 중: 크레파스 점 3개가 차례로 통통 튄다(점마다 animation-delay) */
+  --animate-dot-bounce: dot-bounce 1.2s ease-in-out infinite;
+
+  @keyframes dot-bounce {
+    0%,
+    60%,
+    100% {
+      transform: translateY(0);
+    }
+    30% {
+      transform: translateY(-5px);
+    }
+  }
 }
 
 /* next/font가 <html>에 심는 변수를 참조 */

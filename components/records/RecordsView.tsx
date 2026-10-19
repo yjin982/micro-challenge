@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { MobileAccountMenu } from "@/components/auth/MobileAccountMenu";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { SketchFrame } from "@/components/ui/sketch";
+import { StatChips, StatChipsSkeleton } from "@/components/ui/StatChips";
 import { api } from "@/lib/api";
 import { lastDateOfMonth } from "@/lib/date";
 import type { Holidays } from "@/lib/holidays";
@@ -12,7 +12,6 @@ import { MonthGrid } from "./MonthGrid";
 import { MonthNav } from "./MonthNav";
 import { RecordDetail, type RecordDetailData } from "./RecordDetail";
 import { RecordsEmpty } from "./RecordsEmpty";
-import { StatChips } from "./StatChips";
 import { TodayMonthLink } from "./TodayMonthLink";
 
 type Loaded = { today: TodayState; records: MonthRecords };
@@ -89,14 +88,7 @@ export function RecordsView({
           <MonthNav month={month} currentMonth={currentMonth} canGoPrev={canGoPrev} />
           {/* '오늘' 버튼: 모바일은 칩 줄 오른쪽 끝, 데스크톱은 칩 왼쪽 */}
           <div className="flex items-center justify-between lg:gap-3">
-            {data ? (
-              <StatChips total={data.today.totalCompleted} streak={data.today.streak} />
-            ) : (
-              <div className="flex gap-2">
-                <Skeleton className="h-7 w-18 rounded-full" />
-                <Skeleton className="h-7 w-18 rounded-full" />
-              </div>
-            )}
+            {data ? <StatChips total={data.today.totalCompleted} streak={data.today.streak} /> : <StatChipsSkeleton />}
             {month !== currentMonth && <TodayMonthLink className="lg:order-first" />}
           </div>
         </div>

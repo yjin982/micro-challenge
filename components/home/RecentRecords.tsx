@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { Stamp } from "@/components/stamp/Stamp";
 import { SketchFrame } from "@/components/ui/sketch";
 import { formatShortDate } from "@/lib/date";
 import { useToday } from "./TodayProvider";
@@ -31,8 +31,7 @@ export function RecentRecords() {
             <SketchFrame shape="sm" />
             <div className="flex items-center justify-between">
               <span className="text-xs text-ink-muted">{formatShortDate(record.date)}</span>
-              {/* 도장 컴포넌트(components/stamp)가 생기면 바꾼다 */}
-              <Image src={`/images/stamps/mini/${record.stampId}.svg`} alt="" width={34} height={34} className="size-8.5" />
+              <Stamp variant={record.stampId} mini size={34} decorative />
             </div>
             <p className="text-xs leading-[1.35] lg:text-[13px]">{record.missionText}</p>
           </li>

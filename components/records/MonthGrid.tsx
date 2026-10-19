@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Stamp } from "@/components/stamp/Stamp";
 import { SketchLine } from "@/components/ui/sketch";
 import { formatDetailDate, getMonthCells } from "@/lib/date";
 import type { Holidays } from "@/lib/holidays";
@@ -7,7 +7,7 @@ import { HolidayLabel } from "./HolidayLabel";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 // 작은 도장을 날짜마다 조금씩 기울여 손으로 찍은 느낌을 낸다(화면 설계의 tilt 값)
-const STAMP_TILTS = ["-rotate-8", "rotate-6", "-rotate-3", "rotate-9", "-rotate-10", "rotate-4"];
+const STAMP_TILTS = [-8, 6, -3, 9, -10, 4];
 
 // 칸 높이는 날짜 숫자(16px) + 작은 도장(compact 28px, records 30px / 데스크톱 42px) + 여백
 // 국경일·공휴일 이름은 숫자 바로 아래 한 줄에 넣고, 칸보다 길면 말줄임한 뒤 말풍선으로 전체 이름을 보여준다.
@@ -115,12 +115,12 @@ export function MonthGrid({
                 </span>
               )}
               {cell && stampId && (
-                <Image
-                  src={`/images/stamps/mini/${stampId}.svg`}
-                  alt="완료 도장"
-                  width={42}
-                  height={42}
-                  className={`pointer-events-none absolute bottom-0.5 left-1/2 -translate-x-1/2 ${styles.stamp} ${STAMP_TILTS[cell.day % STAMP_TILTS.length]}`}
+                <Stamp
+                  variant={stampId}
+                  mini
+                  size={42}
+                  tilt={STAMP_TILTS[cell.day % STAMP_TILTS.length]}
+                  className={`pointer-events-none absolute bottom-0.5 left-1/2 -translate-x-1/2 ${styles.stamp}`}
                 />
               )}
               {/* 칸 전체를 덮는 선택 버튼. 공휴일 이름(말풍선 버튼)은 z-10으로 이 위에 있어 버튼이 겹치지 않는다 */}
