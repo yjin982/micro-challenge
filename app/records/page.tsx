@@ -1,3 +1,4 @@
+import { AccountStatus } from "@/components/auth/AccountStatus";
 import { MonthGrid } from "@/components/records/MonthGrid";
 import { MonthNav } from "@/components/records/MonthNav";
 import { RecordDetail } from "@/components/records/RecordDetail";
@@ -58,6 +59,8 @@ export default async function RecordsPage({ searchParams }: PageProps<"/records"
         <p className="mt-3.5 text-center text-xs text-ink-muted lg:mt-7">
           버전 {packageJson.version} · 만든 사람 유진
         </p>
+        {/* 모바일은 헤더가 없어 앱 정보 아래에 계정을 둔다(데스크톱은 상단 헤더) */}
+        <AccountStatus className="mt-2 justify-center lg:hidden" />
       </div>
     </main>
   );

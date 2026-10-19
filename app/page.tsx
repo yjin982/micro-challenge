@@ -1,15 +1,15 @@
 import { CalendarCard } from "@/components/home/CalendarCard";
 import { CardPile } from "@/components/home/CardPile";
+import { DrawActions } from "@/components/home/DrawActions";
 import { RecentRecords } from "@/components/home/RecentRecords";
 import { RerollDots } from "@/components/home/RerollDots";
 import { TodayProvider } from "@/components/home/TodayProvider";
-import { Button } from "@/components/ui/Button";
 import { formatDayLabel } from "@/lib/date";
 import { getHolidays } from "@/lib/holidays";
 import { getToday } from "@/lib/today";
 
-// 홈 · 뽑기 전(state: not_drawn). 남은 재뽑기·칩·최근 기록은 TodayProvider가 불러온 오늘 상태로 채운다.
-// 버튼은 아직 동작하지 않는다.
+// 홈. 남은 재뽑기·뽑기 버튼·칩·최근 기록은 TodayProvider가 불러온 오늘 상태로 채운다.
+// 카드는 아직 '뽑기 전' 모양뿐이고, 버튼은 아직 동작하지 않는다.
 export default async function Home() {
   const today = await getToday();
   const holidays = await getHolidays(today);
@@ -45,28 +45,7 @@ export default async function Home() {
 
           <RerollDots className="mt-4.5 lg:mt-5" />
 
-          <div className="mx-auto mt-3.5 flex max-w-85.5 gap-2.5 lg:max-w-100">
-            <div className="hidden flex-1 lg:block">
-              <Button
-                variant="outline"
-                disabled
-                title="카드를 뽑은 뒤에 쓸 수 있어요"
-                className="px-4"
-              >
-                다시 뽑기
-              </Button>
-            </div>
-            <div className="flex-1">
-              <Button className="px-4">카드 뽑기</Button>
-            </div>
-          </div>
-
-          <p className="mt-2.5 text-center text-xs text-ink-muted lg:hidden">
-            스와이프 해서 새로운 미션 뽑기
-          </p>
-          <p className="mt-2.5 hidden text-center text-xs text-ink-muted lg:block">
-            카드를 뽑은 뒤 마음에 안 들면 &apos;다시 뽑기&apos;로 바꿀 수 있어요
-          </p>
+          <DrawActions />
         </section>
 
         <div className="lg:min-w-0 lg:flex-1">

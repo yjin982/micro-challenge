@@ -51,6 +51,21 @@ export function ensureAnonymousSession(): Promise<void> {
   return pendingSession;
 }
 
+// 이메일 계정 로그인(테스트 계정 등). 성공하면 익명 세션 대신 그 계정 세션이 쿠키에 남는다.
+// 로그인 전 익명 계정의 기록은 옮겨지지 않는다.
+export async function signInWithEmail(email: string, password: string) {
+  const { data, error } = await createClient().auth.signInWithPassword({ email, password });
+  pendingSession = null; // 다음 API 호출에서 바뀐 세션으로 다시 확인
+  if (error) throw error;
+  return data.user;
+}
+
+// 로그아웃. 다음 API 호출이나 페이지 이동 때 새 익명 계정으로 다시 시작한다.
+export async function signOut() {
+  await createClient().auth.signOut({ scope: "local" });
+  pendingSession = null;
+}
+
 async function request<T>(path: string, init?: RequestInit, retried = false): Promise<T> {
   await ensureAnonymousSession();
   const res = await fetch(path, {
