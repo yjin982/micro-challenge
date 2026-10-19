@@ -8,10 +8,10 @@ const DOTS = [
 ];
 
 // 미션 꺼내는 중(화면 설계 '공통 상태 > 미션 꺼내는 중'): 뽑기·재뽑기 요청을 기다리는 동안 카드 자리에 보인다.
-// 화면 설계의 '음료 마시기' 포즈 대신 물 주는 티라노를 쓴다.
-export function MissionLoading() {
+// 화면 설계의 '음료 마시기' 포즈 대신 물 주는 티라노를 쓴다. size에 카드 자리 크기를 넘긴다.
+export function MissionLoading({ size }: { size?: string }) {
   return (
-    <StateCard role="status">
+    <StateCard role="status" size={size}>
       <Image src="/images/mascot/tyrano-watering.png" alt="" width={214} height={174} loading="eager" className="h-auto w-40" />
       <p className="font-hand text-[28px] font-bold">미션 꺼내는 중…</p>
       <div aria-hidden className="flex gap-2">

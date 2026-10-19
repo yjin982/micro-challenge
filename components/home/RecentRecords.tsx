@@ -11,12 +11,14 @@ const RECENT_COUNT = 3;
 // 최근 완료 기록 3칸(날짜, 작은 도장, 미션 문구).
 // 기록이 없는 것을 기본으로 두고 영역을 숨긴다. 오늘 상태를 불러와 기록이 있을 때만 보여주며,
 // 1~2개면 3칸 배치는 그대로 앞에서부터 채운다(화면 설계 '최근 기록 상태').
+// 모바일 연속 달성 화면(오늘 완료)에는 최근 기록을 두지 않는다(화면 설계 '홈 · 연속 달성').
 export function RecentRecords() {
-  const recent = useToday()?.recent ?? [];
+  const today = useToday();
+  const recent = today?.recent ?? [];
   if (recent.length === 0) return null;
 
   return (
-    <section aria-labelledby="recent-records-title">
+    <section aria-labelledby="recent-records-title" className={today?.state === "done" ? "hidden lg:block" : undefined}>
       <div className="flex items-baseline justify-between pt-5.5 pb-2 lg:px-1 lg:pt-6 lg:pb-2.5">
         <h2 id="recent-records-title" className="font-hand text-[22px] font-bold lg:text-2xl">
           최근 기록

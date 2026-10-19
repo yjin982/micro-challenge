@@ -1,16 +1,13 @@
 import { MobileAccountMenu } from "@/components/auth/MobileAccountMenu";
 import { CalendarCard } from "@/components/home/CalendarCard";
-import { CardPile } from "@/components/home/CardPile";
-import { DrawActions } from "@/components/home/DrawActions";
 import { RecentRecords } from "@/components/home/RecentRecords";
-import { RerollDots } from "@/components/home/RerollDots";
+import { TodayPanel } from "@/components/home/TodayPanel";
 import { TodayProvider } from "@/components/home/TodayProvider";
 import { formatDayLabel } from "@/lib/date";
 import { getHolidays } from "@/lib/holidays";
 import { getToday } from "@/lib/today";
 
-// 홈. 남은 재뽑기·뽑기 버튼·칩·최근 기록은 TodayProvider가 불러온 오늘 상태로 채운다.
-// 카드는 아직 '뽑기 전' 모양뿐이고, 버튼은 아직 동작하지 않는다.
+// 홈. TodayProvider가 불러온 오늘 상태로 왼쪽(TodayPanel: 뽑기 전·도전중·완료)과 칩·최근 기록을 채운다.
 export default async function Home() {
   const today = await getToday();
   const holidays = await getHolidays(today);
@@ -18,7 +15,7 @@ export default async function Home() {
   return (
     <TodayProvider>
       <main className="mx-auto w-full max-w-120 px-6 pt-6.5 pb-28 lg:flex lg:max-w-272 lg:gap-16 lg:pt-9 lg:pb-12">
-        {/* 데스크톱: 오른쪽 열이 더 길면 카드 더미가 늘어나 두 열의 아래 끝을 맞춘다 */}
+        {/* 데스크톱: 오른쪽 열이 더 길면 카드 자리가 늘어나 두 열의 아래 끝을 맞춘다 */}
         <section
           aria-labelledby="home-title"
           className="lg:flex lg:w-110 lg:shrink-0 lg:flex-col"
@@ -40,17 +37,7 @@ export default async function Home() {
             </p>
           </header>
 
-          <p className="mt-2.5 font-hand text-[21px] lg:mt-0 lg:text-[22px]">
-            오늘 일으킬 아주 작은 기적, 하나 뽑아볼까요?
-          </p>
-
-          <div className="mt-4 lg:mt-4.5 lg:flex lg:flex-1 lg:flex-col">
-            <CardPile />
-          </div>
-
-          <RerollDots className="mt-4.5 lg:mt-5" />
-
-          <DrawActions />
+          <TodayPanel date={today} holidays={holidays} />
         </section>
 
         <div className="lg:min-w-0 lg:flex-1">
