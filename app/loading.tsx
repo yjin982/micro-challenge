@@ -12,12 +12,12 @@ export default function Loading() {
       >
         <SketchFrame shape="card-alt" />
         <Image
-          src="/images/mascot/reading.png"
+          src="/images/mascot/tyrano-reading.png"
           alt=""
-          width={196}
-          height={192}
+          width={161}
+          height={164}
           loading="eager"
-          className="h-auto w-42.5 motion-safe:animate-read-bob"
+          className="h-auto w-40 motion-safe:animate-read-bob"
         />
         <p className="font-hand text-[28px] font-bold">페이지 넘기는 중…</p>
         <p className="text-[13px] text-ink-muted">조금만 기다려 주세요</p>

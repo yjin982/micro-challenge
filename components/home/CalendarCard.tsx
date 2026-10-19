@@ -1,10 +1,10 @@
 import { MonthGrid } from "@/components/records/MonthGrid";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { SketchFrame } from "@/components/ui/sketch";
 import { formatMonthLabel } from "@/lib/date";
 import type { Holidays } from "@/lib/holidays";
+import { TodayStatChips } from "./TodayStatChips";
 
-// 데스크톱 홈 오른쪽의 이번 달 달력. 누적·연속 칩과 완료 도장은 데이터가 들어올 자리다.
+// 데스크톱 홈 오른쪽의 이번 달 달력과 누적·연속 칩. 완료 도장은 도장 컴포넌트가 생기면 넣는다.
 export function CalendarCard({ today, holidays }: { today: string; holidays: Holidays }) {
   return (
     <section aria-labelledby="calendar-title" className="relative flex flex-col gap-2 bg-paper px-5 pt-4.5 pb-4">
@@ -13,10 +13,7 @@ export function CalendarCard({ today, holidays }: { today: string; holidays: Hol
         <h2 id="calendar-title" className="font-hand text-[26px] font-bold">
           {formatMonthLabel(today)}
         </h2>
-        <div className="flex gap-2">
-          <Skeleton className="h-7 w-18 rounded-full" />
-          <Skeleton className="h-7 w-18 rounded-full" />
-        </div>
+        <TodayStatChips />
       </div>
       <MonthGrid month={today} today={today} holidays={holidays} />
     </section>

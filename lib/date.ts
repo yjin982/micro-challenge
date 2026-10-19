@@ -8,6 +8,11 @@ export function formatDayLabel(date: string): string {
   return format(parseISO(date), "M월 d일 EEEE", { locale: ko });
 }
 
+// 최근 기록 카드의 "9.27"
+export function formatShortDate(date: string): string {
+  return format(parseISO(date), "M.d");
+}
+
 // "2026년 10월"
 export function formatMonthLabel(date: string): string {
   return format(parseISO(date), "yyyy년 M월");

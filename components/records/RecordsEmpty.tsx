@@ -10,7 +10,7 @@ export function RecordsEmpty() {
       className="relative flex flex-col items-center gap-2.5 bg-paper px-6 pt-7 pb-6"
     >
       <SketchFrame shape="card-alt" />
-      <Image src="/images/mascot/doing.png" alt="" width={190} height={190} className="h-auto w-32.5" />
+      <Image src="/images/mascot/tyrano-challenge.png" alt="" width={173} height={180} className="h-auto w-32.5" />
       <h2 id="records-empty-title" className="text-center font-hand text-[28px] leading-[1.22] font-bold">
         첫 도장을 찍어보세요
       </h2>

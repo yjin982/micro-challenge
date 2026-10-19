@@ -1,24 +1,13 @@
 import type { Metadata } from "next";
-import { Gaegu, Noto_Sans_KR } from "next/font/google";
 import { AnonymousSession } from "@/components/auth/AnonymousSession";
 import { BottomTabs } from "@/components/nav/BottomTabs";
 import { DesktopHeader } from "@/components/nav/DesktopHeader";
 import { TodayLabel } from "@/components/nav/TodayLabel";
 import { CrayonFilters } from "@/components/ui/CrayonFilters";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { fontVariables } from "@/lib/fonts";
 import { Suspense } from "react";
 import "./globals.css";
-
-const gaegu = Gaegu({
-  variable: "--font-gaegu",
-  weight: ["400", "700"],
-  subsets: ["latin"],
-});
-
-const notoSansKr = Noto_Sans_KR({
-  variable: "--font-noto-sans-kr",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "밍기적 챌린지",
@@ -27,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className={`${gaegu.variable} ${notoSansKr.variable} h-full antialiased`}>
+    <html lang="ko" className={`${fontVariables} h-full antialiased`}>
       <body className="min-h-full bg-paper-texture font-sans text-ink">
         <AnonymousSession />
         <CrayonFilters />

@@ -26,10 +26,10 @@ export function CardPile() {
         />
         {/* 버튼의 aria-label이 내용을 설명하므로 장식 이미지로 둔다 */}
         <Image
-          src="/images/mascot/basic.png"
+          src="/images/mascot/tyrano-basic.png"
           alt=""
-          width={190}
-          height={165}
+          width={145}
+          height={150}
           loading="eager"
           className="h-auto w-32 lg:w-35"
         />
