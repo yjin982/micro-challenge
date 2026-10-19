@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AccountStatus } from "@/components/auth/AccountStatus";
+import { MobileAccountMenu } from "@/components/auth/MobileAccountMenu";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { SketchFrame } from "@/components/ui/sketch";
 import { api } from "@/lib/api";
@@ -77,7 +77,12 @@ export function RecordsView({
 
   return (
     <main className="mx-auto w-full max-w-120 px-6 pt-6.5 pb-28 lg:flex lg:max-w-272 lg:gap-16 lg:pt-7.5 lg:pb-12">
-      <h1 className="font-hand text-[32px] leading-[1.1] font-bold lg:sr-only">기록</h1>
+      {/* 모바일: 제목 줄 오른쪽에 계정 메뉴(계정으로 로그인했을 때만).
+          데스크톱에서는 main이 가로 flex라 이 줄이 빈 항목으로 자리(와 gap)를 차지하지 않도록 contents로 푼다 */}
+      <div className="flex items-center justify-between lg:contents">
+        <h1 className="font-hand text-[32px] leading-[1.1] font-bold lg:sr-only">기록</h1>
+        <MobileAccountMenu />
+      </div>
 
       <section aria-labelledby="records-month" className="lg:flex lg:w-160 lg:shrink-0 lg:flex-col lg:gap-3">
         <div className="mt-2.5 flex flex-col gap-1.5 lg:mt-0 lg:flex-row lg:items-center lg:justify-between">
@@ -118,8 +123,6 @@ export function RecordsView({
           </p>
         )}
         <p className="mt-3.5 text-center text-xs text-ink-muted lg:mt-7">버전 {version} · 만든 사람 유진</p>
-        {/* 모바일은 헤더가 없어 앱 정보 아래에 계정을 둔다(데스크톱은 상단 헤더) */}
-        <AccountStatus className="mt-2 justify-center lg:hidden" />
       </div>
     </main>
   );

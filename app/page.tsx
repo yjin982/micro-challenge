@@ -1,3 +1,4 @@
+import { MobileAccountMenu } from "@/components/auth/MobileAccountMenu";
 import { CalendarCard } from "@/components/home/CalendarCard";
 import { CardPile } from "@/components/home/CardPile";
 import { DrawActions } from "@/components/home/DrawActions";
@@ -23,12 +24,16 @@ export default async function Home() {
           className="lg:flex lg:w-110 lg:shrink-0 lg:flex-col"
         >
           <header className="flex flex-col gap-1">
-            <h1
-              id="home-title"
-              className="font-hand text-[32px] leading-[1.1] font-bold lg:sr-only"
-            >
-              밍기적 챌린지
-            </h1>
+            {/* 모바일: 제목 줄 오른쪽에 계정 메뉴(계정으로 로그인했을 때만) */}
+            <div className="flex items-center justify-between">
+              <h1
+                id="home-title"
+                className="font-hand text-[32px] leading-[1.1] font-bold lg:sr-only"
+              >
+                밍기적 챌린지
+              </h1>
+              <MobileAccountMenu />
+            </div>
             {/* 데스크톱은 상단 헤더에 날짜가 있다 */}
             <p className="text-[13px] text-ink-muted lg:hidden">
               {formatDayLabel(today)}

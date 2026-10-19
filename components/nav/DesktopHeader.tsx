@@ -41,7 +41,7 @@ export function DesktopHeader({ date }: { date: ReactNode }) {
               })}
             </ul>
           </nav>
-          <AccountStatus className="max-w-56 border-l-2 border-line-faint pl-4" />
+          <AccountStatus className="border-l-2 border-line-faint pl-4" />
         </div>
         <SketchLine className="absolute inset-x-6 bottom-0" />
       </div>
