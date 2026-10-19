@@ -50,7 +50,7 @@ export function HolidayLabel({
   }, [open]);
 
   return (
-    <span ref={rootRef} className="relative w-full">
+    <span ref={rootRef} className="relative z-10 w-full">
       <button
         ref={textRef}
         type="button"
