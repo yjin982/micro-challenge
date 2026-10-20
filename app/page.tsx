@@ -13,7 +13,7 @@ export default async function Home() {
   const holidays = await getHolidays(today);
 
   return (
-    <TodayProvider>
+    <TodayProvider serverDate={today}>
       <main className="mx-auto w-full max-w-120 px-6 pt-6.5 pb-28 lg:flex lg:max-w-272 lg:gap-16 lg:pt-9 lg:pb-12">
         {/* 데스크톱: 오른쪽 열이 더 길면 카드 자리가 늘어나 두 열의 아래 끝을 맞춘다 */}
         <section

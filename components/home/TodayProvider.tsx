@@ -1,9 +1,9 @@
 "use client";
 
 import { MotionConfig } from "motion/react";
-import { useRouter } from "next/navigation";
 import { createContext, use, useEffect, useRef, useState, type ReactNode } from "react";
-import { ApiError, api } from "@/lib/api";
+import { ApiError, api, isNetworkError } from "@/lib/api";
+import { useDayCheck, useServerDateSync } from "@/lib/useDaySync";
 import type { TodayState } from "@/types/api";
 
 type Action = "draw" | "reroll" | "complete";
@@ -39,8 +39,8 @@ function conflictMessage(error: ApiError) {
 
 // 홈 화면이 함께 쓰는 오늘 상태와 뽑기·재뽑기·완료 요청.
 // 익명 세션이 브라우저에서 만들어지므로 서버 렌더링이 아니라 브라우저에서 불러온다.
-export function TodayProvider({ children }: { children: ReactNode }) {
-  const router = useRouter();
+// serverDate는 서버가 페이지를 그릴 때 쓴 날짜(getToday)다. API 날짜와 다르면 서버 부분을 새로 그린다.
+export function TodayProvider({ serverDate, children }: { serverDate: string; children: ReactNode }) {
   const [today, setToday] = useState<TodayState | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [pending, setPending] = useState<Action | null>(null);
@@ -64,6 +64,26 @@ export function TodayProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // API 날짜가 기준이다. 서버가 그린 헤더 날짜·달력의 달·공휴일이 그와 다르면(자정 무렵) 새로 그린다.
+  useServerDateSync(serverDate, today?.date);
+
+  // 화면에 돌아오거나 자정이 지나면 오늘 상태를 다시 불러온다. 날짜가 바뀌었으면 어제의 완료 화면·안내는 접는다.
+  // 다른 탭에서 뽑거나 완료한 것도 이때 반영된다.
+  useDayCheck(async () => {
+    if (!today || busy.current) return;
+    try {
+      const next = await api.getToday();
+      if (busy.current) return; // 그사이 시작된 요청이 있으면 그 결과를 따른다
+      if (next.date !== today.date) {
+        setJustCompleted(false);
+        setActionError(null);
+      }
+      setToday(next);
+    } catch (reason) {
+      console.error("[home] 오늘 상태 다시 확인 실패", reason); // 다음 확인 때 다시 한다
+    }
+  });
+
   function run(action: Action) {
     if (!today || busy.current) return false;
     busy.current = true;
@@ -81,17 +101,20 @@ export function TodayProvider({ children }: { children: ReactNode }) {
     } catch (reason) {
       if (reason instanceof ApiError && reason.status === 409) {
         // 다른 탭에서 먼저 바꿨거나 자정이 지난 경우: 서버의 지금 상태로 맞춘다.
+        // 날짜가 바뀌었으면 useServerDateSync가 서버에서 그린 헤더 날짜·달력도 새로 그린다.
         setActionError(conflictMessage(reason));
         try {
           setToday(await api.getToday());
         } catch {
           // 다시 불러오기도 실패하면 안내만 남기고 지금 화면을 둔다.
         }
-        // 날짜가 바뀌면 서버에서 그린 헤더 날짜·달력도 새로 그린다.
-        if (reason.code === "DAY_CHANGED") router.refresh();
       } else {
         console.error(`[home] ${action} 요청 실패`, reason);
-        setActionError("요청을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.");
+        setActionError(
+          isNetworkError(reason)
+            ? "인터넷 연결을 확인하고 다시 시도해 주세요."
+            : "요청을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.",
+        );
       }
     } finally {
       busy.current = false;

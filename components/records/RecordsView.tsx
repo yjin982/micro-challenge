@@ -7,6 +7,7 @@ import { StatChips, StatChipsSkeleton } from "@/components/ui/StatChips";
 import { api } from "@/lib/api";
 import { lastDateOfMonth } from "@/lib/date";
 import type { Holidays } from "@/lib/holidays";
+import { useDayCheck, useServerDateSync } from "@/lib/useDaySync";
 import type { MonthRecords, StampId, TodayState } from "@/types/api";
 import { MonthGrid } from "./MonthGrid";
 import { MonthNav } from "./MonthNav";
@@ -33,6 +34,7 @@ function toDetail(date: string, { today, records }: Loaded): RecordDetailData {
 
 // 기록 화면 본문. 익명 세션이 브라우저에서 만들어지므로 오늘 상태(누적·연속)와 그 달 기록을 브라우저에서 불러온다.
 // 달이 바뀌면 페이지가 key로 새로 마운트해 다시 불러오고 선택도 초기화한다.
+// today·currentMonth는 서버가 그릴 때 쓴 날짜(getToday)다. API 날짜와 다르면 서버 부분을 새로 그리고, 그 뒤 다시 불러온다.
 export function RecordsView({
   month,
   currentMonth,
@@ -62,7 +64,22 @@ export function RecordsView({
     return () => {
       active = false;
     };
-  }, [month]);
+  }, [month, today]);
+
+  // API 날짜가 기준이다. 서버가 그린 오늘 표시·이번 달·공휴일이 그와 다르면(자정 무렵) 새로 그린다.
+  useServerDateSync(today, data?.today.date);
+
+  // 화면에 돌아오거나 자정이 지나면 오늘 날짜를 다시 확인한다. 바뀌었으면 위의 동기화가 서버 부분을 새로 그리고,
+  // 바뀐 today로 기록도 다시 불러온다.
+  useDayCheck(async () => {
+    if (!data) return;
+    try {
+      const next = await api.getToday();
+      setData((prev) => (prev ? { ...prev, today: next } : prev));
+    } catch (reason) {
+      console.error("[records] 오늘 상태 다시 확인 실패", reason); // 다음 확인 때 다시 한다
+    }
+  });
 
   // 불러오기 실패는 app/error.tsx의 오류 화면으로 넘긴다.
   if (error) throw error;

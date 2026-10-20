@@ -25,6 +25,17 @@ function isStaleSessionError(error: unknown) {
   );
 }
 
+// 서버까지 닿지 못한 실패(오프라인, 연결 끊김)인지. 오류 안내 문구를 고를 때 쓴다.
+// fetch는 브라우저마다 TypeError("Failed to fetch", "Load failed" 등)로, Supabase 인증은 AuthRetryableFetchError로 알린다.
+export function isNetworkError(error: unknown) {
+  if (typeof navigator !== "undefined" && !navigator.onLine) return true;
+  if (!(error instanceof Error)) return false;
+  return (
+    error.name === "AuthRetryableFetchError" ||
+    (error instanceof TypeError && /fetch|load failed|network/i.test(error.message))
+  );
+}
+
 // 익명 세션 보장. 동시에 여러 번 불려도(React 개발 모드의 effect 두 번 실행 등) 로그인은 한 번만 한다.
 let pendingSession: Promise<void> | null = null;
 
