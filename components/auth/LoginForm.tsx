@@ -4,6 +4,7 @@ import { isAuthApiError } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button, ButtonLink } from "@/components/ui/Button";
+import { Doodle } from "@/components/ui/Doodle";
 import { SketchFrame } from "@/components/ui/sketch";
 import { signInWithEmail, signOut } from "@/lib/api";
 import { useAccount } from "./useAccount";
@@ -46,6 +47,7 @@ export function LoginForm() {
   return (
     <div className="relative mx-auto flex w-full max-w-97.5 flex-col gap-4 bg-paper px-6 pt-7 pb-6">
       <SketchFrame shape="card-alt" />
+      <Doodle name="flower" className="absolute top-6 right-6 size-8 rotate-12" />
       <div className="flex flex-col gap-1">
         <h1 className="font-hand text-[32px] leading-[1.1] font-bold">로그인</h1>
         <p className="text-[13px] text-ink-muted">로그인하지 않아도 이 기기에 익명으로 기록이 저장돼요.</p>

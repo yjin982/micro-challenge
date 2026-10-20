@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
+import { Doodle } from "@/components/ui/Doodle";
 import { SketchFrame } from "@/components/ui/sketch";
 import { formatMonthLabel } from "@/lib/date";
 import type { Holidays } from "@/lib/holidays";
@@ -28,6 +29,7 @@ export function StreakView({ today, date, holidays }: { today: TodayState; date:
         className="relative mt-4 flex flex-col gap-2 bg-paper px-3.5 pt-4.5 pb-3.5"
       >
         <SketchFrame />
+        <Doodle name="heart" className="absolute top-4 right-5 size-7 rotate-12" />
         <h2 id="streak-calendar-title" className="pl-1 font-hand text-[22px] font-bold">
           {formatMonthLabel(date)}
         </h2>

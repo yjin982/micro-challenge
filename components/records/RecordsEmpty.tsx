@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ButtonLink } from "@/components/ui/Button";
+import { Doodle } from "@/components/ui/Doodle";
 import { SketchFrame } from "@/components/ui/sketch";
 
 // 도장이 한 번도 없을 때 날짜 상세 자리에 보이는 안내
@@ -10,6 +11,8 @@ export function RecordsEmpty() {
       className="relative flex flex-col items-center gap-2.5 bg-paper px-6 pt-7 pb-6"
     >
       <SketchFrame shape="card-alt" />
+      <Doodle name="heart" className="absolute top-5 right-6 size-8 rotate-12" />
+      <Doodle name="flower" className="absolute top-6 left-6 size-7 -rotate-12" />
       <Image src="/images/mascot/tyrano-challenge.png" alt="" width={173} height={180} loading="eager" className="h-auto w-32.5" />
       <h2 id="records-empty-title" className="text-center font-hand text-[28px] leading-[1.22] font-bold">
         첫 도장을 찍어보세요

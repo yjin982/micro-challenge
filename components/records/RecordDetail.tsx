@@ -56,6 +56,7 @@ export function RecordDetail({ detail }: { detail: RecordDetailData | null }) {
   if (detail.kind === "today") {
     return (
       <Card
+        kind="today"
         footer={
           <ButtonLink href="/" className="mt-1">
             오늘의 미션 하러 가기
@@ -81,7 +82,7 @@ export function RecordDetail({ detail }: { detail: RecordDetailData | null }) {
   }
 
   return (
-    <Card>
+    <Card kind="rest">
       <div className="flex grow flex-col gap-1.5 lg:self-stretch">
         <p className={metaClass}>{date}</p>
         <p className={titleClass}>이날은 도장이 없어요</p>
@@ -98,12 +99,23 @@ export function RecordDetail({ detail }: { detail: RecordDetailData | null }) {
   );
 }
 
-function Card({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
+// 데스크톱 카드 아래 여백은 화면 설계 '데스크톱 · 기록' 보드대로 상태마다 조금씩 다르다(완료 20px, 오늘 22px, 쉬어 간 날 26px).
+const cardBottom = { done: "lg:pb-5", today: "lg:pb-5.5", rest: "lg:pb-6.5" } as const;
+
+function Card({
+  kind = "done",
+  children,
+  footer,
+}: {
+  kind?: keyof typeof cardBottom;
+  children: ReactNode;
+  footer?: ReactNode;
+}) {
   return (
     <section
       aria-label="선택한 날의 기록"
       aria-live="polite"
-      className="relative flex flex-col gap-3 bg-paper px-4.5 py-4 lg:px-6 lg:pt-6 lg:pb-5"
+      className={`relative flex flex-col gap-3 bg-paper px-4.5 py-4 lg:px-6 lg:pt-6 ${cardBottom[kind]}`}
     >
       <SketchFrame shape="card-alt" />
       <div className="flex items-center gap-3.5 lg:flex-col lg:gap-2.5">{children}</div>

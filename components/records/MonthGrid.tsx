@@ -9,14 +9,15 @@ const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 // 작은 도장을 날짜마다 조금씩 기울여 손으로 찍은 느낌을 낸다(화면 설계의 tilt 값)
 const STAMP_TILTS = [-8, 6, -3, 9, -10, 4];
 
-// 칸 높이는 날짜 숫자(16px) + 작은 도장(compact 28px, records 30px / 데스크톱 42px) + 여백
-// 국경일·공휴일 이름은 숫자 바로 아래 한 줄에 넣고, 칸보다 길면 말줄임한 뒤 말풍선으로 전체 이름을 보여준다.
+// 칸 높이 = 날짜 숫자(16px) + 국경일·공휴일 이름 한 줄(12px) + 작은 도장(compact 28px, records 30px / 데스크톱 42px) + 여백 2px씩.
+// 공휴일에 도장이 찍혀도 이름을 가리지 않도록 이름 줄 자리까지 잡아 둔다.
+// 이름은 칸보다 길면 말줄임한 뒤 말풍선으로 전체 이름을 보여준다.
 const variants = {
   // 홈 데스크톱의 이번 달 달력
   compact: {
     weekdays: "text-xs",
     grid: "gap-x-0.5 gap-y-1",
-    cell: "h-13",
+    cell: "h-15",
     today: "inset-x-1.5",
     label: "text-[11px]",
     holiday: "text-[9px]",
@@ -27,7 +28,7 @@ const variants = {
   records: {
     weekdays: "text-xs lg:text-[13px]",
     grid: "gap-x-0.5 gap-y-1 lg:gap-1",
-    cell: "h-13 lg:h-17.5",
+    cell: "h-15.5 lg:h-18.5",
     today: "inset-x-0.5 lg:inset-x-2",
     label: "text-[11px] lg:text-xs",
     holiday: "text-[9px] lg:text-[11px]",

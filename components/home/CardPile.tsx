@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Doodle } from "@/components/ui/Doodle";
 import { SketchFrame } from "@/components/ui/sketch";
 import { CARD_FACE, CardStack, CardTape, FRONT_CARD } from "./CardStack";
 import { SwipeCard } from "./SwipeCard";
@@ -25,6 +26,8 @@ export function CardPile({
         >
           <SketchFrame />
           <CardTape />
+          <Doodle name="flower" className="absolute top-5 left-5 size-8 -rotate-12 lg:top-6 lg:left-6 lg:size-9" />
+          <Doodle name="swirl" className="absolute right-5 bottom-5 size-7 rotate-12 lg:right-6 lg:bottom-6 lg:size-8" />
           {/* 버튼의 aria-label이 내용을 설명하므로 장식 이미지로 둔다 */}
           <Image
             src="/images/mascot/tyrano-thinking.png"
