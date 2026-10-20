@@ -77,6 +77,7 @@ pnpm install
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 URL |
 | `NEXT_PUBLIC_SUPABASE_KEY` | Supabase publishable 키. 브라우저에서 익명 로그인을 하므로 공개되는 키입니다 |
 | `HOLIDAY_API_KEY` | 특일 정보 API 인증키(서버 전용) |
+| `CRON_SECRET` | (배포용) Vercel Cron이 `/api/cron/keep-alive`를 부를 때 쓰는 비밀 값 |
 
 ### 4. 실행
 
@@ -86,6 +87,12 @@ pnpm build   # 프로덕션 빌드
 pnpm start   # 빌드 결과 실행
 pnpm lint    # ESLint
 ```
+
+### 무료 Supabase 일시 중지 막기
+
+Supabase 무료 프로젝트는 7일 동안 요청이 없으면 일시 중지됩니다.
+[`vercel.json`](vercel.json)의 Vercel Cron이 매일 03:00(한국 시간)에 `/api/cron/keep-alive`를 불러 미션 한 줄을 읽어 둡니다.
+Vercel 환경변수에 `CRON_SECRET`(임의의 긴 문자열)을 넣어 두면, 그 값을 가진 요청만 처리합니다.
 
 ## 폴더 구조
 
