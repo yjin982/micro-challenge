@@ -32,7 +32,7 @@ export function RecordDetail({ detail }: { detail: RecordDetailData | null }) {
           <Skeleton className="h-6 w-full" />
           <Skeleton className="h-6 w-2/3" />
         </div>
-        <Skeleton className="size-24 shrink-0 rounded-full lg:mt-1.5 lg:size-42.5" />
+        <Skeleton className="size-24 shrink-0 lg:mt-1.5 lg:size-42.5" rounded="rounded-full" />
       </Card>
     );
   }

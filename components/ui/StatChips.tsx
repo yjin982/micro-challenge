@@ -16,8 +16,8 @@ export function StatChips({ total, streak }: { total: number; streak: number }) 
 export function StatChipsSkeleton() {
   return (
     <div className="flex gap-2">
-      <Skeleton className="h-7 w-18 rounded-full" />
-      <Skeleton className="h-7 w-18 rounded-full" />
+      <Skeleton className="h-7 w-18" rounded="rounded-full" />
+      <Skeleton className="h-7 w-18" rounded="rounded-full" />
     </div>
   );
 }

@@ -21,7 +21,7 @@ export function DrawActions() {
   if (!today) {
     return (
       <div className={firstRowClass}>
-        <Skeleton className="h-13.5 rounded-sketch-btn" />
+        <Skeleton className="h-13.5" rounded="rounded-sketch-btn" />
       </div>
     );
   }
