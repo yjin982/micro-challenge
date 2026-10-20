@@ -86,6 +86,7 @@ pnpm dev     # 개발 서버 (http://localhost:3000)
 pnpm build   # 프로덕션 빌드
 pnpm start   # 빌드 결과 실행
 pnpm lint    # ESLint
+pnpm gen:types  # DB 구조가 바뀌면 types/database.ts 다시 생성(Supabase CLI 로그인 필요)
 ```
 
 ### 무료 Supabase 일시 중지 막기
@@ -107,7 +108,7 @@ components/
   nav/               모바일 하단 탭, 데스크톱 헤더
   auth/              익명 세션, 로그인, 계정 메뉴
 lib/                 Supabase 클라이언트, API 호출 도우미, 날짜·공휴일
-types/               API 응답 타입
+types/               API 응답 타입(api.ts), Supabase DB 타입(database.ts, 자동 생성)
 supabase/            DB 스키마(migrations)와 미션 시드
 public/images/       마스코트, 도장 원본, 낙서 장식, 도화지 텍스처
 ```

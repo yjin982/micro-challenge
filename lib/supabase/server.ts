@@ -1,12 +1,13 @@
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import type { Database } from "@/types/database";
 
 // Route Handler·서버 컴포넌트용 Supabase 클라이언트. 요청마다 새로 만든다(세션 쿠키가 요청마다 다르다).
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_KEY!, {
+  return createServerClient<Database>(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_KEY!, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

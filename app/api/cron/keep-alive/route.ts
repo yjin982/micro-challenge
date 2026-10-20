@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 import { NO_STORE } from "@/lib/api-error";
 import type { ApiErrorBody } from "@/types/api";
+import type { Database } from "@/types/database";
 
 // Supabase 무료 프로젝트는 7일 동안 요청이 없으면 일시 중지된다. Vercel Cron(vercel.json)이 하루 한 번 불러
 // 미션 한 줄을 읽어 두어 프로젝트를 깨워 둔다. 화면에서는 쓰지 않는다.
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_KEY!, {
+  const supabase = createClient<Database>(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_KEY!, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
   const { error } = await supabase.from("missions").select("id").limit(1);

@@ -39,6 +39,8 @@ yarn-error.log*
 
 # 테스트 계정 SQL(비밀번호 평문 포함). 로컬에만 둔다
 supabase/test-users.sql
+# Supabase CLI가 만드는 임시 폴더(버전 확인, 프로젝트 연결 정보)
+supabase/.temp/
 
 # vercel
 .vercel

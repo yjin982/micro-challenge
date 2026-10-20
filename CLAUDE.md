@@ -13,6 +13,7 @@ pnpm dev      # 개발 서버 (http://localhost:3000)
 pnpm build    # 프로덕션 빌드
 pnpm start    # 빌드 결과 실행
 pnpm lint     # ESLint (flat config, eslint-config-next core-web-vitals + typescript)
+pnpm gen:types  # DB 구조가 바뀌면 types/database.ts 다시 생성(Supabase CLI 로그인 필요, pnpm dlx로 실행)
 ```
 
 테스트 러너는 아직 설정되어 있지 않다.
@@ -56,7 +57,7 @@ lib/
   supabase/             @supabase/ssr 클라이언트(server.ts, client.ts)
   api.ts                브라우저용 API 호출 도우미(익명 로그인, 401 재시도)
   api-server.ts         Route Handler 공통 처리(세션 확인 → RPC), api-error.ts 에러 코드 → HTTP
-types/                  api.ts(API 응답 타입), database.ts(`supabase gen types` 결과, 아직 없음)
+types/                  api.ts(API 응답 타입), database.ts(`pnpm gen:types`로 만든 DB 타입. 손으로 고치지 않는다)
 supabase/
   migrations/           서버 설계의 SQL 초안 1~6. 시드(7)는 supabase/seed.sql
 public/images/

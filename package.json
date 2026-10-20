@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gen:types": "pnpm dlx supabase gen types typescript --project-id eumcupngncqwkczuxawp --schema public > types/database.ts"
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",
