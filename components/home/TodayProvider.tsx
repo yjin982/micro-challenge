@@ -1,7 +1,8 @@
 "use client";
 
+import { MotionConfig } from "motion/react";
 import { useRouter } from "next/navigation";
-import { createContext, use, useEffect, useState, type ReactNode } from "react";
+import { createContext, use, useEffect, useRef, useState, type ReactNode } from "react";
 import { ApiError, api } from "@/lib/api";
 import type { TodayState } from "@/types/api";
 
@@ -16,7 +17,8 @@ type TodayContextValue = {
   actionError: string | null;
   // 이 화면에서 방금 완료했는지. 모바일은 완료 화면을 먼저 보여주고, 다시 들어오면 바로 연속 달성 화면이다
   justCompleted: boolean;
-  run: (action: Action) => void;
+  // 요청을 시작했으면 true. 이미 다른 요청이 진행 중이면 false(스와이프한 카드를 제자리로 돌릴 때 쓴다)
+  run: (action: Action) => boolean;
   // 완료 화면에서 연속 달성 화면으로 넘어간다
   showStreak: () => void;
 };
@@ -44,6 +46,8 @@ export function TodayProvider({ children }: { children: ReactNode }) {
   const [pending, setPending] = useState<Action | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [justCompleted, setJustCompleted] = useState(false);
+  // 같은 순간 두 번 눌러도(스와이프 직후 탭 등) 요청은 하나만 보낸다. pending 상태는 다음 렌더에야 바뀌어서 따로 둔다.
+  const busy = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -60,12 +64,18 @@ export function TodayProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  async function run(action: Action) {
-    if (!today || pending) return;
+  function run(action: Action) {
+    if (!today || busy.current) return false;
+    busy.current = true;
+    void request(action, today.date);
+    return true;
+  }
+
+  async function request(action: Action, date: string) {
     setPending(action);
     setActionError(null);
     try {
-      const [next] = await Promise.all([calls[action](today.date), action === "complete" ? null : wait(MIN_DRAW_MS)]);
+      const [next] = await Promise.all([calls[action](date), action === "complete" ? null : wait(MIN_DRAW_MS)]);
       setToday(next);
       if (action === "complete") setJustCompleted(true);
     } catch (reason) {
@@ -84,6 +94,7 @@ export function TodayProvider({ children }: { children: ReactNode }) {
         setActionError("요청을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.");
       }
     } finally {
+      busy.current = false;
       setPending(null);
     }
   }
@@ -96,7 +107,8 @@ export function TodayProvider({ children }: { children: ReactNode }) {
     <TodayContext
       value={{ today, pending, actionError, justCompleted, run, showStreak: () => setJustCompleted(false) }}
     >
-      {children}
+      {/* 동작 줄이기 설정이면 움직임(위치·크기·회전)은 건너뛰고 투명도만 바꾼다 */}
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
     </TodayContext>
   );
 }

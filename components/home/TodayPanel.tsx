@@ -22,7 +22,7 @@ function Subtitle({ children }: { children: ReactNode }) {
 // - not_drawn: 카드 더미와 '카드 뽑기'
 // - challenge: 오늘의 미션 카드와 '다시 뽑기'·'완료했어요!'
 // - done: 데스크톱은 완료 카드와 연속 일수, 모바일은 방금 완료했으면 완료 화면, 아니면 연속 달성 화면
-// 뽑기·재뽑기 요청 중에는 카드 자리에 '미션 꺼내는 중'을 띄운다.
+// 뽑기·재뽑기 요청 중에는 카드 자리에 '미션 꺼내는 중'을 띄운다. 방금 완료했으면 도장 연출을 보여준다.
 export function TodayPanel({ date, holidays }: { date: string; holidays: Holidays }) {
   const { today, pending, justCompleted, run, showStreak } = useTodayActions();
   const isDesktop = useIsDesktop();
@@ -33,9 +33,9 @@ export function TodayPanel({ date, holidays }: { date: string; holidays: Holiday
         <>
           <Subtitle>오늘의 작은 기적을 해냈어요!</Subtitle>
           <div className="mt-4.5">
-            <DoneCard mission={today.mission} stampId={today.stampId} />
+            <DoneCard mission={today.mission} stampId={today.stampId} celebrate={justCompleted} />
           </div>
-          <DoneSummary streak={today.streak} />
+          <DoneSummary streak={today.streak} celebrate={justCompleted} />
         </>
       );
     }
@@ -47,6 +47,8 @@ export function TodayPanel({ date, holidays }: { date: string; holidays: Holiday
   }
 
   const drawing = pending === "draw" || pending === "reroll";
+  // 모바일은 카드를 좌우로 넘겨 뽑고 다시 뽑는다. 데스크톱은 버튼으로만(화면 설계)
+  const swipeable = !isDesktop && pending === null;
 
   return (
     <>
@@ -65,9 +67,13 @@ export function TodayPanel({ date, holidays }: { date: string; holidays: Holiday
         ) : drawing ? (
           <MissionLoading size={CARD_SLOT} />
         ) : today.state === "challenge" && today.mission ? (
-          <MissionCard mission={today.mission} />
+          <MissionCard
+            key={today.mission.id}
+            mission={today.mission}
+            onSwipe={swipeable && today.rerollsLeft > 0 ? () => run("reroll") : undefined}
+          />
         ) : (
-          <CardPile onDraw={() => run("draw")} disabled={pending !== null} />
+          <CardPile onDraw={() => run("draw")} swipeable={swipeable} disabled={pending !== null} />
         )}
       </div>
 

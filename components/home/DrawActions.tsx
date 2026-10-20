@@ -5,6 +5,8 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { useTodayActions } from "./TodayProvider";
 
 const rowClass = "mx-auto mt-3.5 w-full max-w-85.5 lg:max-w-100";
+// 뽑기 전·불러오는 중에는 위에 남은 재뽑기 줄이 없어 카드와의 간격을 조금 더 둔다
+const firstRowClass = "mx-auto mt-5 w-full max-w-85.5 lg:mt-6 lg:max-w-100";
 const hintClass = "mt-2.5 text-center text-xs text-ink-muted";
 
 // 카드 아래 버튼 영역. 오늘 상태에 따라 버튼을 고른다.
@@ -18,7 +20,7 @@ export function DrawActions() {
   // 오늘 상태를 불러오는 동안은 어떤 버튼일지 모르므로 버튼 자리만 잡아 둔다.
   if (!today) {
     return (
-      <div className={rowClass}>
+      <div className={firstRowClass}>
         <Skeleton className="h-13.5 rounded-sketch-btn" />
       </div>
     );
@@ -36,7 +38,7 @@ export function DrawActions() {
   if (today.state === "not_drawn") {
     return (
       <>
-        <div className={rowClass}>
+        <div className={firstRowClass}>
           <Button onClick={() => run("draw")} disabled={busy} className="px-4 disabled:opacity-60">
             카드 뽑기
           </Button>
@@ -68,7 +70,12 @@ export function DrawActions() {
         </Button>
       </div>
       {error}
-      {canReroll && <p className={hintClass}>마음에 안 들면 &apos;다시 뽑기&apos;를 눌러 바꿀 수 있어요</p>}
+      {canReroll && (
+        <>
+          <p className={`${hintClass} lg:hidden`}>스와이프 해서 새로운 미션 뽑기</p>
+          <p className={`${hintClass} hidden lg:block`}>마음에 안 들면 &apos;다시 뽑기&apos;를 눌러 바꿀 수 있어요</p>
+        </>
+      )}
     </>
   );
 }

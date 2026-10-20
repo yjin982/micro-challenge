@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Button } from "./Button";
 import { StateCard } from "./StateCard";
 
-// 오류 화면(화면 설계 '공통 상태 > 오류'): 고민하는 마스코트, 안내 문구, 다시 시도 버튼.
+// 오류 화면(화면 설계 '공통 상태 > 오류'): 지쳐 뻗은 마스코트, 안내 문구, 다시 시도 버튼.
 // error.tsx와 global-error.tsx가 함께 쓴다.
 export function ErrorState({
   onRetry,
@@ -15,7 +15,7 @@ export function ErrorState({
 }) {
   return (
     <StateCard role="alert">
-      <Image src="/images/mascot/tyrano-thinking.png" alt="" width={144} height={175} className="h-auto w-36" />
+      <Image src="/images/mascot/tyrano-fail.png" alt="" width={195} height={164} className="h-auto w-40" />
       <h2 className="text-center font-hand text-[28px] leading-tight font-bold">{title}</h2>
       <p className="text-center text-[13px] text-ink-muted">{description}</p>
       <div className="mt-1 w-50">
