@@ -20,15 +20,22 @@ pnpm gen:types  # DB 구조가 바뀌면 types/database.ts 다시 생성(Supabas
 
 ## 현재 상태
 
-create-next-app 초기 상태에 아래 "폴더 구조"의 빈 폴더만 잡아 둔 상태다(`app/layout.tsx`, `app/page.tsx`, `app/globals.css`만 있음). 아래 "제품"과 "설계 결정"은 아직 코드에 없는 목표 설계이며, 출처는 다음 문서다. 코드와 문서가 다르면 문서를 먼저 확인한다.
+디자인 기반, 홈(뽑기 → 도전중 → 완료 → 연속 달성), 기록, 서버(Supabase DB, API 5개)가 동작하고 Vercel에 배포했다(<https://micro-challenge-one.vercel.app/>). 다음 큰 작업은 로그인 흐름 개편(익명 + Google)이다.
 
-로컬 사본(2026-10-15에 내보냄)을 먼저 읽는다. 원본 Claude Docs 문서는 Claude Docs 커넥터 없이는 본문을 읽을 수 없다.
+- 진행 상황과 남은 작업: [.claude/작업-현황.md](.claude/작업-현황.md)
+- 로그인 흐름 개편 계획: [.claude/로그인-흐름-계획.md](.claude/로그인-흐름-계획.md)
+
+아래 "제품"과 "설계 결정"의 출처는 다음 문서다. 코드와 문서가 다르면 문서를 먼저 확인한다(마스코트 포즈는 아래 예외).
+
+로컬 사본을 먼저 읽는다(기획서·서버 설계는 2026-10-15, 화면 설계는 2026-10-21에 내보냄). 원본 Claude Docs 문서는 Claude Docs 커넥터 없이는 본문을 읽을 수 없다.
 
 - 기획서(+ '미션 데이터' 탭): [.claude/밍기적-챌린지-기획서.md](.claude/밍기적-챌린지-기획서.md) · 원본 Claude 아티팩트
 - 서버 설계(API 명세, SQL 초안): [.claude/밍기적-챌린지-서버설계.md](.claude/밍기적-챌린지-서버설계.md) · 원본 Claude 아티팩트
-- 화면 설계(모바일·데스크톱 보드, 도장 컴포넌트, 에셋): [.claude/밍기적 챌린지 화면 설계.pdf](<.claude/밍기적 챌린지 화면 설계.pdf>) · 원본 Claude 아티팩트 (보드별 `.dc.html` 소스와 이미지 에셋은 원본 캔버스의 `project/` 아래에 있다)
+- 화면 설계(모바일·데스크톱 보드, 로그인: 익명 + Google 보드 9개, 도장 컴포넌트, 에셋): [.claude/밍기적 챌린지 화면 설계.pdf](<.claude/밍기적 챌린지 화면 설계.pdf>) · 원본 Claude 아티팩트 (보드별 `.dc.html` 소스와 이미지 에셋은 원본 캔버스의 `project/` 아래에 있다)
 
 원본을 고치면 로컬 사본도 다시 내보낸다.
+
+**마스코트 포즈는 코드가 기준이다.** 화면 설계의 기존 보드(홈, 기록, 공통 상태)에 그려진 마스코트는 지금 코드와 다르지만, 코드에 있는 포즈를 그대로 유지한다. 화면 설계에서 마스코트를 따르는 것은 로그인(익명 + Google) 보드뿐이다: 시작 화면 `stretching`, 연결 실패 `thinking`(기존 계정 로그인 확인 보드는 쓰지 않는다).
 
 ## 코드베이스 규칙
 
@@ -44,28 +51,38 @@ create-next-app 초기 상태에 아래 "폴더 구조"의 빈 폴더만 잡아 
 ```text
 app/
   records/              /records
+  login/                /login 이메일 로그인(테스트 계정용, 기획서에 없던 추가)
   api/today/            GET /api/today  (draw/, reroll/, complete/ 아래에 각 POST)
   api/records/          GET /api/records?month=YYYY-MM
+  api/cron/keep-alive/  Supabase 무료 프로젝트 일시 중지 방지(vercel.json의 Cron, CRON_SECRET 확인)
 components/
-  ui/                   손그림 카드 테두리, 버튼, 칩·배지, 구분선 등 공통 요소
+  ui/                   손그림 카드 테두리, 버튼, 칩·배지, 상태 카드, 오류 화면, 낙서 장식 등 공통 요소
   stamp/                도장 컴포넌트(p01–p06, mini)
   nav/                  모바일 하단 탭, 데스크톱 상단 헤더
-  auth/                 앱을 열 때 익명 로그인(화면 없음)
-  home/                 홈 전용(카드 더미·스택, 완료 연출, 연속 달성, 최근 기록)
+  auth/                 앱을 열 때 익명 세션 보장(AnonymousSession), 이메일 로그인 폼,
+                        계정 표시·로그아웃(데스크톱 헤더, 모바일 햄버거 메뉴)
+  home/                 홈 전용(카드 더미·스택, 스와이프, 완료 연출, 연속 달성, 최근 기록)
   records/              기록 전용(월간 캘린더, 날짜 상세)
 lib/
   supabase/             @supabase/ssr 클라이언트(server.ts, client.ts)
-  api.ts                브라우저용 API 호출 도우미(익명 로그인, 401 재시도)
+  api.ts                브라우저용 API 호출 도우미(익명 세션 보장, 401 재시도, 이메일 로그인)
   api-server.ts         Route Handler 공통 처리(세션 확인 → RPC), api-error.ts 에러 코드 → HTTP
+  date.ts, today.ts     날짜 포맷·달력 칸 계산, 서버 첫 렌더링용 날짜(getToday)
+  useDaySync.ts         자정 넘김 확인, 서버 날짜와 화면 날짜 맞추기
+  holidays.ts           공휴일(한국천문연구원 특일 정보, HOLIDAY_API_KEY)
 types/                  api.ts(API 응답 타입), database.ts(`pnpm gen:types`로 만든 DB 타입. 손으로 고치지 않는다)
 supabase/
   migrations/           서버 설계의 SQL 초안 1~6. 시드(7)는 supabase/seed.sql
+  tests/                며칠에 걸친 뽑기 규칙 확인 SQL(SQL Editor에서 실행)
+  test-users.sql        테스트 계정 3개와 기록(비밀번호 평문이라 git 제외)
+assets/fonts/           공유 이미지(opengraph-image)용 Gaegu Bold 서브셋. 문구를 바꾸면 다시 만든다
 public/images/
   mascot/               티라노 마스코트 포즈 16종(투명 PNG, tyrano-*.png): basic(기본), challenge(도전 중),
                         did-it(해냈다), done(완료), excited(신남), favorite(쿠키), reading(책 읽기),
                         thinking(고민 중), hard(어려워), stretching(기지개), watering(물 주기),
                         spacing-out(멍), sleeping(자는 중), fail(실패), sad(슬픔), angry(화남)
-  stamps/               도장 p01–p06 SVG(지름 190px, Gaegu 서브셋 내장). png/에 @2x·@4x
+  stamps/               도장 p01–p06 SVG(지름 190px, Gaegu 서브셋 내장). png/에 @2x·@4x. 디자인 원본이고
+                        코드에서는 components/stamp를 쓴다(공유 이미지가 png/p01@4x.png를 쓰니 지우지 않는다)
   stamps/mini/          달력·최근 기록용 작은 도장 SVG(문구 없음). png/에 @2x
   decor/                낙서 장식(꽃, 하트, 음표, 반짝이, 별, 소용돌이, 테이프)
   lines/                구분선(크레용, 점선, 물결)
@@ -80,7 +97,7 @@ public/images/
 
 하루 1개의 가벼운 미션을 랜덤으로 뽑아 자기신고로 완료하고, 도장이 그림일기식 달력에 쌓이는 모바일 우선 웹앱이다.
 
-- 경로: `/`(홈), `/records`(기록). `/settings`, `/admin`은 4단계(보류)로, 만들지 않을 수도 있다.
+- 경로: `/`(홈), `/records`(기록), `/login`(이메일 테스트 계정). `/settings`, `/admin`은 4단계(보류)로, 만들지 않을 수도 있다.
 - 홈은 서버가 주는 `state`로 화면을 고른다: `not_drawn`(뽑기 전) → `challenge`(도전중) → `done`(연속 달성). 완료 직후에는 도장 연출을 거쳐 연속 달성으로 넘어간다.
 - 재뽑기는 하루 3회(첫 카드 포함 최대 4장), 완료 취소 없음, 미완료는 기록하지 않음(실패 상태 없음).
 - 모바일은 하단 탭 2개 + 카드 스와이프, 데스크톱은 상단 헤더 내비게이션 + 2단(최대 1040px) + 버튼으로만 재뽑기.
@@ -88,6 +105,7 @@ public/images/
 ## 설계 결정
 
 - **스택**: Supabase(Postgres, 익명 로그인, RLS) + `@supabase/ssr`, Motion(카드 드래그·도장 연출), date-fns + `@date-fns/tz`, `next/font/google`의 Gaegu·Noto Sans KR, Vercel 배포. 별도 상태 관리 라이브러리는 쓰지 않는다.
+- **인증(지금)**: 앱을 열면 익명 계정을 자동으로 만든다. 이메일 로그인은 주소로 들어가는 `/login`에서 테스트 계정으로만 쓴다. 시작 화면(`/welcome`)에서 익명 또는 Google을 고르는 구조로 바꿀 예정이다([계획](.claude/로그인-흐름-계획.md)).
 - **쓰기 경로**: 클라이언트 → Route Handler(`app/api/.../route.ts`) → `supabase.rpc()` → security definer Postgres 함수. Server Action은 쓰지 않는다. 테이블에 쓰기 정책이 없어 모든 쓰기는 함수가 맡고, service role 키는 쓰지 않는다.
 - **API 5개**: `GET /api/today`, `POST /api/today/draw`, `POST /api/today/reroll`, `POST /api/today/complete`, `GET /api/records?month=YYYY-MM`. 상태 변경 API는 모두 `/api/today`와 같은 모양(`date`, `state`, `mission`, `rerollsLeft`, `completedAt`, `stampId`, `streak`, `totalCompleted`, `recent`)을 돌려준다.
 - **날짜**: 하루는 Asia/Seoul 기준이고 DB의 `kst_day()`(도착 시각 − 1분)만 믿는다. 화면은 날짜를 직접 계산하지 않고 `/api/today`가 준 `date`를 그대로 쓰며, 변경 요청에 그 `date`를 보낸다. 서버 날짜와 다르면 `DAY_CHANGED`(409)를 받고 오늘 상태를 다시 불러온다.
