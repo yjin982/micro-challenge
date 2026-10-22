@@ -1,8 +1,8 @@
-import { isAuthApiError } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import type { ApiErrorBody, ErrorCode, MonthRecords, TodayState } from "@/types/api";
 
-// 브라우저에서 쓰는 API 호출 도우미. 익명 로그인과 401 재시도를 여기서 맡는다.
+// 브라우저에서 쓰는 API 호출 도우미와 로그인 함수. 세션은 시작 화면에서 만들고(익명 또는 Google),
+// API가 세션이 없다고(401) 하면 쿠키를 지우고 시작 화면으로 보낸다.
 
 export class ApiError extends Error {
   constructor(
@@ -12,17 +12,6 @@ export class ApiError extends Error {
   ) {
     super(message);
   }
-}
-
-// 세션의 사용자나 세션 자체가 서버에 없다는 응답(삭제된 사용자 등)
-function isStaleSessionError(error: unknown) {
-  return (
-    isAuthApiError(error) &&
-    (error.status === 401 ||
-      error.status === 403 ||
-      error.code === "user_not_found" ||
-      error.code === "session_not_found")
-  );
 }
 
 // 서버까지 닿지 못한 실패(오프라인, 연결 끊김)인지. 오류 안내 문구를 고를 때 쓴다.
@@ -36,45 +25,17 @@ export function isNetworkError(error: unknown) {
   );
 }
 
-// 익명 세션 보장. 동시에 여러 번 불려도(React 개발 모드의 effect 두 번 실행 등) 로그인은 한 번만 한다.
-let pendingSession: Promise<void> | null = null;
-
-export function ensureAnonymousSession(): Promise<void> {
-  pendingSession ??= (async () => {
-    const supabase = createClient();
-    // getSession은 만료된 토큰을 갱신해 준다. 갱신도 안 되면 null이라 새 익명 계정을 만든다.
-    const { data } = await supabase.auth.getSession();
-    if (data.session) {
-      // getSession은 브라우저 쿠키만 본다. 대시보드에서 사용자를 지우면 쿠키는 남아 있으므로
-      // getUser로 서버에 그 사용자가 아직 있는지 확인하고, 없으면 세션을 버리고 새로 로그인한다.
-      const { error } = await supabase.auth.getUser();
-      if (!error) return;
-      // 네트워크 오류 등은 멀쩡한 세션일 수 있으니 지우지 않고 실패로 돌린다.
-      if (!isStaleSessionError(error)) throw error;
-      await supabase.auth.signOut({ scope: "local" });
-    }
-    const { error } = await supabase.auth.signInAnonymously();
-    if (error) throw error;
-  })().catch((error) => {
-    pendingSession = null; // 실패하면 다음 호출에서 다시 시도
-    throw error;
-  });
-  return pendingSession;
-}
-
-// 이메일 계정 로그인(테스트 계정 등). 성공하면 익명 세션 대신 그 계정 세션이 쿠키에 남는다.
+// 이메일 계정 로그인(개발용 테스트 계정). 성공하면 지금 세션 대신 그 계정 세션이 쿠키에 남는다.
 // 로그인 전 익명 계정의 기록은 옮겨지지 않는다.
 export async function signInWithEmail(email: string, password: string) {
   const { data, error } = await createClient().auth.signInWithPassword({ email, password });
-  pendingSession = null; // 다음 API 호출에서 바뀐 세션으로 다시 확인
   if (error) throw error;
   return data.user;
 }
 
-// 시작 화면의 "익명으로 시작하기". 새 익명 계정을 만든다.
+// 시작 화면의 "익명으로 시작하기". 새 익명 계정을 만든다(익명 계정은 이 버튼으로만 만든다).
 export async function startAnonymous() {
   const { error } = await createClient().auth.signInAnonymously();
-  pendingSession = null; // 다음 API 호출에서 새 세션으로 다시 확인
   if (error) throw error;
 }
 
@@ -92,14 +53,26 @@ export async function signInWithGoogle(next = "/") {
   if (error) throw error;
 }
 
-// 로그아웃. 다음 API 호출이나 페이지 이동 때 새 익명 계정으로 다시 시작한다.
+// 로그아웃. 이 브라우저의 세션 쿠키만 지운다(다른 기기의 로그인은 그대로).
 export async function signOut() {
   await createClient().auth.signOut({ scope: "local" });
-  pendingSession = null;
 }
 
-async function request<T>(path: string, init?: RequestInit, retried = false): Promise<T> {
-  await ensureAnonymousSession();
+// API가 세션이 없다고 하면(쿠키가 없거나, 대시보드에서 지운 사용자의 쿠키가 남은 경우) 시작 화면으로 보낸다.
+// 쿠키를 먼저 지운다. 지운 사용자의 토큰은 만료 전까지 proxy에서 '세션 있음'으로 보여서, 쿠키를 남긴 채
+// /welcome으로 가면 /welcome → / → 401 → /welcome으로 계속 돈다. scope: "local"이라 서버에 묻지 않고 지운다.
+async function leaveToWelcome(): Promise<never> {
+  await createClient()
+    .auth.signOut({ scope: "local" })
+    .catch(() => {});
+  const next = location.pathname + location.search;
+  // 화면에 남은 데이터를 버리도록 페이지를 새로 연다(라우터 이동이 아니라 전체 이동)
+  location.assign(new URL(`/welcome?next=${encodeURIComponent(next)}`, location.origin));
+  // 페이지가 바뀌는 동안 화면이 오류 상태로 바뀌지 않게 끝나지 않는 약속을 돌려준다
+  return new Promise<never>(() => {});
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },
@@ -108,11 +81,7 @@ async function request<T>(path: string, init?: RequestInit, retried = false): Pr
 
   const body = (await res.json().catch(() => null)) as ApiErrorBody | null;
   const code = body?.error.code ?? "INTERNAL";
-  // 세션이 사라졌으면 다시 확인(필요하면 익명 로그인)한 뒤 한 번만 재시도한다.
-  if (code === "UNAUTHENTICATED" && !retried) {
-    pendingSession = null;
-    return request(path, init, true);
-  }
+  if (code === "UNAUTHENTICATED") return leaveToWelcome();
   throw new ApiError(code, body?.error.message ?? res.statusText, res.status);
 }
 

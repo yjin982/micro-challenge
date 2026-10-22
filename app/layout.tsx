@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { AnonymousSession } from "@/components/auth/AnonymousSession";
 import { BottomTabs } from "@/components/nav/BottomTabs";
 import { DesktopHeader } from "@/components/nav/DesktopHeader";
 import { TodayLabel } from "@/components/nav/TodayLabel";
@@ -18,7 +17,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className={`${fontVariables} h-full antialiased`}>
       <body className="min-h-full bg-paper-texture font-sans text-ink">
-        <AnonymousSession />
         <CrayonFilters />
         <DesktopHeader
           date={

@@ -32,7 +32,7 @@ function toDetail(date: string, { today, records }: Loaded): RecordDetailData {
   return { kind: "rest", date };
 }
 
-// 기록 화면 본문. 익명 세션이 브라우저에서 만들어지므로 오늘 상태(누적·연속)와 그 달 기록을 브라우저에서 불러온다.
+// 기록 화면 본문. 오늘 상태(누적·연속)와 그 달 기록을 브라우저에서 /api로 불러온다.
 // 달이 바뀌면 페이지가 key로 새로 마운트해 다시 불러오고 선택도 초기화한다.
 // today·currentMonth는 서버가 그릴 때 쓴 날짜(getToday)다. API 날짜와 다르면 서버 부분을 새로 그리고, 그 뒤 다시 불러온다.
 export function RecordsView({

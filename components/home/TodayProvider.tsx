@@ -38,7 +38,7 @@ function conflictMessage(error: ApiError) {
 }
 
 // 홈 화면이 함께 쓰는 오늘 상태와 뽑기·재뽑기·완료 요청.
-// 익명 세션이 브라우저에서 만들어지므로 서버 렌더링이 아니라 브라우저에서 불러온다.
+// 브라우저에서 /api를 불러온다(서버에서 바로 읽는 방식은 로그인 개편 계획의 8단계, 선택).
 // serverDate는 서버가 페이지를 그릴 때 쓴 날짜(getToday)다. API 날짜와 다르면 서버 부분을 새로 그린다.
 export function TodayProvider({ serverDate, children }: { serverDate: string; children: ReactNode }) {
   const [today, setToday] = useState<TodayState | null>(null);
