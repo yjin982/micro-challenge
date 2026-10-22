@@ -5,20 +5,22 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { AccountStatus } from "@/components/auth/AccountStatus";
 import { SketchLine } from "@/components/ui/sketch";
-import { NAV_ITEMS, navIconClass } from "./nav-items";
+import { NAV_ITEMS, isAuthScreen, navIconClass } from "./nav-items";
 
 // 데스크톱 상단 헤더. 날짜는 서버 컴포넌트(TodayLabel)를 받아 그대로 넣는다. 계정으로 로그인했으면 메뉴 오른쪽에 계정을 보여준다.
+// 시작·로그인 화면에서는 앱 이름만 보인다.
 export function DesktopHeader({ date }: { date: ReactNode }) {
   const pathname = usePathname();
+  const nameOnly = isAuthScreen(pathname);
 
   return (
     <header className="hidden lg:block">
       <div className="relative mx-auto flex h-21 max-w-272 items-center justify-between px-6">
         <div className="flex items-baseline gap-3.5">
           <p className="font-hand text-[32px] font-bold leading-none">밍기적 챌린지</p>
-          <p className="text-sm text-ink-muted">{date}</p>
+          {!nameOnly && <p className="text-sm text-ink-muted">{date}</p>}
         </div>
-        <div className="flex items-center gap-4">
+        <div className={`flex items-center gap-4 ${nameOnly ? "hidden" : ""}`}>
           <nav aria-label="주 메뉴">
             <ul className="flex gap-1">
               {NAV_ITEMS.map(({ href, label, Icon }) => {

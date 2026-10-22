@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SketchLine } from "@/components/ui/sketch";
-import { NAV_ITEMS, navIconClass } from "./nav-items";
+import { NAV_ITEMS, isAuthScreen, navIconClass } from "./nav-items";
 
-// 모바일 하단 탭.
+// 모바일 하단 탭. 시작·로그인 화면에서는 숨긴다.
 export function BottomTabs() {
   const pathname = usePathname();
+  if (isAuthScreen(pathname)) return null;
 
   return (
     <nav

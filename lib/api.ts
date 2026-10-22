@@ -71,6 +71,13 @@ export async function signInWithEmail(email: string, password: string) {
   return data.user;
 }
 
+// 시작 화면의 "익명으로 시작하기". 새 익명 계정을 만든다.
+export async function startAnonymous() {
+  const { error } = await createClient().auth.signInAnonymously();
+  pendingSession = null; // 다음 API 호출에서 새 세션으로 다시 확인
+  if (error) throw error;
+}
+
 // Google 로그인(처음이면 가입). Google 화면으로 이동했다가 /auth/callback을 거쳐 next로 돌아온다.
 // prompt: select_account로 로그아웃 뒤에도 계정을 고를 수 있게 한다.
 // 이동하기 전에 실패하면(Google 제공자 꺼짐 등) 오류를 던진다.

@@ -6,7 +6,7 @@ import { useState, type FormEvent } from "react";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { Doodle } from "@/components/ui/Doodle";
 import { SketchFrame } from "@/components/ui/sketch";
-import { signInWithEmail, signInWithGoogle, signOut } from "@/lib/api";
+import { signInWithEmail, signOut } from "@/lib/api";
 import { useAccount } from "./useAccount";
 
 const inputClass =
@@ -96,22 +96,6 @@ export function LoginForm() {
           )}
           <Button type="submit" disabled={pending} className="mt-1 disabled:opacity-60">
             {pending ? "로그인 중…" : "로그인"}
-          </Button>
-          {/* 임시: 로그인 개편 1단계에서 Google 로그인 한 바퀴를 확인하는 버튼. 2단계 시작 화면이 생기면 지운다 */}
-          <Button
-            type="button"
-            variant="outline"
-            disabled={pending}
-            onClick={() => {
-              setPending(true);
-              signInWithGoogle().catch(() => {
-                setError("Google 로그인을 시작하지 못했어요.");
-                setPending(false);
-              });
-            }}
-            className="disabled:opacity-60"
-          >
-            Google로 로그인(임시)
           </Button>
         </form>
       )}

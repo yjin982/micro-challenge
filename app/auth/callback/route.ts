@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { safeNext } from "@/lib/safe-next";
 import { createClient } from "@/lib/supabase/server";
 
 // Google 로그인·연결(linkIdentity)이 돌아오는 곳. 성공하면 code를 세션으로 바꿔 next로 보낸다.
@@ -6,9 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const nextParam = searchParams.get("next") ?? "/";
-  // 다른 사이트로 보내지 않도록 같은 사이트의 상대 경로만 받는다
-  const next = nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
+  const next = safeNext(searchParams.get("next"));
   const supabase = await createClient();
 
   let reason = searchParams.get("error_code") ?? searchParams.get("error");

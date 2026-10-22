@@ -74,6 +74,14 @@
   --font-hand: var(--font-gaegu), cursive;
 }
 
+/* Tailwind v4는 버튼 커서를 기본(화살표)으로 둔다. 누를 수 있는 버튼은 손가락 커서로 */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 /* 도화지 텍스처. 화면 배경과 하단 탭에만 쓰고, 카드는 무늬 없는 bg-paper */
 @utility bg-paper-texture {
   background-color: var(--color-paper);

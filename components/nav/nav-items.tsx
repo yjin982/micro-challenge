@@ -26,3 +26,8 @@ export const NAV_ITEMS = [
   { href: "/", label: "홈", Icon: HomeIcon },
   { href: "/records", label: "기록", Icon: RecordsIcon },
 ] as const;
+
+// 시작 화면과 (개발용) 로그인 화면. 데스크톱 헤더는 앱 이름만 보이고, 하단 탭은 숨긴다.
+export function isAuthScreen(pathname: string) {
+  return pathname === "/welcome" || pathname === "/login";
+}

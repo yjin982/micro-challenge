@@ -1,0 +1,107 @@
+/*
+ * Google 로그인 버튼. Google 브랜드 가이드라인의 버튼 생성기 코드(gsi-material-button, Light, Pill, 텍스트 모드)를 옮겼다.
+ * 바꾼 것: 너비는 부모 폭 전체(최대 400px 제한 없음), 높이 54px(앱의 주 버튼과 같게)와 그에 맞춘 둥근 모서리,
+ * 글꼴은 앱에서 불러오지 않는 Roboto 대신 Noto Sans KR 500. 로고 크기(20px)·색·여백(12/10/12px)은 그대로다.
+ */
+.button {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #747775;
+  border-radius: 27px;
+  box-sizing: border-box;
+  color: #1f1f1f;
+  cursor: pointer;
+  font-family: var(--font-noto-sans-kr), sans-serif;
+  font-size: 16px;
+  height: 54px;
+  letter-spacing: 0.25px;
+  outline: none;
+  overflow: hidden;
+  padding: 0 12px;
+  position: relative;
+  text-align: center;
+  transition:
+    background-color 0.218s,
+    border-color 0.218s,
+    box-shadow 0.218s;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 100%;
+  min-width: min-content;
+}
+
+.icon {
+  display: block;
+  height: 20px;
+  margin-right: 10px;
+  min-width: 20px;
+  width: 20px;
+}
+
+.contentWrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  height: 100%;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
+
+.contents {
+  flex-grow: 1;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+
+.state {
+  display: block;
+  transition: opacity 0.218s;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.button:disabled {
+  cursor: default;
+  background-color: #ffffff61;
+  border-color: #1f1f1f1f;
+}
+
+.button:disabled .contents,
+.button:disabled .icon {
+  opacity: 38%;
+}
+
+.button:not(:disabled):active .state,
+.button:not(:disabled):focus .state {
+  background-color: #303030;
+  opacity: 12%;
+}
+
+/* 키보드로 옮겨 왔을 때는 테두리도 보이게 한다(생성기 코드는 outline을 지운다) */
+.button:focus-visible {
+  outline: 2px solid #1f1f1f;
+  outline-offset: 2px;
+}
+
+.button:not(:disabled):hover {
+  box-shadow:
+    0 1px 2px 0 rgba(60, 64, 67, 0.3),
+    0 1px 3px 1px rgba(60, 64, 67, 0.15);
+}
+
+.button:not(:disabled):hover .state {
+  background-color: #303030;
+  opacity: 8%;
+}
