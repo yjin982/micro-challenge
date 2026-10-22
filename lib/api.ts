@@ -53,6 +53,26 @@ export async function signInWithGoogle(next = "/") {
   if (error) throw error;
 }
 
+// 익명 계정에 Google 계정을 연결한다("Google로 기록 지키기"). 사용자 ID가 그대로라 기록이 이어진다.
+// Google 화면을 거쳐 /auth/callback으로 돌아오고, 이미 가입된 Google 계정이면 next?auth_error=…로 돌아온다.
+// 연결할 때도 계정 선택 화면을 띄운다(그래야 연결 실패 뒤 "다른 Google 계정으로 연결"에서 다른 계정을 고를 수 있다).
+// 이동하기 전에 실패하면(Manual linking 꺼짐 등) 오류를 던진다.
+export async function linkGoogle(next = "/") {
+  const { error } = await createClient().auth.linkIdentity({
+    provider: "google",
+    options: {
+      redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+      queryParams: { prompt: "select_account" },
+    },
+  });
+  if (error) throw error;
+}
+
+// 지금 보고 있는 주소(로그인·연결 뒤 돌아올 곳)
+export function currentPath() {
+  return location.pathname + location.search;
+}
+
 // 로그아웃. 이 브라우저의 세션 쿠키만 지운다(다른 기기의 로그인은 그대로).
 export async function signOut() {
   await createClient().auth.signOut({ scope: "local" });
@@ -65,7 +85,7 @@ async function leaveToWelcome(): Promise<never> {
   await createClient()
     .auth.signOut({ scope: "local" })
     .catch(() => {});
-  const next = location.pathname + location.search;
+  const next = currentPath();
   // 화면에 남은 데이터를 버리도록 페이지를 새로 연다(라우터 이동이 아니라 전체 이동)
   location.assign(new URL(`/welcome?next=${encodeURIComponent(next)}`, location.origin));
   // 페이지가 바뀌는 동안 화면이 오류 상태로 바뀌지 않게 끝나지 않는 약속을 돌려준다

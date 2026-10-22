@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AuthReturnNotice } from "@/components/auth/AuthReturnNotice";
 import { BottomTabs } from "@/components/nav/BottomTabs";
 import { DesktopHeader } from "@/components/nav/DesktopHeader";
 import { TodayLabel } from "@/components/nav/TodayLabel";
@@ -27,6 +28,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         {children}
         <BottomTabs />
+        {/* Google 연결이 실패해 돌아왔을 때의 안내(?auth_error=). 주소를 읽어서 Suspense로 감싼다 */}
+        <Suspense fallback={null}>
+          <AuthReturnNotice />
+        </Suspense>
       </body>
     </html>
   );

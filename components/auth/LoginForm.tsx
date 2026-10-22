@@ -13,14 +13,15 @@ const inputClass =
   "h-12 w-full rounded-sketch-sm border-2 border-ink-muted bg-paper px-4 text-[15px] outline-none focus-visible:border-primary";
 
 // 이메일 계정 로그인. 회원가입은 없고, 계정은 Supabase에서 직접 만든다(supabase/test-users.sql).
-export function LoginForm() {
+export function LoginForm({ next }: { next: string }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // 이미 이메일 계정으로 로그인되어 있으면 그 이메일(익명이면 null)
-  const signedInEmail = useAccount();
+  // 이미 계정(이메일·Google)으로 로그인되어 있으면 그 이메일(익명이거나 세션이 없으면 null)
+  const account = useAccount();
+  const signedInEmail = account?.kind === "account" ? (account.email ?? "이름 없는 계정") : null;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,7 +29,7 @@ export function LoginForm() {
     setError(null);
     try {
       await signInWithEmail(email.trim(), password);
-      router.replace("/");
+      router.replace(next);
     } catch (reason) {
       setError(
         isAuthApiError(reason) && reason.code === "invalid_credentials"
@@ -50,15 +51,25 @@ export function LoginForm() {
       <Doodle name="flower" className="absolute top-6 right-6 size-8 rotate-12" />
       <div className="flex flex-col gap-1">
         <h1 className="font-hand text-[32px] leading-[1.1] font-bold">로그인</h1>
-        <p className="text-[13px] text-ink-muted">로그인하지 않아도 이 기기에 익명으로 기록이 저장돼요.</p>
+        <p className="text-[13px] text-ink-muted">개발용 테스트 계정 로그인</p>
       </div>
+
+      {/* 익명 기록은 테스트 계정으로 옮겨지지 않는다(시작 화면 연결 실패 안내와 같은 분홍 안내) */}
+      {account?.kind === "anonymous" && (
+        <p
+          role="note"
+          className="rounded-sketch-sm bg-badge-challenge px-4 py-3 text-[13px] leading-relaxed text-badge-challenge-ink"
+        >
+          지금 익명으로 사용 중이에요. 테스트 계정으로 로그인하면 지금 익명 기록은 더 이상 볼 수 없어요.
+        </p>
+      )}
 
       {signedInEmail ? (
         <div className="flex flex-col gap-3">
           <p className="text-[15px]">
             <strong>{signedInEmail}</strong> 계정으로 로그인되어 있어요.
           </p>
-          <ButtonLink href="/">홈으로</ButtonLink>
+          <ButtonLink href={next}>홈으로</ButtonLink>
           <Button variant="outline" onClick={handleSignOut}>
             로그아웃
           </Button>
