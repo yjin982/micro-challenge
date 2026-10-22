@@ -71,6 +71,20 @@ export async function signInWithEmail(email: string, password: string) {
   return data.user;
 }
 
+// Google 로그인(처음이면 가입). Google 화면으로 이동했다가 /auth/callback을 거쳐 next로 돌아온다.
+// prompt: select_account로 로그아웃 뒤에도 계정을 고를 수 있게 한다.
+// 이동하기 전에 실패하면(Google 제공자 꺼짐 등) 오류를 던진다.
+export async function signInWithGoogle(next = "/") {
+  const { error } = await createClient().auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+      queryParams: { prompt: "select_account" },
+    },
+  });
+  if (error) throw error;
+}
+
 // 로그아웃. 다음 API 호출이나 페이지 이동 때 새 익명 계정으로 다시 시작한다.
 export async function signOut() {
   await createClient().auth.signOut({ scope: "local" });
