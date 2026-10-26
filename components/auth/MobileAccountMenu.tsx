@@ -1,8 +1,9 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useState } from "react";
 import { SketchFrame } from "@/components/ui/sketch";
 import { AccountPanel } from "./AccountPanel";
+import { LogoutConfirmDialog } from "./LogoutConfirmDialog";
 import { useAccount } from "./useAccount";
 import { usePopover } from "./usePopover";
 
@@ -11,6 +12,7 @@ import { usePopover } from "./usePopover";
 export function MobileAccountMenu() {
   const account = useAccount();
   const { open, setOpen, rootRef } = usePopover();
+  const [confirmLogout, setConfirmLogout] = useState(false);
   const menuId = useId();
 
   if (!account) return null;
@@ -35,11 +37,19 @@ export function MobileAccountMenu() {
         </svg>
       </button>
       {open && (
-        <div id={menuId} className="absolute top-full right-0 z-20 mt-1 flex w-64 flex-col gap-3 bg-paper p-4">
+        <div id={menuId} className="absolute top-full right-0 z-20 mt-1 w-64 rounded-sketch-sm bg-paper px-3.5 py-3">
           <SketchFrame shape="sm" />
-          <AccountPanel account={account} />
+          <AccountPanel
+            account={account}
+            onNavigate={() => setOpen(false)}
+            onRequestLogout={() => {
+              setOpen(false);
+              setConfirmLogout(true);
+            }}
+          />
         </div>
       )}
+      {confirmLogout && <LogoutConfirmDialog onClose={() => setConfirmLogout(false)} />}
     </div>
   );
 }

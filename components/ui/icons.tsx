@@ -49,6 +49,38 @@ export function LinkIcon(props: IconProps) {
   );
 }
 
+// 톱니(설정)
+export function GearIcon(props: IconProps) {
+  return (
+    <LineIcon {...props}>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 3 V5.5 M12 18.5 V21 M3 12 H5.5 M18.5 12 H21 M5.6 5.6 L7.4 7.4 M16.6 16.6 L18.4 18.4 M5.6 18.4 L7.4 16.6 M16.6 7.4 L18.4 5.6" />
+      <circle cx="12" cy="12" r="6.5" />
+    </LineIcon>
+  );
+}
+
+// 물음표 말풍선(피드백)
+export function FeedbackIcon(props: IconProps) {
+  return (
+    <LineIcon {...props}>
+      <path d="M5 5 H19 V16 H11 L7 19.5 V16 H5 Z" />
+      <path d="M10 9 A2 2 0 1 1 12.5 10.9 C12 11.1 12 11.5 12 12" />
+      <path d="M12 14 V14.01" />
+    </LineIcon>
+  );
+}
+
+// 문 밖으로 나가는 화살표(로그아웃)
+export function LogoutIcon(props: IconProps) {
+  return (
+    <LineIcon {...props}>
+      <path d="M10 5 H5 V19 H10" />
+      <path d="M9 12 H20 M16 8 L20 12 L16 16" />
+    </LineIcon>
+  );
+}
+
 // 바깥 링크(새 탭으로 열림)
 export function ExternalLinkIcon(props: IconProps) {
   return (

@@ -78,6 +78,12 @@ export async function signOut() {
   await createClient().auth.signOut({ scope: "local" });
 }
 
+// 로그아웃하고 시작 화면으로 간다. 화면에 남은 계정 데이터를 버리도록 페이지를 새로 연다.
+export async function signOutToWelcome() {
+  await signOut();
+  location.assign(new URL("/welcome", location.origin));
+}
+
 // API가 세션이 없다고 하면(쿠키가 없거나, 대시보드에서 지운 사용자의 쿠키가 남은 경우) 시작 화면으로 보낸다.
 // 쿠키를 먼저 지운다. 지운 사용자의 토큰은 만료 전까지 proxy에서 '세션 있음'으로 보여서, 쿠키를 남긴 채
 // /welcome으로 가면 /welcome → / → 401 → /welcome으로 계속 돈다. scope: "local"이라 서버에 묻지 않고 지운다.
