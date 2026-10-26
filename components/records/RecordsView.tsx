@@ -40,13 +40,11 @@ export function RecordsView({
   currentMonth,
   today,
   holidays,
-  version,
 }: {
   month: string;
   currentMonth: string;
   today: string;
   holidays: Holidays;
-  version: string;
 }) {
   const [data, setData] = useState<Loaded | null>(null);
   const [error, setError] = useState<unknown>(null);
@@ -131,7 +129,6 @@ export function RecordsView({
             지난 날짜를 누르면 그날의 기록을 볼 수 있어요
           </p>
         )}
-        <p className="mt-3.5 text-center text-xs text-ink-muted lg:mt-7">버전 {version} · 만든 사람 유진</p>
       </div>
     </main>
   );
