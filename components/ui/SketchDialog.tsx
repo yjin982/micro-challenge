@@ -6,6 +6,8 @@ import { SketchFrame } from "./sketch";
 
 // 마스코트·제목·안내·버튼으로 된 손그림 대화상자(연결 실패 안내, 로그아웃 확인, 계정 삭제 확인).
 // 나타나면 바로 모달로 열린다. Esc나 children의 닫기 버튼으로 닫히면 onClose가 불리고, 부모가 이 컴포넌트를 내린다.
+// 모달은 열릴 때 첫 버튼에 포커스를 준다. 첫 버튼이 되돌릴 수 없는 동작이면 안전한 버튼에 data-autofocus를 붙인다
+// (React의 autoFocus는 속성을 남기지 않아 showModal이 포커스를 다시 옮긴다).
 export function SketchDialog({
   mascot,
   title,
@@ -23,7 +25,10 @@ export function SketchDialog({
   const titleId = useId();
 
   useEffect(() => {
-    dialogRef.current?.showModal();
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    dialog.showModal();
+    dialog.querySelector<HTMLElement>("[data-autofocus]")?.focus();
   }, []);
 
   return (

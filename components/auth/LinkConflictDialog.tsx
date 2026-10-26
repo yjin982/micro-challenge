@@ -4,14 +4,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { SketchDialog } from "@/components/ui/SketchDialog";
 import { currentPath, linkGoogle, signInWithGoogle } from "@/lib/api";
-import { useStampCount } from "./useStampCount";
 
 // 기록 지키기 실패 · 이미 가입된 Google 계정(보드). 익명 계정에 연결하려던 Google 계정이 이미 다른 사용자라서 돌아왔을 때.
 // - 다른 Google 계정으로 연결: 다시 연결(계정 선택 화면이 다시 뜬다)
 // - 기존 계정으로 로그인: 그 Google 계정으로 전환한다. 지금 익명 기록은 옮겨지지 않고 더 이상 볼 수 없다
-// 익명 기록 수는 대화상자를 열 때 오늘 상태(누적 완료 수)를 한 번 불러와 쓴다. 0개면 기록 관련 문장을 뺀다.
-export function LinkConflictDialog({ onClose }: { onClose: () => void }) {
-  const count = useStampCount();
+// count: 익명 기록 수(AuthReturnNotice가 불러온 누적 완료 수). 0개거나 모르면(null) 기록 관련 문장을 뺀다.
+export function LinkConflictDialog({ count, onClose }: { count: number | null; onClose: () => void }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

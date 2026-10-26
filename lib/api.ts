@@ -40,14 +40,16 @@ export async function startAnonymous() {
 }
 
 // Google 로그인(처음이면 가입). Google 화면으로 이동했다가 /auth/callback을 거쳐 next로 돌아온다.
-// prompt: select_account로 로그아웃 뒤에도 계정을 고를 수 있게 한다.
+// 기본은 prompt: select_account로 로그아웃 뒤에도 계정을 고를 수 있게 한다.
+// selectAccount: false면 계정 선택을 강제하지 않는다. 브라우저에 Google 계정이 하나만 로그인되어 있으면 고르지 않고 바로 들어간다
+// (연결 실패 뒤 방금 고른 기존 계정으로 바로 로그인할 때).
 // 이동하기 전에 실패하면(Google 제공자 꺼짐 등) 오류를 던진다.
-export async function signInWithGoogle(next = "/") {
+export async function signInWithGoogle(next = "/", { selectAccount = true }: { selectAccount?: boolean } = {}) {
   const { error } = await createClient().auth.signInWithOAuth({
     provider: "google",
     options: {
       redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-      queryParams: { prompt: "select_account" },
+      ...(selectAccount && { queryParams: { prompt: "select_account" } }),
     },
   });
   if (error) throw error;

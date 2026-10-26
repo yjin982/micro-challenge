@@ -11,7 +11,7 @@ import { useStampCount } from "./useStampCount";
 // 맨 아래 "Google 계정 연결"로 기록을 지키는 길도 함께 보여준다.
 // 도장 수는 열 때 한 번 불러온다. 0개(또는 불러오기 전)면 도장 수 문장 대신 일반 안내를 쓰고 "두고 가요" 줄을 뺀다.
 export function LogoutConfirmDialog({ onClose }: { onClose: () => void }) {
-  const count = useStampCount();
+  const { count } = useStampCount();
   const { link, pending: linking, error: linkError } = useLinkGoogle();
   const [leaving, setLeaving] = useState(false);
   const pending = leaving || linking;
@@ -41,7 +41,8 @@ export function LogoutConfirmDialog({ onClose }: { onClose: () => void }) {
         {leftBehind && (
           <p className="-mt-1 text-center text-[13px] text-badge-challenge-ink">익명 기록 {count}개는 두고 가요</p>
         )}
-        <Button variant="outline" onClick={onClose} disabled={pending}>
+        {/* 열릴 때 포커스는 "취소"에. Enter 한 번에 기록을 두고 로그아웃되지 않게 한다 */}
+        <Button variant="outline" onClick={onClose} disabled={pending} data-autofocus>
           취소
         </Button>
       </div>
