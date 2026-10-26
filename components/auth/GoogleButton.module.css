@@ -34,6 +34,13 @@
   min-width: min-content;
 }
 
+/* 계정 메뉴 안의 작은 버튼: 생성기 원래 크기(높이 40px, 둥근 모서리 20px, 글자 14px). 로고 크기·여백은 그대로다 */
+.compact {
+  border-radius: 20px;
+  font-size: 14px;
+  height: 40px;
+}
+
 .icon {
   display: block;
   height: 20px;

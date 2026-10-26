@@ -1,16 +1,23 @@
 import type { ComponentProps } from "react";
 import styles from "./GoogleButton.module.css";
 
-// Google 로그인 버튼. 모양은 Google 브랜드 가이드라인의 버튼 생성기 코드를 따르고(GoogleButton.module.css),
+// Google 로그인·연결 버튼(시작 화면의 "Google 계정으로 계속", 계정 메뉴·설정의 "Google 계정 연결").
+// 모양은 Google 브랜드 가이드라인의 버튼 생성기 코드를 따르고(GoogleButton.module.css),
 // 로고 SVG(4색 G)는 생성기 코드 그대로다. 크기와 색을 바꾸지 않는다. 버튼 안이라 생성기의 div를 span으로 바꿨다.
+// size: regular는 앱의 주 버튼과 같은 54px, compact는 계정 메뉴용 40px.
 export function GoogleButton({
   children = "Google 계정으로 계속",
+  size = "regular",
   type = "button",
   className = "",
   ...props
-}: ComponentProps<"button">) {
+}: ComponentProps<"button"> & { size?: "regular" | "compact" }) {
   return (
-    <button type={type} className={`${styles.button} ${className}`} {...props}>
+    <button
+      type={type}
+      className={`${styles.button} ${size === "compact" ? styles.compact : ""} ${className}`}
+      {...props}
+    >
       <span className={styles.state} />
       <span className={styles.contentWrapper}>
         <span className={styles.icon}>

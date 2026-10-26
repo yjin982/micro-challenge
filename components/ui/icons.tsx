@@ -38,17 +38,6 @@ export function PersonIcon(props: IconProps) {
   );
 }
 
-// 사슬(계정 연결)
-export function LinkIcon(props: IconProps) {
-  return (
-    <LineIcon {...props}>
-      <path d="M10 14 L14 10" />
-      <path d="M11 6.5 L12.5 5 A3.5 3.5 0 0 1 19 10.5 L17.5 12" />
-      <path d="M13 17.5 L11.5 19 A3.5 3.5 0 0 1 5 13.5 L6.5 12" />
-    </LineIcon>
-  );
-}
-
 // 톱니(설정)
 export function GearIcon(props: IconProps) {
   return (

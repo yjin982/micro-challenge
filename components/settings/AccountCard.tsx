@@ -1,11 +1,11 @@
 "use client";
 
 import { Avatar } from "@/components/auth/Avatar";
+import { GoogleButton } from "@/components/auth/GoogleButton";
 import { LogoutButton } from "@/components/auth/LogoutButton";
 import type { Account } from "@/components/auth/useAccount";
 import { useLinkGoogle } from "@/components/auth/useLinkGoogle";
-import { Button } from "@/components/ui/Button";
-import { LinkIcon, PersonIcon } from "@/components/ui/icons";
+import { PersonIcon } from "@/components/ui/icons";
 import { SketchFrame } from "@/components/ui/sketch";
 import { Skeleton } from "@/components/ui/Skeleton";
 
@@ -64,10 +64,10 @@ function AnonymousAccount() {
         </div>
       </div>
       <div className="mt-1 flex flex-col gap-1.5">
-        <Button onClick={link} disabled={pending} className="gap-2 disabled:opacity-60">
-          <LinkIcon className="size-5" />
-          {pending ? "이동하는 중…" : "Google 계정 연결"}
-        </Button>
+        {/* 사실상 Google 로그인 버튼이라 보드의 초록 버튼 대신 시작 화면과 같은 공식 버튼을 쓴다(2026-10-26 결정) */}
+        <GoogleButton onClick={link} disabled={pending}>
+          {pending ? "Google로 이동하는 중…" : "Google 계정 연결"}
+        </GoogleButton>
         <span className="text-center text-[13px] text-ink-muted">지금까지의 기록이 그대로 이어져요</span>
         {error && (
           <span role="alert" className="text-center text-[13px] text-sunday">

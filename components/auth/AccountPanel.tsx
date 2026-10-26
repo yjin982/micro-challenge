@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ExternalLinkIcon, FeedbackIcon, GearIcon, LinkIcon, LogoutIcon, PersonIcon } from "@/components/ui/icons";
+import { ExternalLinkIcon, FeedbackIcon, GearIcon, LogoutIcon, PersonIcon } from "@/components/ui/icons";
 import { SketchLine } from "@/components/ui/sketch";
 import { signOutToWelcome } from "@/lib/api";
 import { FEEDBACK_URL } from "@/lib/links";
 import { Avatar } from "./Avatar";
+import { GoogleButton } from "./GoogleButton";
 import type { Account } from "./useAccount";
 import { useLinkGoogle } from "./useLinkGoogle";
 
@@ -88,25 +89,20 @@ function PanelHeader({ account }: { account: Account }) {
 }
 
 // 익명 계정에 Google 연결. 성공하면 Google 화면으로 넘어간다.
+// 사실상 Google 로그인 버튼이라 보드의 초록 글자 항목 대신 시작 화면과 같은 공식 버튼(작은 크기)을 쓴다(2026-10-26 결정).
 function LinkGoogleItem() {
   const { link, pending, error } = useLinkGoogle();
 
   return (
-    <>
-      <button
-        type="button"
-        onClick={link}
-        disabled={pending}
-        className={`${itemClass} font-bold text-primary disabled:opacity-60`}
-      >
-        <LinkIcon className={iconClass} />
-        {pending ? "이동하는 중…" : "Google 계정 연결"}
-      </button>
+    <div className="flex flex-col gap-1.5 py-1.5">
+      <GoogleButton size="compact" onClick={link} disabled={pending}>
+        {pending ? "Google로 이동하는 중…" : "Google 계정 연결"}
+      </GoogleButton>
       {error && (
-        <span role="alert" className="px-1 pb-1 text-[13px] text-sunday">
+        <span role="alert" className="px-1 text-[13px] text-sunday">
           {error}
         </span>
       )}
-    </>
+    </div>
   );
 }
