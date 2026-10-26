@@ -1,9 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import type { Account } from "@/components/auth/useAccount";
 import { useAccount } from "@/components/auth/useAccount";
-import { ChevronLeftIcon } from "@/components/ui/icons";
+import { BackButton } from "@/components/ui/BackButton";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { AccountCard } from "./AccountCard";
 import { AppInfoCard } from "./AppInfoCard";
@@ -36,27 +35,6 @@ export function SettingsView({ version }: { version: string }) {
 
       <DeleteAccount account={account} />
     </main>
-  );
-}
-
-// 앱 안에서 넘어왔으면 이전 화면으로, 주소로 바로 들어왔으면(되돌아갈 기록이 없으면) 홈으로 간다.
-function BackButton() {
-  const router = useRouter();
-
-  function handleBack() {
-    if (window.history.length > 1) router.back();
-    else router.push("/");
-  }
-
-  return (
-    <button
-      type="button"
-      aria-label="뒤로 가기"
-      onClick={handleBack}
-      className="-ml-3 flex size-11 items-center justify-center lg:hidden"
-    >
-      <ChevronLeftIcon className="size-6.5" />
-    </button>
   );
 }
 

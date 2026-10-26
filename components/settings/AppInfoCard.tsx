@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import Link from "next/link";
 import { ChevronRightIcon, ExternalLinkIcon } from "@/components/ui/icons";
 import { SketchFrame } from "@/components/ui/sketch";
 import { FEEDBACK_URL } from "@/lib/links";
@@ -7,7 +7,6 @@ const rowClass =
   "flex min-h-13 w-full items-center justify-between gap-3 border-b-[1.5px] border-dashed border-line-faint text-left text-[15px]";
 
 // 설정 · 앱 정보 카드. 버전, 만든 사람, 피드백(GitHub Issues, 새 탭), 개인정보처리방침, 서비스 이용약관.
-// 처리방침·약관은 페이지가 아직 없어(로그인 계획 4D단계) 지금은 동작이 없는 버튼으로 둔다. 페이지가 생기면 링크로 바꾼다.
 export function AppInfoCard({ version }: { version: string }) {
   return (
     <div className="relative bg-paper px-5">
@@ -29,10 +28,10 @@ export function AppInfoCard({ version }: { version: string }) {
           </a>
         </li>
         <li>
-          <ActionRow label="개인정보처리방침" icon={<ChevronRightIcon className="size-5" />} />
+          <PageRow href="/privacy" label="개인정보처리방침" />
         </li>
         <li>
-          <ActionRow label="서비스 이용약관" icon={<ChevronRightIcon className="size-5" />} />
+          <PageRow href="/terms" label="서비스 이용약관" />
         </li>
       </ul>
     </div>
@@ -48,11 +47,13 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ActionRow({ label, icon }: { label: string; icon: ReactNode }) {
+function PageRow({ href, label }: { href: string; label: string }) {
   return (
-    <button type="button" className={rowClass}>
+    <Link href={href} className={rowClass}>
       <span>{label}</span>
-      <span className="text-ink-faint">{icon}</span>
-    </button>
+      <span className="text-ink-faint">
+        <ChevronRightIcon className="size-5" />
+      </span>
+    </Link>
   );
 }

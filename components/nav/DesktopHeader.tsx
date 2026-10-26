@@ -4,14 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { AccountStatus } from "@/components/auth/AccountStatus";
+import { useAccount } from "@/components/auth/useAccount";
 import { SketchLine } from "@/components/ui/sketch";
-import { NAV_ITEMS, isAuthScreen, navIconClass } from "./nav-items";
+import { NAV_ITEMS, isAuthScreen, isPublicPage, navIconClass } from "./nav-items";
 
-// 데스크톱 상단 헤더. 날짜는 서버 컴포넌트(TodayLabel)를 받아 그대로 넣는다. 계정으로 로그인했으면 메뉴 오른쪽에 계정을 보여준다.
-// 시작·로그인 화면에서는 앱 이름만 보인다.
+// 데스크톱 상단 헤더. 날짜는 서버 컴포넌트(TodayLabel)를 받아 그대로 넣는다. 세션이 있으면 메뉴 오른쪽에 계정 메뉴를 보여준다.
+// 시작·로그인 화면과, 세션 없이 연 처리방침·약관에서는 앱 이름만 보인다.
 export function DesktopHeader({ date }: { date: ReactNode }) {
   const pathname = usePathname();
-  const nameOnly = isAuthScreen(pathname);
+  const account = useAccount();
+  const nameOnly = isAuthScreen(pathname) || (isPublicPage(pathname) && !account);
 
   return (
     <header className="hidden lg:block">

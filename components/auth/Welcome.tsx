@@ -137,6 +137,17 @@ export function Welcome({
                 개발용 이메일 로그인
               </Link>
             )}
+
+            {/* Google 로그인 브랜딩은 홈페이지에서 처리방침으로 가는 링크를 요구한다(보드에는 없다) */}
+            <p className="mt-5 flex justify-center gap-2 text-xs text-ink-muted lg:justify-start">
+              <Link href="/privacy" className="underline underline-offset-2">
+                개인정보처리방침
+              </Link>
+              <span aria-hidden>·</span>
+              <Link href="/terms" className="underline underline-offset-2">
+                서비스 이용약관
+              </Link>
+            </p>
           </div>
         </div>
       </div>

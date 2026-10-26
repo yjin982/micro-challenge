@@ -31,3 +31,8 @@ export const NAV_ITEMS = [
 export function isAuthScreen(pathname: string) {
   return pathname === "/welcome" || pathname === "/login";
 }
+
+// 세션이 없어도 열리는 화면(시작 화면에서 들어오는 처리방침·약관). 세션이 없을 때는 시작 화면처럼 메뉴를 숨긴다.
+export function isPublicPage(pathname: string) {
+  return pathname === "/privacy" || pathname === "/terms";
+}
