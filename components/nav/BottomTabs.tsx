@@ -6,7 +6,7 @@ import { useAccount } from "@/components/auth/useAccount";
 import { SketchLine } from "@/components/ui/sketch";
 import { NAV_ITEMS, isAuthScreen, isPublicPage, navIconClass } from "./nav-items";
 
-// 모바일 하단 탭. 시작·로그인 화면과, 세션 없이 연 처리방침·약관에서는 숨긴다.
+// 모바일 하단 탭. 시작 화면과, 세션 없이 연 처리방침·약관에서는 숨긴다.
 export function BottomTabs() {
   const pathname = usePathname();
   const account = useAccount();

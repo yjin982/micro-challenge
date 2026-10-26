@@ -25,14 +25,6 @@ export function isNetworkError(error: unknown) {
   );
 }
 
-// 이메일 계정 로그인(개발용 테스트 계정). 성공하면 지금 세션 대신 그 계정 세션이 쿠키에 남는다.
-// 로그인 전 익명 계정의 기록은 옮겨지지 않는다.
-export async function signInWithEmail(email: string, password: string) {
-  const { data, error } = await createClient().auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data.user;
-}
-
 // 시작 화면의 "익명으로 시작하기". 새 익명 계정을 만든다(익명 계정은 이 버튼으로만 만든다).
 export async function startAnonymous() {
   const { error } = await createClient().auth.signInAnonymously();

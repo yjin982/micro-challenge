@@ -14,15 +14,7 @@ import { GoogleButton } from "./GoogleButton";
 // 시작 화면(세션이 없을 때). 익명으로 시작하거나 Google 계정으로 계속한다.
 // 모바일은 위에 마스코트·소개, 아래에 버튼. 데스크톱은 가운데 카드의 왼쪽에 마스코트, 오른쪽에 소개와 버튼.
 // next: 시작한 뒤 돌아갈 경로(safeNext로 검사한 값). authError: Google 로그인이 실패·취소되어 돌아왔을 때.
-export function Welcome({
-  next,
-  authError,
-  devLogin,
-}: {
-  next: string;
-  authError: boolean;
-  devLogin: boolean;
-}) {
+export function Welcome({ next, authError }: { next: string; authError: boolean }) {
   const router = useRouter();
   const [pending, setPending] = useState<"anonymous" | "google" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -126,16 +118,6 @@ export function Welcome({
               <p role="alert" className="mt-3 text-center text-[13px] text-sunday lg:text-left">
                 {error}
               </p>
-            )}
-
-            {/* 개발 환경에서만: 테스트 계정 이메일 로그인 */}
-            {devLogin && (
-              <Link
-                href={`/login?next=${encodeURIComponent(next)}`}
-                className="mt-5 self-center text-xs text-ink-faint underline underline-offset-2 lg:self-start"
-              >
-                개발용 이메일 로그인
-              </Link>
             )}
 
             {/* Google 로그인 브랜딩은 홈페이지에서 처리방침으로 가는 링크를 요구한다(보드에는 없다) */}

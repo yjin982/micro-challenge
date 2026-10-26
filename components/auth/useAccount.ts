@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 // 지금 세션의 계정 상태. null은 세션이 없거나 아직 확인하기 전이다.
-// provider "email"은 개발 환경의 테스트 계정이다.
+// provider "email"은 이메일 계정이다(예전 개발용 /login으로 로그인한 테스트 계정 세션이 남아 있는 경우. /login은 2026-10-26에 지웠다).
 export type Account =
   | { kind: "anonymous" }
   | {

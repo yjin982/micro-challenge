@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { SketchDialog } from "@/components/ui/SketchDialog";
 import { currentPath, linkGoogle, signInWithGoogle } from "@/lib/api";
+import { GoogleButton } from "./GoogleButton";
 
 // 기록 지키기 실패 · 이미 가입된 Google 계정(보드). 익명 계정에 연결하려던 Google 계정이 이미 다른 사용자라서 돌아왔을 때.
 // - 다른 Google 계정으로 연결: 다시 연결(계정 선택 화면이 다시 뜬다)
@@ -40,9 +41,10 @@ export function LinkConflictDialog({ count, onClose }: { count: number | null; o
       onClose={onClose}
     >
       <div className="mt-1 flex w-full flex-col gap-2.5">
-        <Button onClick={() => go(linkGoogle)} disabled={pending} className="disabled:opacity-60">
+        {/* Google 로그인 화면으로 가는 버튼이라 공식 Google 버튼(2026-10-26 결정, 보드는 초록 버튼) */}
+        <GoogleButton onClick={() => go(linkGoogle)} disabled={pending}>
           다른 Google 계정으로 연결
-        </Button>
+        </GoogleButton>
         <Button variant="outline" onClick={() => go(signInWithGoogle)} disabled={pending}>
           기존 계정으로 로그인
         </Button>

@@ -4,18 +4,11 @@ import { updateSession } from "@/lib/supabase/proxy";
 // 페이지 요청마다 세션을 확인·갱신하고, 세션 상태에 따라 시작 화면과 앱 화면을 나눈다.
 // - 세션 없음: 앱 화면(/, /records, /settings) → /welcome?next=원래 경로
 // - 세션 있음(익명·계정): /welcome → /
-// - /login(개발용 이메일 로그인): 운영에서는 404
 // - /auth/callback, 없는 주소 등은 그대로 통과
 // 실제 권한 확인은 Route Handler와 DB(RLS, security definer 함수)가 맡는다. 여기서는 화면만 나눈다.
 const APP_PATHS = ["/", "/records", "/settings"];
 
 export async function proxy(request: NextRequest) {
-  // 페이지의 notFound()는 루트 loading.tsx 때문에 응답이 200으로 나가기 시작한 뒤에 불려 상태 코드가 바뀌지 않는다.
-  // 응답 전인 여기서 없는 경로로 바꿔 404(페이지 없음 화면)를 준다.
-  if (request.nextUrl.pathname === "/login" && process.env.NODE_ENV !== "development") {
-    return NextResponse.rewrite(new URL("/_not-found", request.url), { status: 404 });
-  }
-
   const { response, claims, withSessionCookies } = await updateSession(request);
   const { pathname, searchParams } = request.nextUrl;
 

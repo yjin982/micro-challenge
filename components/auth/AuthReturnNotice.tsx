@@ -72,11 +72,11 @@ function LinkConflict({ onClose }: { onClose: () => void }) {
   return <LinkConflictDialog count={count} onClose={onClose} />;
 }
 
-// 화면 맨 위의 짧은 안내(시작 화면의 분홍 안내와 같은 모양)
+// 화면 맨 위의 짧은 안내(시작 화면의 분홍 안내와 같은 모양). 데스크톱은 헤더(높이 84px) 아래에 띄워 메뉴를 가리지 않는다
 function TopNotice({ role, tone, children }: { role: "alert" | "status"; tone: "error" | "info"; children: ReactNode }) {
   const colors = tone === "error" ? "bg-badge-challenge text-badge-challenge-ink" : "bg-chip-streak text-chip-streak-ink";
   return (
-    <div className="fixed inset-x-0 top-3 z-30 px-6">
+    <div className="fixed inset-x-0 top-3 z-30 px-6 lg:top-24">
       <div
         role={role}
         className={`mx-auto flex max-w-108 items-start gap-3 rounded-sketch-sm px-4.5 py-3.5 text-[15px] leading-relaxed ${colors}`}

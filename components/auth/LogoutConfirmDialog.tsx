@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { SketchDialog } from "@/components/ui/SketchDialog";
 import { signOutToWelcome } from "@/lib/api";
+import { GoogleButton } from "./GoogleButton";
 import { useLinkGoogle } from "./useLinkGoogle";
 import { useStampCount } from "./useStampCount";
 
@@ -46,16 +47,12 @@ export function LogoutConfirmDialog({ onClose }: { onClose: () => void }) {
           취소
         </Button>
       </div>
-      <div className="mt-1 flex flex-col items-center gap-0.5 text-[15px]">
-        <span className="text-ink-muted">기록을 지키려면?</span>
-        <button
-          type="button"
-          onClick={link}
-          disabled={pending}
-          className="font-bold text-primary underline decoration-2 underline-offset-4 disabled:opacity-60"
-        >
-          {linking ? "이동하는 중…" : "Google 계정 연결"}
-        </button>
+      {/* 보드는 밑줄 글자 링크지만, Google 로그인 화면으로 가는 버튼이라 공식 Google 버튼(작은 크기)으로 둔다 */}
+      <div className="mt-2 flex w-full flex-col items-center gap-1.5">
+        <span className="text-[15px] text-ink-muted">기록을 지키려면?</span>
+        <GoogleButton size="compact" onClick={link} disabled={pending}>
+          {linking ? "Google로 이동하는 중…" : "Google 계정 연결"}
+        </GoogleButton>
         {linkError && (
           <span role="alert" className="text-center text-[13px] text-sunday">
             {linkError}

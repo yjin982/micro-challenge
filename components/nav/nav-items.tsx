@@ -27,9 +27,9 @@ export const NAV_ITEMS = [
   { href: "/records", label: "기록", Icon: RecordsIcon },
 ] as const;
 
-// 시작 화면과 (개발용) 로그인 화면. 데스크톱 헤더는 앱 이름만 보이고, 하단 탭은 숨긴다.
+// 시작 화면. 데스크톱 헤더는 앱 이름만 보이고, 하단 탭은 숨긴다.
 export function isAuthScreen(pathname: string) {
-  return pathname === "/welcome" || pathname === "/login";
+  return pathname === "/welcome";
 }
 
 // 세션이 없어도 열리는 화면(시작 화면에서 들어오는 처리방침·약관). 세션이 없을 때는 시작 화면처럼 메뉴를 숨긴다.

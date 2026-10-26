@@ -9,7 +9,7 @@ import { SketchLine } from "@/components/ui/sketch";
 import { NAV_ITEMS, isAuthScreen, isPublicPage, navIconClass } from "./nav-items";
 
 // 데스크톱 상단 헤더. 날짜는 서버 컴포넌트(TodayLabel)를 받아 그대로 넣는다. 세션이 있으면 메뉴 오른쪽에 계정 메뉴를 보여준다.
-// 시작·로그인 화면과, 세션 없이 연 처리방침·약관에서는 앱 이름만 보인다.
+// 시작 화면과, 세션 없이 연 처리방침·약관에서는 앱 이름만 보인다.
 export function DesktopHeader({ date }: { date: ReactNode }) {
   const pathname = usePathname();
   const account = useAccount();
