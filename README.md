@@ -10,7 +10,7 @@
 - **완료와 도장**: '완료했어요!'를 누르면 도장 6종 중 하나가 위에서 내려와 찍힙니다. 완료 취소와 실패 기록은 없습니다.
 - **연속 달성과 기록**: 연속 일수와 누적 개수, 완료한 날마다 도장이 찍힌 월간 달력을 보여줍니다. 날짜를 누르면 그날의 미션과 완료 시각을 볼 수 있습니다.
 - **공휴일 표시**: 달력에 국경일·공휴일 이름을 표시합니다(한국천문연구원 특일 정보 API).
-- **가입 없이 시작**: 처음 열면 익명 계정으로 바로 시작합니다. 이메일 계정 로그인(`/login`)도 있습니다.
+- **익명 또는 Google로 시작**: 시작 화면에서 가입 없이 익명으로 시작하거나 Google 계정으로 로그인합니다. 익명으로 쓰다가 Google 계정을 연결하면 지금까지의 기록이 그대로 이어집니다.
 - **크레파스 손그림 디자인**: 테두리와 구분선은 SVG 필터로 그린 손그림 선이고, 동작 줄이기 설정을 켜면 움직임 대신 페이드만 씁니다.
 
 ## 화면
@@ -18,16 +18,18 @@
 | 경로 | 내용 |
 | --- | --- |
 | `/` | 홈. 오늘 상태에 따라 뽑기 전 → 도전중 → 완료 → 연속 달성 화면으로 바뀝니다 |
+| `/welcome` | 시작 화면. 세션이 없으면 여기로 옵니다(익명으로 시작하기, Google 계정으로 계속) |
 | `/records` | 기록. 월간 도장 달력, 누적·연속 칩, 날짜별 상세. `?month=YYYY-MM`으로 지난달을 봅니다 |
-| `/login` | 이메일 계정 로그인 |
+| `/settings` | 설정. 계정(Google 계정 연결, 로그아웃), 앱 정보 |
+| `/privacy`, `/terms` | 개인정보처리방침, 서비스 이용약관 |
 
-모바일은 하단 탭, 데스크톱(1024px 이상)은 상단 헤더와 2단 배치입니다.
+모바일은 하단 탭과 제목 줄의 계정 메뉴, 데스크톱(1024px 이상)은 상단 헤더(계정 메뉴 포함)와 2단 배치입니다.
 
 ## 기술 스택
 
 - **프레임워크**: Next.js 16 (App Router), React 19, TypeScript
 - **스타일**: Tailwind CSS v4 (디자인 토큰은 `app/globals.css`의 `@theme`)
-- **백엔드**: Supabase (Postgres, 익명 로그인, RLS), `@supabase/ssr`
+- **백엔드**: Supabase (Postgres, 익명·Google 로그인, RLS), `@supabase/ssr`
 - **애니메이션**: Motion (카드 스와이프, 도장 연출)
 - **날짜**: date-fns, `@date-fns/tz` (하루 기준은 Asia/Seoul)
 - **폰트**: Gaegu, Noto Sans KR (`next/font/google`)
@@ -64,6 +66,8 @@ pnpm install
 ### 2. Supabase 준비
 
 1. Supabase에서 프로젝트를 만들고 **Authentication → Sign In / Providers**에서 익명 로그인(Anonymous sign-ins)을 켭니다.
+   Google 로그인을 쓰려면 Google 제공자를 켜고 Google Cloud OAuth 클라이언트 ID·시크릿을 넣은 뒤, 익명 계정에 Google을 연결할 수 있도록 **Manual linking**을 켭니다.
+   **URL Configuration → Redirect URLs**에는 `http://localhost:3000/**`와 배포 주소의 `/**`를 넣습니다(쿼리까지 비교하므로 `**`가 필요합니다).
 2. **SQL Editor**에서 아래 두 파일을 차례로 실행합니다.
    - [`supabase/migrations/20261016000000_init.sql`](supabase/migrations/20261016000000_init.sql): 테이블, RLS, 함수
    - [`supabase/seed.sql`](supabase/seed.sql): 미션 200개(다시 실행해도 덮어씁니다)
@@ -106,8 +110,11 @@ components/
   home/              홈 전용(카드 더미·미션 카드, 스와이프, 완료 연출, 연속 달성)
   records/           기록 전용(월간 달력, 날짜 상세)
   nav/               모바일 하단 탭, 데스크톱 헤더
-  auth/              익명 세션, 로그인, 계정 메뉴
-lib/                 Supabase 클라이언트, API 호출 도우미, 날짜·공휴일
+  auth/              시작 화면, Google 로그인·연결, 계정 메뉴
+  settings/          설정 화면
+  legal/             처리방침·약관 문안과 화면
+lib/                 Supabase 클라이언트, API 호출·로그인 도우미, 날짜·공휴일
+proxy.ts             세션 확인·갱신, 세션이 없으면 시작 화면으로
 types/               API 응답 타입(api.ts), Supabase DB 타입(database.ts, 자동 생성)
 supabase/            DB 스키마(migrations)와 미션 시드
 public/images/       마스코트, 도장 원본, 낙서 장식, 도화지 텍스처
@@ -117,7 +124,7 @@ public/images/       마스코트, 도장 원본, 낙서 장식, 도화지 텍�
 
 - [기획서](.claude/밍기적-챌린지-기획서.md): 기능, 화면 흐름, 디자인 기준값, 미션 데이터
 - [서버 설계](.claude/밍기적-챌린지-서버설계.md): API 명세, DB 스키마와 함수
-- [화면 설계](<.claude/밍기적 챌린지 화면 설계.pdf>): 모바일·데스크톱 보드, 도장, 공통 상태 화면
+- [화면 설계](<.claude/밍기적 챌린지 화면 설계.pdf>): 모바일·데스크톱 보드, 도장, 공통 상태 화면, 로그인·계정 메뉴·설정·처리방침·약관
 
 ## 라이선스
 

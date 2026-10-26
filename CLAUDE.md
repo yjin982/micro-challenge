@@ -20,7 +20,7 @@ pnpm gen:types  # DB 구조가 바뀌면 types/database.ts 다시 생성(Supabas
 
 ## 현재 상태
 
-디자인 기반, 홈(뽑기 → 도전중 → 완료 → 연속 달성), 기록, 서버(Supabase DB, API 5개)가 동작하고 Vercel에 배포했다(<https://micro-challenge-one.vercel.app/>). 다음 큰 작업은 로그인 흐름 개편(익명 + Google)이다.
+디자인 기반, 홈(뽑기 → 도전중 → 완료 → 연속 달성), 기록, 서버(Supabase DB, API 5개)가 동작하고 Vercel에 배포했다(<https://micro-challenge-one.vercel.app/>). 로그인 흐름 개편(익명 + Google)을 `feat/google-login` 브랜치에서 진행 중이다. 시작 화면, Google 로그인·연결, 계정 메뉴, 설정, 처리방침·약관까지 만들었고, 계정 삭제가 남았다(아직 `main`에 합치지 않음).
 
 - 진행 상황과 남은 작업: [.claude/작업-현황.md](.claude/작업-현황.md)
 - 로그인 흐름 개편 계획: [.claude/로그인-흐름-계획.md](.claude/로그인-흐름-계획.md)
@@ -50,8 +50,11 @@ pnpm gen:types  # DB 구조가 바뀌면 types/database.ts 다시 생성(Supabas
 
 ```text
 app/
+  welcome/              /welcome 시작 화면(세션이 없을 때 익명 시작 또는 Google 계속)
   records/              /records
-  login/                /login 이메일 로그인(테스트 계정용, 기획서에 없던 추가)
+  settings/             /settings 계정·앱 설정(계정 카드, 앱 정보, 계정 삭제)
+  privacy/, terms/      /privacy 개인정보처리방침, /terms 서비스 이용약관(세션 없이도 열림)
+  auth/callback/        Google 로그인·연결이 돌아오는 곳(code → 세션, 실패하면 /welcome?error= 또는 하던 화면?auth_error=)
   api/today/            GET /api/today  (draw/, reroll/, complete/ 아래에 각 POST)
   api/records/          GET /api/records?month=YYYY-MM
   api/cron/keep-alive/  Supabase 무료 프로젝트 일시 중지 방지(vercel.json의 Cron, CRON_SECRET 확인)
@@ -59,22 +62,27 @@ components/
   ui/                   손그림 카드 테두리, 버튼, 칩·배지, 상태 카드, 오류 화면, 낙서 장식 등 공통 요소
   stamp/                도장 컴포넌트(p01–p06, mini)
   nav/                  모바일 하단 탭, 데스크톱 상단 헤더
-  auth/                 앱을 열 때 익명 세션 보장(AnonymousSession), 이메일 로그인 폼,
-                        계정 표시·로그아웃(데스크톱 헤더, 모바일 햄버거 메뉴)
+  auth/                 시작 화면, 공식 Google 버튼, 계정 메뉴(데스크톱 헤더, 모바일 햄버거),
+                        Google 연결(useLinkGoogle), 연결 실패 안내, 익명 로그아웃 확인
+  settings/             설정 화면(계정 카드, 앱 정보 카드)
+  legal/                처리방침·약관 문안(documents.ts, 빈칸 상수는 맨 위)과 문서 틀
   home/                 홈 전용(카드 더미·스택, 스와이프, 완료 연출, 연속 달성, 최근 기록)
   records/              기록 전용(월간 캘린더, 날짜 상세)
 lib/
-  supabase/             @supabase/ssr 클라이언트(server.ts, client.ts)
-  api.ts                브라우저용 API 호출 도우미(익명 세션 보장, 401 재시도, 이메일 로그인)
+  supabase/             @supabase/ssr 클라이언트(server.ts, client.ts, proxy.ts의 세션 갱신)
+  api.ts                브라우저용 API 호출 도우미와 로그인 함수(익명 시작, Google 로그인·연결, 로그아웃,
+                        401이면 쿠키를 지우고 /welcome)
+  links.ts, safe-next.ts  바깥 주소(피드백 = GitHub Issues), 로그인 뒤 돌아갈 경로(next) 검사
   api-server.ts         Route Handler 공통 처리(세션 확인 → RPC), api-error.ts 에러 코드 → HTTP
   date.ts, today.ts     날짜 포맷·달력 칸 계산, 서버 첫 렌더링용 날짜(getToday)
   useDaySync.ts         자정 넘김 확인, 서버 날짜와 화면 날짜 맞추기
   holidays.ts           공휴일(한국천문연구원 특일 정보, HOLIDAY_API_KEY)
+proxy.ts                세션 확인·갱신, 세션이 없으면 앱 화면 → /welcome, 세션이 있으면 /welcome → /
 types/                  api.ts(API 응답 타입), database.ts(`pnpm gen:types`로 만든 DB 타입. 손으로 고치지 않는다)
 supabase/
   migrations/           서버 설계의 SQL 초안 1~6. 시드(7)는 supabase/seed.sql
   tests/                며칠에 걸친 뽑기 규칙 확인 SQL(SQL Editor에서 실행)
-  test-users.sql        테스트 계정 3개와 기록(비밀번호 평문이라 git 제외)
+  test-users.sql        이메일 테스트 계정 3개와 기록(git 제외). /login을 지워 화면에서는 로그인할 수 없다
 assets/fonts/           공유 이미지(opengraph-image)용 Gaegu Bold 서브셋. 문구를 바꾸면 다시 만든다
 public/images/
   mascot/               티라노 마스코트 포즈 16종(투명 PNG, tyrano-*.png): basic(기본), challenge(도전 중),
@@ -91,13 +99,13 @@ public/images/
 
 앱 아이콘은 Next.js 파일 규칙에 따라 `app/icon.png`(512px)과 `app/apple-icon.png`(192px)에 둔다. 하단 탭 아이콘은 선택 상태에 따라 색(`currentColor`)을 바꿔야 해서 SVG 파일 대신 `components/nav/nav-items.tsx`에 인라인으로 둔다.
 
-4단계(`/settings`, `/admin`)용 폴더는 만들지 않았다.
+`/settings`는 계정·앱 설정 페이지로 만들었다(기획서의 4단계 `/settings`는 미션 제출이었다. 만들게 되면 설정 안에 둔다). 4단계 `/admin`용 폴더는 만들지 않았다.
 
 ## 제품: 밍기적 챌린지
 
 하루 1개의 가벼운 미션을 랜덤으로 뽑아 자기신고로 완료하고, 도장이 그림일기식 달력에 쌓이는 모바일 우선 웹앱이다.
 
-- 경로: `/`(홈), `/records`(기록), `/login`(이메일 테스트 계정). `/settings`, `/admin`은 4단계(보류)로, 만들지 않을 수도 있다.
+- 경로: `/welcome`(시작), `/`(홈), `/records`(기록), `/settings`(설정), `/privacy`·`/terms`(처리방침·약관). `/admin`(과 미션 제출)은 4단계(보류)로, 만들지 않을 수도 있다.
 - 홈은 서버가 주는 `state`로 화면을 고른다: `not_drawn`(뽑기 전) → `challenge`(도전중) → `done`(연속 달성). 완료 직후에는 도장 연출을 거쳐 연속 달성으로 넘어간다.
 - 재뽑기는 하루 3회(첫 카드 포함 최대 4장), 완료 취소 없음, 미완료는 기록하지 않음(실패 상태 없음).
 - 모바일은 하단 탭 2개 + 카드 스와이프, 데스크톱은 상단 헤더 내비게이션 + 2단(최대 1040px) + 버튼으로만 재뽑기.
@@ -105,7 +113,7 @@ public/images/
 ## 설계 결정
 
 - **스택**: Supabase(Postgres, 익명 로그인, RLS) + `@supabase/ssr`, Motion(카드 드래그·도장 연출), date-fns + `@date-fns/tz`, `next/font/google`의 Gaegu·Noto Sans KR, Vercel 배포. 별도 상태 관리 라이브러리는 쓰지 않는다.
-- **인증(지금)**: 앱을 열면 익명 계정을 자동으로 만든다. 이메일 로그인은 주소로 들어가는 `/login`에서 테스트 계정으로만 쓴다. 시작 화면(`/welcome`)에서 익명 또는 Google을 고르는 구조로 바꿀 예정이다([계획](.claude/로그인-흐름-계획.md)).
+- **인증**: 익명 + Google(`feat/google-login`, [계획](.claude/로그인-흐름-계획.md)). 세션이 없으면 proxy가 `/welcome`으로 보내고, 거기서 "익명으로 시작하기"(이때만 익명 계정을 만든다) 또는 "Google 계정으로 계속"을 고른다. 익명 사용자는 "Google 계정 연결"(`linkIdentity`)로 같은 사용자 ID에 Google을 붙여 기록을 지킨다. 이미 가입된 Google 계정이면 연결 실패 안내를 띄우고, 익명 기록이 0개면 안내 없이 그 계정으로 로그인한다. Google로 가는 버튼은 모두 공식 Google 버튼(표준 색 G 로고)을 쓴다. 이메일 가입·로그인은 없다(개발용 `/login`도 2026-10-26에 지웠다).
 - **쓰기 경로**: 클라이언트 → Route Handler(`app/api/.../route.ts`) → `supabase.rpc()` → security definer Postgres 함수. Server Action은 쓰지 않는다. 테이블에 쓰기 정책이 없어 모든 쓰기는 함수가 맡고, service role 키는 쓰지 않는다.
 - **API 5개**: `GET /api/today`, `POST /api/today/draw`, `POST /api/today/reroll`, `POST /api/today/complete`, `GET /api/records?month=YYYY-MM`. 상태 변경 API는 모두 `/api/today`와 같은 모양(`date`, `state`, `mission`, `rerollsLeft`, `completedAt`, `stampId`, `streak`, `totalCompleted`, `recent`)을 돌려준다.
 - **날짜**: 하루는 Asia/Seoul 기준이고 DB의 `kst_day()`(도착 시각 − 1분)만 믿는다. 화면은 날짜를 직접 계산하지 않고 `/api/today`가 준 `date`를 그대로 쓰며, 변경 요청에 그 `date`를 보낸다. 서버 날짜와 다르면 `DAY_CHANGED`(409)를 받고 오늘 상태를 다시 불러온다.
