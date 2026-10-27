@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import type { ApiErrorBody, ErrorCode, MonthRecords, TodayState } from "@/types/api";
+import type { ApiErrorBody, DeleteAccountResult, ErrorCode, MonthRecords, TodayState } from "@/types/api";
 
 // 브라우저에서 쓰는 API 호출 도우미와 로그인 함수. 세션은 시작 화면에서 만들고(익명 또는 Google),
 // API가 세션이 없다고(401) 하면 쿠키를 지우고 시작 화면으로 보낸다.
@@ -78,10 +78,11 @@ export async function signOutToWelcome() {
   location.assign(new URL("/welcome", location.origin));
 }
 
-// API가 세션이 없다고 하면(쿠키가 없거나, 대시보드에서 지운 사용자의 쿠키가 남은 경우) 시작 화면으로 보낸다.
+// API가 세션이 없다고 하거나 계정 확인(verifyUserExists)에서 사용자가 없다고 하면 시작 화면으로 보낸다
+// (쿠키가 없거나, 다른 기기에서 지웠거나 대시보드에서 지운 사용자의 쿠키가 남은 경우).
 // 쿠키를 먼저 지운다. 지운 사용자의 토큰은 만료 전까지 proxy에서 '세션 있음'으로 보여서, 쿠키를 남긴 채
 // /welcome으로 가면 /welcome → / → 401 → /welcome으로 계속 돈다. scope: "local"이라 서버에 묻지 않고 지운다.
-async function leaveToWelcome(): Promise<never> {
+export async function leaveToWelcome(): Promise<never> {
   await createClient()
     .auth.signOut({ scope: "local" })
     .catch(() => {});
@@ -115,4 +116,14 @@ export const api = {
   reroll: (date: string) => post("/api/today/reroll", date),
   complete: (date: string) => post("/api/today/complete", date),
   getMonth: (month: string) => request<MonthRecords>(`/api/records?month=${month}`),
+  deleteAccount: () => request<DeleteAccountResult>("/api/account/delete", { method: "POST" }),
 };
+
+// 계정 삭제(설정의 "계정 삭제", 익명은 "이 기기 기록 모두 지우기"). 서버에서 사용자와 기록을 지운 뒤
+// 쿠키를 지우고 페이지를 새로 열며 시작 화면으로 간다. 실패하면 오류를 던지고 아무것도 바뀌지 않는다.
+// 이미 지워진 사용자(401)면 request가 쿠키를 지우고 시작 화면으로 보낸다.
+// (나중에 Google 연결 해제를 붙이면 여기 앞에 Google 토큰 받기를 끼우고, 그 토큰을 삭제 요청에 보낸다)
+export async function deleteAccountToWelcome() {
+  await api.deleteAccount();
+  await signOutToWelcome();
+}

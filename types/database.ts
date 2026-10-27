@@ -91,6 +91,7 @@ export type Database = {
     }
     Functions: {
       complete_today: { Args: { p_date: string }; Returns: Json }
+      delete_my_account: { Args: never; Returns: Json }
       draw_first: { Args: { p_date: string }; Returns: Json }
       get_month: { Args: { p_month: string }; Returns: Json }
       get_today: { Args: never; Returns: Json }

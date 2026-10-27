@@ -42,7 +42,8 @@ export function SketchDialog({
       <div className="relative flex flex-col items-center gap-3 rounded-sketch bg-paper px-6 pt-7 pb-5">
         <SketchFrame />
         <Image src={mascot.src} alt="" width={mascot.width} height={mascot.height} className="h-auto w-30" />
-        <h2 id={titleId} className="font-hand text-[28px] leading-tight font-bold">
+        {/* break-keep: 한글이 글자 단위로 끊기지 않게 단어 단위로 줄을 바꾼다("지울까 / 요?" 방지) */}
+        <h2 id={titleId} className="text-center font-hand text-[28px] leading-tight font-bold break-keep">
           {title}
         </h2>
         <p className="text-center text-[15px] leading-relaxed text-ink-muted">{description}</p>

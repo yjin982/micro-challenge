@@ -40,6 +40,11 @@ export type MonthRecords = {
   }[];
 };
 
+// POST /api/account/delete. 나중에 Google 연결 해제를 붙이면 그 결과를 여기에 더한다
+export type DeleteAccountResult = {
+  deleted: true;
+};
+
 export type ErrorCode =
   | "UNAUTHENTICATED"
   | "INVALID_INPUT"

@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import type { Account } from "@/components/auth/useAccount";
 import { useAccount } from "@/components/auth/useAccount";
 import { BackButton } from "@/components/ui/BackButton";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { AccountCard } from "./AccountCard";
 import { AppInfoCard } from "./AppInfoCard";
+import { DeleteAccountDialog } from "./DeleteAccountDialog";
 
 // 설정(보드: 설정 · Google, 설정 · 익명, 데스크톱 · 설정). 계정 카드, 앱 정보 카드, 맨 아래 삭제.
 // 모바일은 제목 왼쪽에 뒤로 가기, 하단 탭은 그대로 둔다(어느 탭도 선택하지 않는다). 데스크톱은 헤더 아래 가운데 열.
@@ -38,9 +40,10 @@ export function SettingsView({ version }: { version: string }) {
   );
 }
 
-// 맨 아래 삭제(Google·이메일: 계정 삭제, 익명: 이 기기 기록 모두 지우기).
-// 삭제 확인과 실제 삭제는 아직 없어서(로그인 계획 4C단계) 지금은 동작이 없는 버튼으로 둔다.
+// 맨 아래 삭제(Google·이메일: 계정 삭제, 익명: 이 기기 기록 모두 지우기). 누르면 확인 대화상자를 띄운다.
 function DeleteAccount({ account }: { account: Account | null }) {
+  const [confirming, setConfirming] = useState(false);
+
   if (account === null) {
     return (
       <div aria-hidden className="mt-8 flex flex-col gap-2">
@@ -61,11 +64,13 @@ function DeleteAccount({ account }: { account: Account | null }) {
     <div className="mt-8 flex flex-col items-start gap-1">
       <button
         type="button"
+        onClick={() => setConfirming(true)}
         className="text-[15px] font-bold text-sunday underline decoration-2 underline-offset-4"
       >
         {anonymous ? "이 기기 기록 모두 지우기" : "계정 삭제"}
       </button>
       <p className="text-[13px] leading-relaxed text-ink-muted">{description}</p>
+      {confirming && <DeleteAccountDialog account={account} onClose={() => setConfirming(false)} />}
     </div>
   );
 }
