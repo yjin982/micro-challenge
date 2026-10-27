@@ -20,7 +20,7 @@
 | `/` | 홈. 오늘 상태에 따라 뽑기 전 → 도전중 → 완료 → 연속 달성 화면으로 바뀝니다 |
 | `/welcome` | 시작 화면. 세션이 없으면 여기로 옵니다(익명으로 시작하기, Google 계정으로 계속) |
 | `/records` | 기록. 월간 도장 달력, 누적·연속 칩, 날짜별 상세. `?month=YYYY-MM`으로 지난달을 봅니다 |
-| `/settings` | 설정. 계정(Google 계정 연결, 로그아웃), 앱 정보 |
+| `/settings` | 설정. 계정(Google 계정 연결, 로그아웃), 앱 정보, 계정 삭제(익명은 이 기기 기록 모두 지우기) |
 | `/privacy`, `/terms` | 개인정보처리방침, 서비스 이용약관 |
 
 모바일은 하단 탭과 제목 줄의 계정 메뉴, 데스크톱(1024px 이상)은 상단 헤더(계정 메뉴 포함)와 2단 배치입니다.
@@ -47,6 +47,7 @@
 | `POST /api/today/reroll` | 다시 뽑기(하루 3번) |
 | `POST /api/today/complete` | 완료하고 도장 찍기 |
 | `GET /api/records?month=YYYY-MM` | 그 달의 완료 기록 |
+| `POST /api/account/delete` | 계정 삭제(사용자와 모든 기록) |
 
 ## 시작하기
 
@@ -71,6 +72,7 @@ pnpm install
 2. **SQL Editor**에서 아래 두 파일을 차례로 실행합니다.
    - [`supabase/migrations/20261016000000_init.sql`](supabase/migrations/20261016000000_init.sql): 테이블, RLS, 함수
    - [`supabase/seed.sql`](supabase/seed.sql): 미션 200개(다시 실행해도 덮어씁니다)
+   - [`supabase/migrations/20261027000000_delete_my_account.sql`](supabase/migrations/20261027000000_delete_my_account.sql): 계정 삭제 함수
 
 ### 3. 환경변수
 
@@ -103,7 +105,7 @@ Vercel 환경변수에 `CRON_SECRET`(임의의 긴 문자열)을 넣어 두면, 
 
 ```text
 app/                 라우팅 파일만 둔다 (page, layout, route, loading, error, not-found)
-  api/               Route Handler 5개
+  api/               Route Handler 6개
 components/
   ui/                손그림 테두리, 버튼, 칩·배지, 스켈레톤, 상태 카드 등 공통 요소
   stamp/             도장 6종 컴포넌트

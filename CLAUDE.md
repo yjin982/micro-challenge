@@ -20,7 +20,7 @@ pnpm gen:types  # DB 구조가 바뀌면 types/database.ts 다시 생성(Supabas
 
 ## 현재 상태
 
-디자인 기반, 홈(뽑기 → 도전중 → 완료 → 연속 달성), 기록, 서버(Supabase DB, API 5개)가 동작하고 Vercel에 배포했다(<https://micro-challenge-one.vercel.app/>). 로그인 흐름 개편(익명 + Google)을 `feat/google-login` 브랜치에서 진행 중이다. 시작 화면, Google 로그인·연결, 계정 메뉴, 설정, 처리방침·약관까지 만들었고, 계정 삭제가 남았다(아직 `main`에 합치지 않음).
+디자인 기반, 홈(뽑기 → 도전중 → 완료 → 연속 달성), 기록, 서버(Supabase DB, API 6개)가 동작하고 Vercel에 배포했다(<https://micro-challenge-one.vercel.app/>). 로그인 흐름 개편(익명 + Google)을 `feat/google-login` 브랜치에서 진행 중이다. 시작 화면, Google 로그인·연결, 계정 메뉴, 설정, 처리방침·약관, 계정 삭제까지 만들었다(아직 `main`에 합치지 않음).
 
 - 진행 상황과 남은 작업: [.claude/작업-현황.md](.claude/작업-현황.md)
 - 로그인 흐름 개편 계획: [.claude/로그인-흐름-계획.md](.claude/로그인-흐름-계획.md)
@@ -57,6 +57,7 @@ app/
   auth/callback/        Google 로그인·연결이 돌아오는 곳(code → 세션, 실패하면 /welcome?error= 또는 하던 화면?auth_error=)
   api/today/            GET /api/today  (draw/, reroll/, complete/ 아래에 각 POST)
   api/records/          GET /api/records?month=YYYY-MM
+  api/account/delete/   POST 계정 삭제(Google·익명 모두. 사용자와 기록·세션을 지운다)
   api/cron/keep-alive/  Supabase 무료 프로젝트 일시 중지 방지(vercel.json의 Cron, CRON_SECRET 확인)
 components/
   ui/                   손그림 카드 테두리, 버튼, 칩·배지, 상태 카드, 오류 화면, 낙서 장식 등 공통 요소
@@ -64,7 +65,7 @@ components/
   nav/                  모바일 하단 탭, 데스크톱 상단 헤더
   auth/                 시작 화면, 공식 Google 버튼, 계정 메뉴(데스크톱 헤더, 모바일 햄버거),
                         Google 연결(useLinkGoogle), 연결 실패 안내, 익명 로그아웃 확인
-  settings/             설정 화면(계정 카드, 앱 정보 카드)
+  settings/             설정 화면(계정 카드, 앱 정보 카드, 계정 삭제 확인)
   legal/                처리방침·약관 문안(documents.ts, 빈칸 상수는 맨 위)과 문서 틀
   home/                 홈 전용(카드 더미·스택, 스와이프, 완료 연출, 연속 달성, 최근 기록)
   records/              기록 전용(월간 캘린더, 날짜 상세)
@@ -80,8 +81,8 @@ lib/
 proxy.ts                세션 확인·갱신, 세션이 없으면 앱 화면 → /welcome, 세션이 있으면 /welcome → /
 types/                  api.ts(API 응답 타입), database.ts(`pnpm gen:types`로 만든 DB 타입. 손으로 고치지 않는다)
 supabase/
-  migrations/           서버 설계의 SQL 초안 1~6. 시드(7)는 supabase/seed.sql
-  tests/                며칠에 걸친 뽑기 규칙 확인 SQL(SQL Editor에서 실행)
+  migrations/           서버 설계의 SQL 초안 1~6(init), 계정 삭제 함수 delete_my_account. 시드(7)는 supabase/seed.sql
+  tests/                뽑기 규칙 확인(draw-rules), 계정 삭제 확인(delete-account) SQL(SQL Editor에서 실행)
   test-users.sql        이메일 테스트 계정 3개와 기록(git 제외). /login을 지워 화면에서는 로그인할 수 없다
 assets/fonts/           공유 이미지(opengraph-image)용 Gaegu Bold 서브셋. 문구를 바꾸면 다시 만든다
 public/images/
@@ -113,9 +114,9 @@ public/images/
 ## 설계 결정
 
 - **스택**: Supabase(Postgres, 익명 로그인, RLS) + `@supabase/ssr`, Motion(카드 드래그·도장 연출), date-fns + `@date-fns/tz`, `next/font/google`의 Gaegu·Noto Sans KR, Vercel 배포. 별도 상태 관리 라이브러리는 쓰지 않는다.
-- **인증**: 익명 + Google(`feat/google-login`, [계획](.claude/로그인-흐름-계획.md)). 세션이 없으면 proxy가 `/welcome`으로 보내고, 거기서 "익명으로 시작하기"(이때만 익명 계정을 만든다) 또는 "Google 계정으로 계속"을 고른다. 익명 사용자는 "Google 계정 연결"(`linkIdentity`)로 같은 사용자 ID에 Google을 붙여 기록을 지킨다. 이미 가입된 Google 계정이면 연결 실패 안내를 띄우고, 익명 기록이 0개면 안내 없이 그 계정으로 로그인한다. Google로 가는 버튼은 모두 공식 Google 버튼(표준 색 G 로고)을 쓴다. 이메일 가입·로그인은 없다(개발용 `/login`도 2026-10-26에 지웠다).
+- **인증**: 익명 + Google(`feat/google-login`, [계획](.claude/로그인-흐름-계획.md)). 세션이 없으면 proxy가 `/welcome`으로 보내고, 거기서 "익명으로 시작하기"(이때만 익명 계정을 만든다) 또는 "Google 계정으로 계속"을 고른다. 익명 사용자는 "Google 계정 연결"(`linkIdentity`)로 같은 사용자 ID에 Google을 붙여 기록을 지킨다. 이미 가입된 Google 계정이면 연결 실패 안내를 띄우고, 익명 기록이 0개면 안내 없이 그 계정으로 로그인한다. Google로 가는 버튼은 모두 공식 Google 버튼(표준 색 G 로고)을 쓴다. 계정 삭제는 Google·익명 모두 Supabase 사용자와 기록을 지우고, Google 쪽 연결은 끊지 않고 Google 계정 설정 링크로 안내한다(기본안. 연결 해제는 나중에 넓힐 수 있다). 이메일 가입·로그인은 없다(개발용 `/login`도 2026-10-26에 지웠다).
 - **쓰기 경로**: 클라이언트 → Route Handler(`app/api/.../route.ts`) → `supabase.rpc()` → security definer Postgres 함수. Server Action은 쓰지 않는다. 테이블에 쓰기 정책이 없어 모든 쓰기는 함수가 맡고, service role 키는 쓰지 않는다.
-- **API 5개**: `GET /api/today`, `POST /api/today/draw`, `POST /api/today/reroll`, `POST /api/today/complete`, `GET /api/records?month=YYYY-MM`. 상태 변경 API는 모두 `/api/today`와 같은 모양(`date`, `state`, `mission`, `rerollsLeft`, `completedAt`, `stampId`, `streak`, `totalCompleted`, `recent`)을 돌려준다.
+- **API 6개**: `GET /api/today`, `POST /api/today/draw`, `POST /api/today/reroll`, `POST /api/today/complete`, `GET /api/records?month=YYYY-MM`, `POST /api/account/delete`. 상태 변경 API는 모두 `/api/today`와 같은 모양(`date`, `state`, `mission`, `rerollsLeft`, `completedAt`, `stampId`, `streak`, `totalCompleted`, `recent`)을 돌려준다.
 - **날짜**: 하루는 Asia/Seoul 기준이고 DB의 `kst_day()`(도착 시각 − 1분)만 믿는다. 화면은 날짜를 직접 계산하지 않고 `/api/today`가 준 `date`를 그대로 쓰며, 변경 요청에 그 `date`를 보낸다. 서버 날짜와 다르면 `DAY_CHANGED`(409)를 받고 오늘 상태를 다시 불러온다.
 - **에러**: DB 함수가 코드를 예외 메시지로 던지고(`NO_REROLLS`, `ALREADY_DRAWN` 등) Route Handler가 HTTP 상태와 `{ "error": { "code", "message" } }`로 바꾼다.
 - **뽑기 규칙**(서버에서만 처리): 180일 내 완료한 미션, 14일 내 넘긴 미션, 오늘 본 미션을 제외하고 균등 랜덤. 후보가 없으면 가장 오래전에 본 미션부터.
