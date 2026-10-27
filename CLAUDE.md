@@ -20,7 +20,7 @@ pnpm gen:types  # DB 구조가 바뀌면 types/database.ts 다시 생성(Supabas
 
 ## 현재 상태
 
-디자인 기반, 홈(뽑기 → 도전중 → 완료 → 연속 달성), 기록, 서버(Supabase DB, API 6개)가 동작하고 Vercel에 배포했다(<https://micro-challenge-one.vercel.app/>). 로그인 흐름 개편(익명 + Google)을 `feat/google-login` 브랜치에서 진행 중이다. 시작 화면, Google 로그인·연결, 계정 메뉴, 설정, 처리방침·약관, 계정 삭제까지 만들었다(아직 `main`에 합치지 않음).
+디자인 기반, 홈(뽑기 → 도전중 → 완료 → 연속 달성), 기록, 서버(Supabase DB, API 6개)가 동작하고 Vercel에 배포했다(<https://micro-challenge-one.vercel.app/>). 로그인 흐름 개편(익명 + Google)을 2026-10-27에 `main`에 합쳐 배포했다: 시작 화면, Google 로그인·연결, 계정 메뉴, 설정, 처리방침·약관, 계정 삭제. 남은 것은 Google 앱 게시(지금은 '테스트 중'이라 등록한 테스트 사용자만 Google 로그인), 익명 계정 정리(180일) 실행, 기획서·서버 설계 갱신이고, 다음 기능은 기록 모아 보기다.
 
 - 진행 상황과 남은 작업: [.claude/작업-현황.md](.claude/작업-현황.md)
 - 로그인 흐름 개편 계획: [.claude/로그인-흐름-계획.md](.claude/로그인-흐름-계획.md)
@@ -114,7 +114,7 @@ public/images/
 ## 설계 결정
 
 - **스택**: Supabase(Postgres, 익명 로그인, RLS) + `@supabase/ssr`, Motion(카드 드래그·도장 연출), date-fns + `@date-fns/tz`, `next/font/google`의 Gaegu·Noto Sans KR, Vercel 배포. 별도 상태 관리 라이브러리는 쓰지 않는다.
-- **인증**: 익명 + Google(`feat/google-login`, [계획](.claude/로그인-흐름-계획.md)). 세션이 없으면 proxy가 `/welcome`으로 보내고, 거기서 "익명으로 시작하기"(이때만 익명 계정을 만든다) 또는 "Google 계정으로 계속"을 고른다. 익명 사용자는 "Google 계정 연결"(`linkIdentity`)로 같은 사용자 ID에 Google을 붙여 기록을 지킨다. 이미 가입된 Google 계정이면 연결 실패 안내를 띄우고, 익명 기록이 0개면 안내 없이 그 계정으로 로그인한다. Google로 가는 버튼은 모두 공식 Google 버튼(표준 색 G 로고)을 쓴다. 계정 삭제는 Google·익명 모두 Supabase 사용자와 기록을 지우고, Google 쪽 연결은 끊지 않고 Google 계정 설정 링크로 안내한다(기본안. 연결 해제는 나중에 넓힐 수 있다). 이메일 가입·로그인은 없다(개발용 `/login`도 2026-10-26에 지웠다).
+- **인증**: 익명 + Google([계획](.claude/로그인-흐름-계획.md)). 세션이 없으면 proxy가 `/welcome`으로 보내고, 거기서 "익명으로 시작하기"(이때만 익명 계정을 만든다) 또는 "Google 계정으로 계속"을 고른다. 익명 사용자는 "Google 계정 연결"(`linkIdentity`)로 같은 사용자 ID에 Google을 붙여 기록을 지킨다. 이미 가입된 Google 계정이면 연결 실패 안내를 띄우고, 익명 기록이 0개면 안내 없이 그 계정으로 로그인한다. Google로 가는 버튼은 모두 공식 Google 버튼(표준 색 G 로고)을 쓴다. 계정 삭제는 Google·익명 모두 Supabase 사용자와 기록을 지우고, Google 쪽 연결은 끊지 않고 Google 계정 설정 링크로 안내한다(기본안. 연결 해제는 나중에 넓힐 수 있다). 이메일 가입·로그인은 없다(개발용 `/login`도 2026-10-26에 지웠다).
 - **쓰기 경로**: 클라이언트 → Route Handler(`app/api/.../route.ts`) → `supabase.rpc()` → security definer Postgres 함수. Server Action은 쓰지 않는다. 테이블에 쓰기 정책이 없어 모든 쓰기는 함수가 맡고, service role 키는 쓰지 않는다.
 - **API 6개**: `GET /api/today`, `POST /api/today/draw`, `POST /api/today/reroll`, `POST /api/today/complete`, `GET /api/records?month=YYYY-MM`, `POST /api/account/delete`. 상태 변경 API는 모두 `/api/today`와 같은 모양(`date`, `state`, `mission`, `rerollsLeft`, `completedAt`, `stampId`, `streak`, `totalCompleted`, `recent`)을 돌려준다.
 - **날짜**: 하루는 Asia/Seoul 기준이고 DB의 `kst_day()`(도착 시각 − 1분)만 믿는다. 화면은 날짜를 직접 계산하지 않고 `/api/today`가 준 `date`를 그대로 쓰며, 변경 요청에 그 `date`를 보낸다. 서버 날짜와 다르면 `DAY_CHANGED`(409)를 받고 오늘 상태를 다시 불러온다.
