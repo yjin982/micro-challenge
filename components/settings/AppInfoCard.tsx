@@ -16,7 +16,7 @@ export function AppInfoCard({ version }: { version: string }) {
           <InfoRow label="버전" value={version} />
         </li>
         <li>
-          <InfoRow label="만든 사람" value="유진" />
+          <InfoRow label="만든 사람" value="Yujin Jeong" />
         </li>
         <li>
           <a href={FEEDBACK_URL} target="_blank" rel="noopener noreferrer" className={rowClass}>

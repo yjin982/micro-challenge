@@ -1,10 +1,13 @@
 // 개인정보처리방침·서비스 이용약관 문안(보드: 개인정보처리방침, 서비스 이용약관).
 // 기록 내려받기 기능은 두지 않으므로 보드 문안의 '내려받기' 문장은 뺐다.
 
-// 아직 정하지 않은 값(로그인 계획 '정할 것' 2·3번, 시행일은 공개 직전). 정해지면 여기만 고친다.
-const EFFECTIVE_DATE = "2026년 [ ]월 [ ]일";
-const CONTACT_EMAIL = "[연락용 이메일]";
-const ANONYMOUS_RETENTION_DAYS = "[N]";
+// 문서에 넣는 값. 바뀌면 여기만 고친다(2026-10-27에 정했다).
+// 익명 계정 정리 기간: 180일 동안 쓰지 않은 익명 계정(다시 들어오지 않았거나, 브라우저 데이터를 지워 다시 들어올 수 없게 된 계정).
+// 사용자가 직접 지우는 계정 삭제와는 따로다. 실제로 지우는 SQL은 공개 준비 단계에서 만든다(로그인 계획 6단계).
+const EFFECTIVE_DATE = "2026년 10월 27일";
+const OPERATOR_NAME = "Yujin Jeong";
+const CONTACT_EMAIL = "yjin.jeong982@gmail.com";
+const ANONYMOUS_RETENTION_DAYS = "180";
 
 export type LegalDocument = {
   title: string;
@@ -26,11 +29,18 @@ export const privacyPolicy: LegalDocument = {
         "익명으로 사용할 때: 이름·이메일 없이 서비스가 만든 임의의 사용자 식별자",
         "서비스 이용 기록: 받은 미션, 완료한 날짜와 시각, 찍힌 도장",
         "로그인 상태를 유지하기 위한 쿠키",
+        // 이 앱의 코드·테이블은 IP를 모으지 않지만, Supabase(auth.sessions·요청 기록)와 Vercel(요청 기록)이 자동으로 남긴다
+        "자동으로 수집되는 정보: 접속 IP 주소, 브라우저 정보(User-Agent), 접속 시각. 로그인 유지와 보안, 오류 확인을 위해 Supabase(로그인 세션 기록)와 Vercel(웹사이트 운영 기록)이 남기며, 세션 기록은 로그아웃하거나 계정을 삭제하면 함께 지워지고 운영 기록은 각 서비스의 보관 기간이 지나면 지워집니다.",
       ],
     },
     {
       heading: "처리 목적",
-      items: ["로그인과 이용자 구분", "미션 기록을 저장하고 달력·기록 화면에 보여주기", "오류 확인과 서비스 개선"],
+      items: [
+        "로그인과 이용자 구분",
+        "미션 기록을 저장하고 달력·기록 화면에 보여주기",
+        "보안과 부정 이용 방지",
+        "오류 확인과 서비스 개선",
+      ],
     },
     {
       heading: "보유 기간과 파기",
@@ -66,7 +76,7 @@ export const privacyPolicy: LegalDocument = {
     },
     {
       heading: "개인정보 보호책임자",
-      items: [`유진 · 문의 ${CONTACT_EMAIL}`],
+      items: [`${OPERATOR_NAME} · 문의 ${CONTACT_EMAIL}`],
     },
     {
       heading: "방침의 변경",
