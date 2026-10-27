@@ -54,7 +54,7 @@
 ### 필요한 것
 
 - Node.js 24 (LTS). `package.json`의 `engines`에 `24.x`로 지정되어 있고, Vercel도 이 값으로 Node 버전을 고릅니다
-- pnpm 11 (`packageManager`에 지정되어 있어 Corepack으로 맞출 수 있습니다)
+- pnpm 12 (`packageManager`에 `pnpm@12.8.1`로 지정되어 있어, 설치된 pnpm이 이 버전으로 맞춰 실행합니다)
 - Supabase 프로젝트
 - (선택) 공공데이터포털 [한국천문연구원 특일 정보](https://www.data.go.kr/) 인증키. 없으면 달력에 공휴일만 빠집니다
 

@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 명령어
 
-패키지 매니저는 pnpm이다(`packageManager: pnpm@11.8.0`).
+패키지 매니저는 pnpm이다(`packageManager: pnpm@12.8.1`). 전역 pnpm이 이 버전으로 맞춰 실행하고, `pnpm-lock.yaml` 맨 앞 문서에 pnpm 자신의 버전이 함께 잠긴다.
 
 ```bash
 pnpm dev      # 개발 서버 (http://localhost:3000)
