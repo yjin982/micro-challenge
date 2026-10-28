@@ -20,6 +20,8 @@ export type Database = {
           created_at: string
           current_mission_id: string
           date: string
+          note: string | null
+          note_updated_at: string | null
           reroll_count: number
           seen_mission_ids: string[]
           stamp_id: string | null
@@ -30,6 +32,8 @@ export type Database = {
           created_at?: string
           current_mission_id: string
           date: string
+          note?: string | null
+          note_updated_at?: string | null
           reroll_count?: number
           seen_mission_ids?: string[]
           stamp_id?: string | null
@@ -40,6 +44,8 @@ export type Database = {
           created_at?: string
           current_mission_id?: string
           date?: string
+          note?: string | null
+          note_updated_at?: string | null
           reroll_count?: number
           seen_mission_ids?: string[]
           stamp_id?: string | null
@@ -90,7 +96,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      complete_today: { Args: { p_date: string }; Returns: Json }
+      clean_note: { Args: { p: string }; Returns: string }
+      complete_today: {
+        Args: { p_date: string; p_note?: string }
+        Returns: Json
+      }
       delete_my_account: { Args: never; Returns: Json }
       draw_first: { Args: { p_date: string }; Returns: Json }
       get_month: { Args: { p_month: string }; Returns: Json }
@@ -101,6 +111,7 @@ export type Database = {
         Returns: string
       }
       reroll_today: { Args: { p_date: string }; Returns: Json }
+      set_note: { Args: { p_date: string; p_note: string }; Returns: Json }
       today_state: { Args: { p_day: string; p_user: string }; Returns: Json }
     }
     Enums: {
