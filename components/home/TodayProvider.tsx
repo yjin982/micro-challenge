@@ -17,15 +17,18 @@ type TodayContextValue = {
   actionError: string | null;
   // 이 화면에서 방금 완료했는지. 모바일은 완료 화면을 먼저 보여주고, 다시 들어오면 바로 연속 달성 화면이다
   justCompleted: boolean;
-  // 요청을 시작했으면 true. 이미 다른 요청이 진행 중이면 false(스와이프한 카드를 제자리로 돌릴 때 쓴다)
-  run: (action: Action) => boolean;
+  // 뽑기·재뽑기 요청. 시작했으면 true. 이미 다른 요청이 진행 중이면 false(스와이프한 카드를 제자리로 돌릴 때 쓴다)
+  run: (action: Exclude<Action, "complete">) => boolean;
+  // 메모와 함께 완료(메모 대화상자의 '완료하기'). 성공하거나 409(다른 탭·자정)로 상태를 다시 맞췄으면 끝나고,
+  // 그 밖의 실패(인터넷 등)는 오류를 던진다. 메모 대화상자가 받아서 닫지 않고 안내한다
+  complete: (note: string) => Promise<void>;
   // 완료 화면에서 연속 달성 화면으로 넘어간다
   showStreak: () => void;
 };
 
 const TodayContext = createContext<TodayContextValue | null>(null);
 
-const calls = { draw: api.draw, reroll: api.reroll, complete: api.complete };
+const calls = { draw: api.draw, reroll: api.reroll };
 
 // '미션 꺼내는 중'이 한순간 깜빡이고 사라지지 않도록 뽑기·재뽑기는 이만큼은 보여준다.
 const MIN_DRAW_MS = 700;
@@ -84,30 +87,54 @@ export function TodayProvider({ serverDate, children }: { serverDate: string; ch
     }
   });
 
-  function run(action: Action) {
+  function run(action: Exclude<Action, "complete">) {
     if (!today || busy.current) return false;
     busy.current = true;
     void request(action, today.date);
     return true;
   }
 
-  async function request(action: Action, date: string) {
+  // 다른 탭에서 먼저 바꿨거나 자정이 지난 경우(409): 서버의 지금 상태로 맞춘다.
+  // 날짜가 바뀌었으면 useServerDateSync가 서버에서 그린 헤더 날짜·달력도 새로 그린다.
+  async function resync(reason: ApiError) {
+    setActionError(conflictMessage(reason));
+    try {
+      setToday(await api.getToday());
+    } catch {
+      // 다시 불러오기도 실패하면 안내만 남기고 지금 화면을 둔다.
+    }
+  }
+
+  async function complete(note: string) {
+    if (!today || busy.current) return;
+    busy.current = true;
+    setPending("complete");
+    setActionError(null);
+    try {
+      setToday(await api.complete(today.date, note));
+      setJustCompleted(true);
+    } catch (reason) {
+      if (reason instanceof ApiError && reason.status === 409) {
+        await resync(reason);
+        return;
+      }
+      console.error("[home] complete 요청 실패", reason);
+      throw reason;
+    } finally {
+      busy.current = false;
+      setPending(null);
+    }
+  }
+
+  async function request(action: Exclude<Action, "complete">, date: string) {
     setPending(action);
     setActionError(null);
     try {
-      const [next] = await Promise.all([calls[action](date), action === "complete" ? null : wait(MIN_DRAW_MS)]);
+      const [next] = await Promise.all([calls[action](date), wait(MIN_DRAW_MS)]);
       setToday(next);
-      if (action === "complete") setJustCompleted(true);
     } catch (reason) {
       if (reason instanceof ApiError && reason.status === 409) {
-        // 다른 탭에서 먼저 바꿨거나 자정이 지난 경우: 서버의 지금 상태로 맞춘다.
-        // 날짜가 바뀌었으면 useServerDateSync가 서버에서 그린 헤더 날짜·달력도 새로 그린다.
-        setActionError(conflictMessage(reason));
-        try {
-          setToday(await api.getToday());
-        } catch {
-          // 다시 불러오기도 실패하면 안내만 남기고 지금 화면을 둔다.
-        }
+        await resync(reason);
       } else {
         console.error(`[home] ${action} 요청 실패`, reason);
         setActionError(
@@ -128,7 +155,7 @@ export function TodayProvider({ serverDate, children }: { serverDate: string; ch
 
   return (
     <TodayContext
-      value={{ today, pending, actionError, justCompleted, run, showStreak: () => setJustCompleted(false) }}
+      value={{ today, pending, actionError, justCompleted, run, complete, showStreak: () => setJustCompleted(false) }}
     >
       {/* 동작 줄이기 설정이면 움직임(위치·크기·회전)은 건너뛰고 투명도만 바꾼다 */}
       <MotionConfig reducedMotion="user">{children}</MotionConfig>
