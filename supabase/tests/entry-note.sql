@@ -1,5 +1,6 @@
 -- ============================================================
 -- 완료 메모 확인: complete_today(메모), set_note, today_state·get_month의 note, 제약, 권한
+-- 상한은 100자(20261028010000_entry_note_100.sql). 경계값 100/101을 본다
 --
 -- 먼저 supabase/migrations/20261028000000_entry_note.sql을 실행해 둔다.
 -- 실행: Supabase SQL Editor에 통째로 붙여 넣고 Run.
@@ -12,7 +13,7 @@ do $$
 declare
   u1 uuid := gen_random_uuid();   -- 메모와 함께 완료, 지난 날 메모 고치기
   u2 uuid := gen_random_uuid();   -- 메모 없이 예전 방식으로 완료, 다른 사람 행
-  u3 uuid := gen_random_uuid();   -- 201자 메모로 완료 시도
+  u3 uuid := gen_random_uuid();   -- 101자 메모로 완료 시도
   d date := public.kst_day();
   r jsonb;
   err text;
@@ -73,12 +74,12 @@ begin
     case when ok then 'PASS' else 'FAIL' end, r ->> 'state', coalesce(v_note, 'null'));
 
   -- ----------------------------------------------------------
-  -- 3. 201자 메모로 완료 → INVALID_INPUT, 완료도 되지 않음
+  -- 3. 101자 메모로 완료 → INVALID_INPUT, 완료도 되지 않음
   -- ----------------------------------------------------------
   perform set_config('request.jwt.claims', json_build_object('sub', u3, 'role', 'authenticated')::text, true);
   begin
     set local role authenticated;
-    r := public.complete_today(d, repeat('가', 201));
+    r := public.complete_today(d, repeat('가', 101));
     reset role;
     err := 'returned';
   exception when others then
@@ -88,11 +89,11 @@ begin
   select completed_at into v_done from public.daily_entries where user_id = u3 and date = d;
   ok := err = 'INVALID_INPUT' and v_done is null;
   failed := failed or not ok;
-  report := report || format(E'%s [201자로 완료] %s, 완료됨=%s(기대 INVALID_INPUT, false)\n',
+  report := report || format(E'%s [101자로 완료] %s, 완료됨=%s(기대 INVALID_INPUT, false)\n',
     case when ok then 'PASS' else 'FAIL' end, err, v_done is not null);
 
   -- ----------------------------------------------------------
-  -- 4. set_note: 지난 완료 날 쓰기 → 200자 통과 → 201자 거절 → 공백만이면 삭제
+  -- 4. set_note: 지난 완료 날 쓰기 → 100자 통과 → 101자 거절 → 공백만이면 삭제
   -- ----------------------------------------------------------
   perform set_config('request.jwt.claims', json_build_object('sub', u1, 'role', 'authenticated')::text, true);
   begin
@@ -110,7 +111,7 @@ begin
 
   begin
     set local role authenticated;
-    r := public.set_note(d - 1, repeat('가', 200));
+    r := public.set_note(d - 1, repeat('가', 100));
     reset role;
     err := 'ok';
   exception when others then
@@ -118,14 +119,14 @@ begin
     err := sqlerrm;
   end;
   select note into v_note from public.daily_entries where user_id = u1 and date = d - 1;
-  ok := err = 'ok' and char_length(v_note) = 200;
+  ok := err = 'ok' and char_length(v_note) = 100;
   failed := failed or not ok;
-  report := report || format(E'%s [200자] %s, 저장 길이 %s(기대 ok, 200)\n',
+  report := report || format(E'%s [100자] %s, 저장 길이 %s(기대 ok, 100)\n',
     case when ok then 'PASS' else 'FAIL' end, err, char_length(v_note));
 
   begin
     set local role authenticated;
-    r := public.set_note(d - 1, repeat('가', 201));
+    r := public.set_note(d - 1, repeat('가', 101));
     reset role;
     err := 'returned';
   exception when others then
@@ -133,9 +134,9 @@ begin
     err := sqlerrm;
   end;
   select note into v_note from public.daily_entries where user_id = u1 and date = d - 1;
-  ok := err = 'INVALID_INPUT' and char_length(v_note) = 200;
+  ok := err = 'INVALID_INPUT' and char_length(v_note) = 100;
   failed := failed or not ok;
-  report := report || format(E'%s [201자] %s, 그대로 남은 길이 %s(기대 INVALID_INPUT, 200)\n',
+  report := report || format(E'%s [101자] %s, 그대로 남은 길이 %s(기대 INVALID_INPUT, 100)\n',
     case when ok then 'PASS' else 'FAIL' end, err, char_length(v_note));
 
   begin

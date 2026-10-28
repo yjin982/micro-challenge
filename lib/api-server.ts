@@ -43,8 +43,8 @@ export async function readDate(request: Request): Promise<string | null> {
 }
 
 // 메모가 함께 오는 요청 본문 { date, note? }(완료, 메모 고치기). note는 글자, null(지우기), 없음(undefined)만 받는다.
-// 글자 수 상한과 정리(줄바꿈·공백)는 DB 함수(clean_note, 200자)가 맡는다. 여기서는 정리 전 글이 지나치게 길면
-// DB까지 보내지 않고 거절한다(공백을 지우면 200자 안이 될 수 있어 넉넉하게 2,000자).
+// 글자 수 상한과 정리(줄바꿈·공백)는 DB 함수(clean_note, 100자)가 맡는다. 여기서는 정리 전 글이 지나치게 길면
+// DB까지 보내지 않고 거절한다(공백을 지우면 상한 안이 될 수 있어 넉넉하게 2,000자).
 const NOTE_RAW_LIMIT = 2000;
 
 export async function readDateAndNote(

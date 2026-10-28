@@ -135,7 +135,11 @@ export function RecordsView({
       </section>
 
       <div className="mt-3.5 flex flex-col lg:mt-0 lg:w-84 lg:shrink-0 lg:pt-14">
-        {isEmpty ? <RecordsEmpty /> : <RecordDetail detail={data && selected ? toDetail(selected, data) : null} onNoteChange={updateNote} />}
+        {isEmpty ? (
+          <RecordsEmpty />
+        ) : (
+          <RecordDetail detail={data && selected ? toDetail(selected, data) : null} onNoteChange={updateNote} />
+        )}
         {data && !isEmpty && (
           <p className="mt-3 hidden text-center text-xs text-ink-muted lg:block">
             지난 날짜를 누르면 그날의 기록을 볼 수 있어요

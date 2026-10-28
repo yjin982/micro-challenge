@@ -1,7 +1,7 @@
 // 완료 메모 입력 규칙. DB(clean_note, daily_entries_note_check)와 같은 규칙을 화면에서 먼저 지킨다.
 
 // 글자 수 상한. DB 제약·함수와 같은 값이다
-export const NOTE_MAX_LENGTH = 200;
+export const NOTE_MAX_LENGTH = 100;
 
 // 줄바꿈은 받지 않는다. 붙여 넣은 글의 줄바꿈(\r\n, \r, \n)은 공백 하나로 바꾼다
 export function stripLineBreaks(value: string) {
