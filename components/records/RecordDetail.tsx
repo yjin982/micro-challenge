@@ -1,17 +1,18 @@
 import type { ReactNode } from "react";
 import { Stamp } from "@/components/stamp/Stamp";
 import { ButtonLink } from "@/components/ui/Button";
+import { PencilIcon } from "@/components/ui/icons";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { SketchFrame } from "@/components/ui/sketch";
 import { formatCompletedTime, formatDetailDate } from "@/lib/date";
 import type { StampId } from "@/types/api";
 
 // 선택한 날의 상태(화면 설계 '데스크톱 · 기록' 보드)
-// - done: 미션을 완료한 날(날짜·완료 시각, 미션 문구, 도장)
+// - done: 미션을 완료한 날(날짜·완료 시각, 미션 문구, 도장, 남긴 메모가 있으면 카드 아래에 메모)
 // - today: 오늘인데 아직 완료 전
 // - rest: 지난날인데 도장이 없는 날
 export type RecordDetailData =
-  | { kind: "done"; date: string; completedAt: string; missionText: string; stampId: StampId }
+  | { kind: "done"; date: string; completedAt: string; missionText: string; stampId: StampId; note: string | null }
   | { kind: "today"; date: string; missionText: string | null }
   | { kind: "rest"; date: string };
 
@@ -41,7 +42,7 @@ export function RecordDetail({ detail }: { detail: RecordDetailData | null }) {
 
   if (detail.kind === "done") {
     return (
-      <Card>
+      <Card footer={detail.note && <NoteLine note={detail.note} />}>
         <div className="flex grow flex-col gap-1.5 lg:self-stretch">
           <p className={metaClass}>
             {date} · {formatCompletedTime(detail.completedAt)} 완료
@@ -100,6 +101,20 @@ export function RecordDetail({ detail }: { detail: RecordDetailData | null }) {
 }
 
 // 데스크톱 카드 아래 여백은 화면 설계 '데스크톱 · 기록' 보드대로 상태마다 조금씩 다르다(완료 20px, 오늘 22px, 쉬어 간 날 26px).
+// 완료한 날의 메모(보드 메모 10, 17쪽): 점선 아래 연필 아이콘과 메모. 홈 완료 카드의 메모와 같은 모양
+function NoteLine({ note }: { note: string }) {
+  return (
+    <p className="flex gap-2 border-t-[1.5px] border-dashed border-line-faint pt-3 text-[15px] leading-relaxed">
+      <PencilIcon className="mt-0.5 size-4.5 shrink-0 text-ink-muted" />
+      {/* 띄어쓰기 없이 긴 글(영어·숫자)도 카드 밖으로 넘치지 않게, 넘칠 때만 줄을 끊는다 */}
+      <span className="min-w-0 [overflow-wrap:anywhere]">
+        <span className="sr-only">남긴 메모: </span>
+        {note}
+      </span>
+    </p>
+  );
+}
+
 const cardBottom = { done: "lg:pb-5", today: "lg:pb-5.5", rest: "lg:pb-6.5" } as const;
 
 function Card({

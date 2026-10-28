@@ -33,7 +33,7 @@ export function TodayPanel({ date, holidays }: { date: string; holidays: Holiday
         <>
           <Subtitle>오늘의 작은 기적을 해냈어요!</Subtitle>
           <div className="mt-4.5">
-            <DoneCard mission={today.mission} stampId={today.stampId} celebrate={justCompleted} />
+            <DoneCard mission={today.mission} stampId={today.stampId} note={today.note} celebrate={justCompleted} />
           </div>
           <DoneSummary streak={today.streak} celebrate={justCompleted} />
         </>

@@ -42,7 +42,7 @@ export function CompleteView({ today, onNext }: { today: Done; onNext: () => voi
 
   return (
     <div className="mt-7">
-      <DoneCard mission={today.mission} stampId={today.stampId} celebrate />
+      <DoneCard mission={today.mission} stampId={today.stampId} note={today.note} celebrate />
       <Reveal show className="mt-4.5">
         <div role="status" className="flex flex-col items-center gap-1.5">
           <Image src="/images/mascot/tyrano-did-it.png" alt="" width={167} height={198} loading="eager" className="h-auto w-37.5" />
