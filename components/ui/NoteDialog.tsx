@@ -7,13 +7,17 @@ import { Button } from "./Button";
 import { SketchDialog } from "./SketchDialog";
 
 const TITLE = "오늘의 기적, 한 줄 남겨 볼까요?";
-const PLACEHOLDER = "무엇이든 좋아요. 비워둬도 완료돼요.";
 
 const modes = {
   // 홈에서 완료할 때(보드: 메모 대화상자)
-  complete: { submit: "완료하기", pending: "완료하는 중…", failed: "완료하지 못했어요." },
-  // 기록 화면에서 한 줄 남기기·수정할 때(보드: 기록 · 메모 수정)
-  edit: { submit: "저장", pending: "저장하는 중…", failed: "저장하지 못했어요." },
+  complete: {
+    placeholder: "무엇이든 좋아요. 비워둬도 완료돼요.",
+    submit: "완료하기",
+    pending: "완료하는 중…",
+    failed: "완료하지 못했어요.",
+  },
+  // 기록 화면에서 한 줄 남기기·수정할 때(보드: 기록 · 메모 수정). 이미 완료한 날이라 자리 글에 '완료'를 넣지 않는다
+  edit: { placeholder: "무엇이든 좋아요.", submit: "저장", pending: "저장하는 중…", failed: "저장하지 못했어요." },
 } as const;
 
 // 완료 메모 대화상자(추가 기능 계획 1-2, 1-3, 1-6. 보드 5–8, 12, 15쪽). 마스코트·안내 문장 없이 제목, 입력창, 글자 수, 버튼.
@@ -99,7 +103,7 @@ export function NoteDialog({
             value={note}
             onChange={(e) => setNote(stripLineBreaks(e.target.value))}
             onKeyDown={handleKeyDown}
-            placeholder={PLACEHOLDER}
+            placeholder={text.placeholder}
             aria-label={TITLE}
             aria-invalid={tooLong}
             aria-describedby={error ? `${countId} ${errorId}` : countId}
