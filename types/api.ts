@@ -22,6 +22,8 @@ export type TodayState = {
   rerollsLeft: number;
   completedAt: string | null;
   stampId: StampId | null;
+  // 오늘 완료하며 남긴 메모(없으면 null). 홈 완료 카드에 보여준다
+  note: string | null;
   streak: number;
   totalCompleted: number;
   recent: RecentRecord[];
@@ -37,7 +39,16 @@ export type MonthRecords = {
     missionText: string;
     stampId: StampId;
     completedAt: string;
+    // 그날 남긴 메모(없으면 null)
+    note: string | null;
   }[];
+};
+
+// PATCH /api/records/note. note가 null이면 지운 것
+export type NoteResult = {
+  date: string;
+  note: string | null;
+  noteUpdatedAt: string | null;
 };
 
 // POST /api/account/delete. 나중에 Google 연결 해제를 붙이면 그 결과를 여기에 더한다
@@ -53,6 +64,7 @@ export type ErrorCode =
   | "NOT_DRAWN"
   | "NO_REROLLS"
   | "ALREADY_COMPLETED"
+  | "NOT_FOUND"
   | "INTERNAL";
 
 export type ApiErrorBody = {

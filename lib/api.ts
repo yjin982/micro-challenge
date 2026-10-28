@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
-import type { ApiErrorBody, DeleteAccountResult, ErrorCode, MonthRecords, TodayState } from "@/types/api";
+import type { ApiErrorBody, DeleteAccountResult, ErrorCode, MonthRecords, NoteResult, TodayState } from "@/types/api";
 
 // 브라우저에서 쓰는 API 호출 도우미와 로그인 함수. 세션은 시작 화면에서 만들고(익명 또는 Google),
 // API가 세션이 없다고(401) 하면 쿠키를 지우고 시작 화면으로 보낸다.
@@ -106,16 +106,20 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   throw new ApiError(code, body?.error.message ?? res.statusText, res.status);
 }
 
-const post = (path: string, date: string) =>
-  request<TodayState>(path, { method: "POST", body: JSON.stringify({ date }) });
+const post = (path: string, date: string, extra?: Record<string, unknown>) =>
+  request<TodayState>(path, { method: "POST", body: JSON.stringify({ date, ...extra }) });
 
 export const api = {
   getToday: () => request<TodayState>("/api/today"),
   // date는 getToday가 돌려준 date를 그대로 보낸다. 서버 날짜와 다르면 DAY_CHANGED.
   draw: (date: string) => post("/api/today/draw", date),
   reroll: (date: string) => post("/api/today/reroll", date),
-  complete: (date: string) => post("/api/today/complete", date),
+  // note: 완료 메모(비우면 메모 없이 완료)
+  complete: (date: string, note?: string) => post("/api/today/complete", date, note ? { note } : undefined),
   getMonth: (month: string) => request<MonthRecords>(`/api/records?month=${month}`),
+  // 완료한 날의 메모 쓰기·고치기. 비우면(null·빈 글) 지운다
+  setNote: (date: string, note: string | null) =>
+    request<NoteResult>("/api/records/note", { method: "PATCH", body: JSON.stringify({ date, note }) }),
   deleteAccount: () => request<DeleteAccountResult>("/api/account/delete", { method: "POST" }),
 };
 

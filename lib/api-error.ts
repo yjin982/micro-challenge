@@ -11,6 +11,7 @@ const ERRORS: Record<ErrorCode, { status: number; message: string }> = {
   NOT_DRAWN: { status: 409, message: "아직 오늘 카드를 뽑지 않았어요." },
   NO_REROLLS: { status: 409, message: "오늘 다시 뽑기를 모두 썼어요." },
   ALREADY_COMPLETED: { status: 409, message: "오늘 미션은 이미 완료했어요." },
+  NOT_FOUND: { status: 404, message: "완료한 기록을 찾지 못했어요." },
   INTERNAL: { status: 500, message: "잠시 후 다시 시도해 주세요." },
 };
 
