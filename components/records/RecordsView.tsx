@@ -79,6 +79,18 @@ export function RecordsView({
     }
   });
 
+  // 메모를 저장·삭제하면 그 날짜의 메모만 바꿔 다시 그린다(달 전체를 다시 불러오지 않는다)
+  function updateNote(date: string, note: string | null) {
+    setData((prev) =>
+      prev
+        ? {
+            ...prev,
+            records: { ...prev.records, days: prev.records.days.map((d) => (d.date === date ? { ...d, note } : d)) },
+          }
+        : prev,
+    );
+  }
+
   // 불러오기 실패는 app/error.tsx의 오류 화면으로 넘긴다.
   if (error) throw error;
 
@@ -123,7 +135,7 @@ export function RecordsView({
       </section>
 
       <div className="mt-3.5 flex flex-col lg:mt-0 lg:w-84 lg:shrink-0 lg:pt-14">
-        {isEmpty ? <RecordsEmpty /> : <RecordDetail detail={data && selected ? toDetail(selected, data) : null} />}
+        {isEmpty ? <RecordsEmpty /> : <RecordDetail detail={data && selected ? toDetail(selected, data) : null} onNoteChange={updateNote} />}
         {data && !isEmpty && (
           <p className="mt-3 hidden text-center text-xs text-ink-muted lg:block">
             지난 날짜를 누르면 그날의 기록을 볼 수 있어요
