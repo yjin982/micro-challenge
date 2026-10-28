@@ -44,7 +44,7 @@ export function NoteDialog({
   const count = countNoteChars(note);
   const tooLong = count > NOTE_MAX_LENGTH;
 
-  // 입력한 만큼 높이를 늘린다(최대 높이를 넘으면 안에서 스크롤)
+  // 입력한 만큼 높이를 늘린다. 1줄에서 시작해 3줄(max-h-19.5 = 26px × 3)까지 늘고, 그 뒤로는 안에서 스크롤한다
   useLayoutEffect(() => {
     const input = inputRef.current;
     if (!input) return;
@@ -84,24 +84,31 @@ export function NoteDialog({
   return (
     <SketchDialog title={TITLE} size="lg" dismissible={!pending} onClose={onClose}>
       <div className="flex w-full flex-col gap-1.5">
-        <textarea
-          ref={inputRef}
-          data-autofocus
-          rows={1}
-          value={note}
-          onChange={(e) => setNote(stripLineBreaks(e.target.value))}
-          onKeyDown={handleKeyDown}
-          placeholder={PLACEHOLDER}
-          aria-label={TITLE}
-          aria-invalid={tooLong}
-          aria-describedby={error ? `${countId} ${errorId}` : countId}
-          enterKeyHint="done"
-          readOnly={pending}
-          aria-busy={pending}
-          className={`max-h-36 w-full resize-none overflow-y-auto rounded-sketch-sm border-2 bg-paper px-4 py-3 text-base leading-relaxed outline-none placeholder:text-ink-faint read-only:opacity-60 ${
-            tooLong ? "border-sunday" : "border-ink-muted focus:border-primary"
-          }`}
-        />
+        {/* 테두리·둥근 모서리·여백은 바깥 상자가 맡는다. 입력창에 테두리를 두면 스크롤 막대가 둥근 외곽선을 덮어서다.
+            여백을 눌러도 입력창에 포커스가 가게 한다 */}
+        <div
+          onClick={() => inputRef.current?.focus()}
+          className={`rounded-sketch-sm border-2 bg-paper py-3 pr-2 pl-4 ${
+            tooLong ? "border-sunday" : "border-ink-muted focus-within:border-primary"
+          } ${pending ? "opacity-60" : ""}`}
+        >
+          <textarea
+            ref={inputRef}
+            data-autofocus
+            rows={1}
+            value={note}
+            onChange={(e) => setNote(stripLineBreaks(e.target.value))}
+            onKeyDown={handleKeyDown}
+            placeholder={PLACEHOLDER}
+            aria-label={TITLE}
+            aria-invalid={tooLong}
+            aria-describedby={error ? `${countId} ${errorId}` : countId}
+            enterKeyHint="done"
+            readOnly={pending}
+            aria-busy={pending}
+            className="block max-h-19.5 w-full resize-none overflow-y-auto bg-transparent pr-2 text-base leading-relaxed outline-none scrollbar-soft placeholder:text-ink-faint"
+          />
+        </div>
         <p
           id={countId}
           aria-live="polite"

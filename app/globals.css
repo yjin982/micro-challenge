@@ -89,6 +89,23 @@
   background-size: 320px 320px;
 }
 
+/* 얇고 연한 스크롤 막대(메모 입력창 등). 기본 회색 막대 대신 구분선 색, 바탕은 투명.
+   표준 속성(scrollbar-width·color)을 아는 브라우저는 그것만 쓰고, 모르는 Safari는 ::-webkit-scrollbar를 쓴다 */
+@utility scrollbar-soft {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: var(--color-line);
+  }
+}
+
 /* components/ui/CrayonFilters.tsx의 SVG 필터 */
 @utility filter-crayon {
   filter: url(#crayon);
