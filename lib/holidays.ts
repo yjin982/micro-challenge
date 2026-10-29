@@ -91,3 +91,10 @@ export async function getHolidays(date: string): Promise<Holidays> {
     return {};
   }
 }
+
+// 여러 날짜가 걸친 달들의 국경일·공휴일을 합친다(홈의 이번 주가 두 달에 걸칠 때)
+export async function getHolidaysForDates(dates: string[]): Promise<Holidays> {
+  const months = [...new Set(dates.map((date) => date.slice(0, 7)))];
+  const results = await Promise.all(months.map((month) => getHolidays(`${month}-01`)));
+  return Object.assign({}, ...results);
+}

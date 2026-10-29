@@ -129,7 +129,6 @@ export function RecordsView({
             stamps={stamps}
             selected={selected}
             onSelect={data && !isEmpty ? setPicked : undefined}
-            variant="records"
           />
         </div>
       </section>

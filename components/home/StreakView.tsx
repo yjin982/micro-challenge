@@ -3,13 +3,12 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { Doodle } from "@/components/ui/Doodle";
-import { SketchFrame } from "@/components/ui/sketch";
-import { formatMonthLabel } from "@/lib/date";
 import type { Holidays } from "@/lib/holidays";
 import type { TodayState } from "@/types/api";
-import { HomeMonthGrid } from "./HomeMonthGrid";
+import { WeekStrip } from "./WeekStrip";
 
-// 모바일 연속 달성 화면(화면 설계 '홈 · 연속 달성'): 연속 일수와 오늘 미션, 이번 달 도장 달력, 누적 개수.
+// 모바일 연속 달성 화면(화면 설계 '홈 · 연속 달성'): 연속 일수와 오늘 미션, 이번 주 7일 줄, 누적 개수.
+// 화면 설계의 이번 달 달력은 기록 화면과 겹쳐 이번 주 7일 줄로 바꿨다.
 // 완료 화면에서 넘어오거나, 오늘 완료한 뒤 홈에 다시 들어오면 이 화면이 보인다. 나타날 때 살짝 페이드인한다.
 export function StreakView({ today, date, holidays }: { today: TodayState; date: string; holidays: Holidays }) {
   return (
@@ -24,17 +23,10 @@ export function StreakView({ today, date, holidays }: { today: TodayState; date:
         </div>
       </div>
 
-      <section
-        aria-labelledby="streak-calendar-title"
-        className="relative mt-4 flex flex-col gap-2 bg-paper px-3.5 pt-4.5 pb-3.5"
-      >
-        <SketchFrame />
-        <Doodle name="heart" className="absolute top-4 right-5 size-7 rotate-12" />
-        <h2 id="streak-calendar-title" className="pl-1 font-hand text-[22px] font-bold">
-          {formatMonthLabel(date)}
-        </h2>
-        <HomeMonthGrid month={date} today={date} holidays={holidays} />
-      </section>
+      <div className="relative mt-4">
+        <WeekStrip today={date} holidays={holidays} />
+        <Doodle name="heart" className="absolute -top-3 right-4 size-7 rotate-12" />
+      </div>
 
       <p className="mt-4 text-center font-hand text-[21px]">
         지금까지 <strong className="text-primary">{today.totalCompleted}개</strong>의 도전을 완료했어요!

@@ -2,8 +2,10 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { SketchFrame } from "@/components/ui/sketch";
 
-// 카드 자리 크기. 데스크톱은 오른쪽 열이 더 길면 늘어나 두 열의 아래 끝을 맞춘다.
-export const CARD_SLOT = "relative mx-auto h-75 w-full max-w-85.5 lg:h-auto lg:min-h-82.5 lg:max-w-100 lg:flex-1";
+// 카드 폭(가운데 정렬). 카드 위 소제목도 이 폭을 써서 좌우 여백을 카드와 맞춘다
+export const CARD_WIDTH = "mx-auto w-full max-w-85.5 lg:max-w-100";
+// 카드 자리 크기. 데스크톱도 높이를 고정한다(오른쪽 열에 맞춰 늘리면 카드 안이 텅 비어 보인다).
+export const CARD_SLOT = `relative h-75 lg:h-82.5 ${CARD_WIDTH}`;
 
 // 맨 앞 카드 위치(뒤 카드보다 아래쪽 4px을 비워 겹쳐 보이게 한다). 카드 내용은 이 안을 꽉 채운다.
 export const FRONT_CARD = "absolute inset-x-0 top-0 bottom-1";

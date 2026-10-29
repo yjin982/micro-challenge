@@ -5,48 +5,34 @@ import type { Holidays } from "@/lib/holidays";
 import type { StampId } from "@/types/api";
 import { HolidayLabel } from "./HolidayLabel";
 
-const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
-// 작은 도장을 날짜마다 조금씩 기울여 손으로 찍은 느낌을 낸다(화면 설계의 tilt 값)
-const STAMP_TILTS = [-8, 6, -3, 9, -10, 4];
+export const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
+// 작은 도장을 날짜마다 조금씩 기울여 손으로 찍은 느낌을 낸다(화면 설계의 tilt 값). 홈의 이번 주 7일 줄도 쓴다
+export const STAMP_TILTS = [-8, 6, -3, 9, -10, 4];
 
-// 칸 높이 = 날짜 숫자(16px) + 국경일·공휴일 이름 한 줄(12px) + 작은 도장(compact 28px, records 30px / 데스크톱 42px) + 여백 2px씩.
+// 칸 높이 = 날짜 숫자(16px) + 국경일·공휴일 이름 한 줄(12px) + 작은 도장(30px / 데스크톱 42px) + 여백 2px씩.
 // 공휴일에 도장이 찍혀도 이름을 가리지 않도록 이름 줄 자리까지 잡아 둔다.
 // 이름은 칸보다 길면 말줄임한 뒤 말풍선으로 전체 이름을 보여준다.
-const variants = {
-  // 홈 데스크톱의 이번 달 달력
-  compact: {
-    weekdays: "text-xs",
-    grid: "gap-x-0.5 gap-y-1",
-    cell: "h-15",
-    today: "inset-x-1.5",
-    label: "text-[11px]",
-    holiday: "text-[9px]",
-    stamp: "size-7",
-    future: "",
-  },
-  // 기록 화면의 큰 달력
-  records: {
-    weekdays: "text-xs lg:text-[13px]",
-    grid: "gap-x-0.5 gap-y-1 lg:gap-1",
-    cell: "h-15.5 lg:h-18.5",
-    today: "inset-x-0.5 lg:inset-x-2",
-    label: "text-[11px] lg:text-xs",
-    holiday: "text-[9px] lg:text-[11px]",
-    stamp: "size-7.5 lg:size-10.5",
-    // 아직 오지 않은 날은 흐리게(요일·공휴일 색은 유지)
-    future: "opacity-50",
-  },
-} as const;
+const styles = {
+  weekdays: "text-xs lg:text-[13px]",
+  grid: "gap-x-0.5 gap-y-1 lg:gap-1",
+  cell: "h-15.5 lg:h-18.5",
+  today: "inset-x-0.5 lg:inset-x-2",
+  label: "text-[11px] lg:text-xs",
+  holiday: "text-[9px] lg:text-[11px]",
+  stamp: "size-7.5 lg:size-10.5",
+  // 아직 오지 않은 날은 흐리게(요일·공휴일 색은 유지)
+  future: "opacity-50",
+};
 
 // 날짜 숫자와 특일 이름 색: 일요일과 공휴일은 빨강, 토요일은 파랑. 토요일이 공휴일이면 빨강이 우선한다.
 // 쉬지 않는 국경일(isHoliday=N)은 요일 색을 그대로 따른다.
-function dayColor(weekday: number, isHoliday: boolean) {
+export function dayColor(weekday: number, isHoliday: boolean) {
   if (isHoliday || weekday === 0) return "text-sunday";
   if (weekday === 6) return "text-saturday";
   return "text-ink-muted";
 }
 
-// 요일 줄, 구분선, 날짜 칸. 부모의 flex gap을 그대로 쓰도록 Fragment로 돌려준다.
+// 기록 화면의 월간 달력: 요일 줄, 구분선, 날짜 칸. 부모의 flex gap을 그대로 쓰도록 Fragment로 돌려준다.
 // stamps가 있으면 완료한 날에 작은 도장을 찍고, onSelect가 있으면 오늘까지의 날짜를 눌러 고를 수 있다.
 export function MonthGrid({
   month,
@@ -55,7 +41,6 @@ export function MonthGrid({
   stamps = {},
   selected = null,
   onSelect,
-  variant = "compact",
 }: {
   month: string;
   today: string;
@@ -63,9 +48,7 @@ export function MonthGrid({
   stamps?: Record<string, StampId>;
   selected?: string | null;
   onSelect?: (date: string) => void;
-  variant?: keyof typeof variants;
 }) {
-  const styles = variants[variant];
   const cells = getMonthCells(month);
 
   return (

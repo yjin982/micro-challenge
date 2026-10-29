@@ -1,6 +1,6 @@
 import { Skeleton } from "./Skeleton";
 
-// 누적 완료 수와 연속 일수 칩. 홈 달력 카드와 기록 화면이 함께 쓴다.
+// 누적 완료 수와 연속 일수 칩(기록 화면)
 export function StatChips({ total, streak }: { total: number; streak: number }) {
   return (
     <div className="flex gap-2">

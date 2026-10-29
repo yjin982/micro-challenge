@@ -1,5 +1,15 @@
 import { TZDate } from "@date-fns/tz";
-import { addDays, addMonths, format, getDay, getDaysInMonth, lastDayOfMonth, parseISO, startOfMonth } from "date-fns";
+import {
+  addDays,
+  addMonths,
+  format,
+  getDay,
+  getDaysInMonth,
+  lastDayOfMonth,
+  parseISO,
+  startOfMonth,
+  startOfWeek,
+} from "date-fns";
 import { ko } from "date-fns/locale";
 
 // 모든 함수는 서버가 준 날짜 문자열(YYYY-MM-DD)을 받는다. 화면에서 현재 시각으로 날짜를 계산하지 않는다.
@@ -53,4 +63,10 @@ export function getMonthCells(date: string): CalendarCell[] {
     if (offset < 0 || offset >= days) return null;
     return { date: format(addDays(first, offset), "yyyy-MM-dd"), day: offset + 1 };
   });
+}
+
+// 그 날짜가 든 주의 7일(일요일 시작, 월간 달력과 같다). 홈의 이번 주 7일 줄
+export function getWeekDates(date: string): string[] {
+  const first = startOfWeek(parseISO(date));
+  return Array.from({ length: 7 }, (_, i) => format(addDays(first, i), "yyyy-MM-dd"));
 }
