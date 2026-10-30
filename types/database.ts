@@ -110,6 +110,7 @@ export type Database = {
         Args: { p_day: string; p_seen: string[]; p_user: string }
         Returns: string
       }
+      pick_stamp: { Args: { p_day: string; p_uid: string }; Returns: string }
       reroll_today: { Args: { p_date: string }; Returns: Json }
       set_note: { Args: { p_date: string; p_note: string }; Returns: Json }
       today_state: { Args: { p_day: string; p_user: string }; Returns: Json }
