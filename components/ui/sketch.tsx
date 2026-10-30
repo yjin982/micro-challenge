@@ -27,9 +27,11 @@ export function SketchFrame({
   );
 }
 
+// faint: 카드 안의 선(그림일기 칸 나눔, 달력 요일 줄, 계정 메뉴 칸 나눔). 원고지 격자·점선 구분선과 같은 line-faint.
+// 카드 바깥 테두리(SketchFrame)와 버튼 외곽선은 진한 ink-muted 그대로
 const lineTones = {
   ink: "border-t-2 border-ink-muted",
-  faint: "border-t-[1.5px] border-line",
+  faint: "border-t-[1.5px] border-line-faint",
   primary: "border-t-3 border-primary",
 } as const;
 

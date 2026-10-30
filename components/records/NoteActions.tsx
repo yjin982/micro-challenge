@@ -42,7 +42,7 @@ export function NoteActions({
           </SmallButton>
         </div>
       ) : (
-        <Button variant="outline" onClick={() => setDialog("edit")} className="h-11 gap-2 text-xl">
+        <Button variant="outline-soft" onClick={() => setDialog("edit")} className="h-11 gap-2 text-xl">
           <PencilIcon className="size-5" />한 줄 남기기
         </Button>
       )}
@@ -97,12 +97,12 @@ function DeleteNoteDialog({ onDelete, onClose }: { onDelete: () => Promise<void>
   );
 }
 
-// 메모 옆의 작은 테두리 버튼(수정·삭제)
+// 메모 옆의 작은 테두리 버튼(수정·삭제). 테두리는 '한 줄 남기기'와 같은 line, 글꼴도 같은 손글씨
 function SmallButton({ className = "", ...props }: ComponentProps<"button">) {
   return (
     <button
       type="button"
-      className={`flex h-9 items-center gap-1.5 rounded-full border-[1.5px] border-line bg-paper px-3.5 text-sm ${className}`}
+      className={`flex h-9 items-center gap-1.5 rounded-full border-[1.5px] border-line bg-paper px-3.5 font-hand text-lg leading-none font-bold ${className}`}
       {...props}
     />
   );

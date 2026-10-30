@@ -9,6 +9,8 @@ const variants = {
   danger: "bg-sunday text-white",
   outline:
     "border-2 border-ink-muted bg-paper text-ink disabled:border-line-faint disabled:text-line",
+  // 카드 안에 들어가는 테두리 버튼(기록 상세의 '한 줄 남기기'). 바깥 테두리보다 연한 line, 옆의 수정·삭제와 같은 색
+  "outline-soft": "border-2 border-line bg-paper text-ink disabled:border-line-faint disabled:text-line",
 } as const;
 
 // 글꼴: 기본은 손글씨(Gaegu). sans는 Google 버튼과 나란히 둘 때(시작 화면) 같은 본문 글꼴로 맞춘다.

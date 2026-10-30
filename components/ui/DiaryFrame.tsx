@@ -50,7 +50,7 @@ export function DiaryFrame({
             <span className="shrink-0 text-[15px]">날짜 :</span>
             <span className="text-[13px] text-ink-muted">{heading}</span>
           </p>
-          <SketchLine />
+          <SketchLine tone="faint" />
         </>
       )}
       {/* 머리 줄이 없으면 그림 칸이 틀 맨 위에서 시작하므로 위 여백을 줄인다 */}
@@ -59,7 +59,7 @@ export function DiaryFrame({
       >
         {picture}
       </div>
-      <SketchLine />
+      <SketchLine tone="faint" />
 
       <div className="mt-3">
         <NoteCells note={note} />
@@ -70,18 +70,18 @@ export function DiaryFrame({
 }
 
 // 원고지 칸의 격자 선(손그림 느낌으로 살짝 흔들리게). 부모 높이만큼 정사각형 칸을 반복한다.
-// 색은 카드 테두리(SketchFrame)·구분선과 같은 ink-muted(연한 회색이면 틀과 따로 노는 것처럼 보인다)
+// 색은 카드 안 선(SketchLine faint)과 같은 연한 회색 line-faint. 카드 바깥 테두리만 진하다
 function GridLines() {
   const style: CSSProperties = {
     backgroundImage:
-      "linear-gradient(to right, var(--color-ink-muted) 1.5px, transparent 1.5px), linear-gradient(to bottom, var(--color-ink-muted) 1.5px, transparent 1.5px)",
+      "linear-gradient(to right, var(--color-line-faint) 1.5px, transparent 1.5px), linear-gradient(to bottom, var(--color-line-faint) 1.5px, transparent 1.5px)",
     backgroundSize: `${CELL} ${CELL}`,
   };
   return (
     <span
       aria-hidden
       style={style}
-      className="pointer-events-none absolute inset-0 border-r-[1.5px] border-b-[1.5px] border-ink-muted filter-crayon-sm"
+      className="pointer-events-none absolute inset-0 border-r-[1.5px] border-b-[1.5px] border-line-faint filter-crayon-sm"
     />
   );
 }
