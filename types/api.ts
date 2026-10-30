@@ -6,6 +6,8 @@ export type Mission = {
   id: string;
   text: string;
   difficulty: "easy" | "challenge";
+  // 내부 분류(몸/행동, 인지/생각 등). 도전중 카드의 낙서 장식을 고른다. 분류가 없는 미션은 null
+  category: string | null;
 };
 
 export type RecentRecord = {
