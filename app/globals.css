@@ -32,6 +32,12 @@
   --color-stamp-p04: #5a9e4f;
   --color-stamp-p05: #ee6fa6;
   --color-stamp-p06: #f2b600;
+  --color-stamp-p07: #9b7bd4;
+  --color-stamp-p08: #ee8a3a;
+  --color-stamp-p09: #3b9fd8;
+  --color-stamp-p10: #2fa39a;
+  --color-stamp-p11: #a47148;
+  --color-stamp-p12: #5c6bc0;
 
   /* 손그림 테두리용 비대칭 모서리 */
   --radius-sketch: 22px 30px 20px 34px / 30px 20px 34px 22px;

@@ -1,6 +1,6 @@
 // API 응답 타입. 모양은 서버 설계 문서 '요청과 응답'과 DB 함수 today_state·get_month를 따른다.
 
-export type StampId = "p01" | "p02" | "p03" | "p04" | "p05" | "p06";
+export type StampId = "p01" | "p02" | "p03" | "p04" | "p05" | "p06" | "p07" | "p08" | "p09" | "p10" | "p11" | "p12";
 
 export type Mission = {
   id: string;

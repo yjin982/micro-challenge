@@ -62,7 +62,7 @@ app/
   api/cron/keep-alive/  Supabase 무료 프로젝트 일시 중지 방지(vercel.json의 Cron, CRON_SECRET 확인)
 components/
   ui/                   손그림 카드 테두리, 버튼, 칩·배지, 상태 카드, 오류 화면, 낙서 장식 등 공통 요소
-  stamp/                도장 컴포넌트(p01–p06, mini)
+  stamp/                도장 컴포넌트(p01–p12, mini)
   nav/                  모바일 하단 탭, 데스크톱 상단 헤더
   auth/                 시작 화면, 공식 Google 버튼, 계정 메뉴(데스크톱 헤더, 모바일 햄버거),
                         Google 연결(useLinkGoogle), 연결 실패 안내, 익명 로그아웃 확인
@@ -91,7 +91,7 @@ public/images/
                         did-it(해냈다), done(완료), excited(신남), favorite(쿠키), reading(책 읽기),
                         thinking(고민 중), hard(어려워), stretching(기지개), watering(물 주기),
                         spacing-out(멍), sleeping(자는 중), fail(실패), sad(슬픔), angry(화남)
-  stamps/               도장 p01–p06 SVG(지름 190px, Gaegu 서브셋 내장). png/에 @2x·@4x. 디자인 원본이고
+  stamps/               도장 p01–p12 SVG(지름 190px, Gaegu 서브셋 내장). png/에 @2x·@4x. 디자인 원본이고
                         코드에서는 components/stamp를 쓴다(공유 이미지가 png/p01@4x.png를 쓰니 지우지 않는다)
   stamps/mini/          달력·최근 기록용 작은 도장 SVG(문구 없음). png/에 @2x
   decor/                낙서 장식(꽃, 하트, 음표, 반짝이, 별, 소용돌이, 테이프)
@@ -122,5 +122,5 @@ public/images/
 - **에러**: DB 함수가 코드를 예외 메시지로 던지고(`NO_REROLLS`, `ALREADY_DRAWN` 등) Route Handler가 HTTP 상태와 `{ "error": { "code", "message" } }`로 바꾼다.
 - **뽑기 규칙**(서버에서만 처리): 180일 내 완료한 미션, 14일 내 넘긴 미션, 오늘 본 미션을 제외하고 균등 랜덤. 후보가 없으면 가장 오래전에 본 미션부터.
 - **데이터**: `missions`(ID `E001–E180`, `C01–C20`, 삭제 대신 `is_active=false`), `daily_entries`(사용자·날짜당 1행).
-- **도장**: 6종(`p01`–`p06`)을 서버가 랜덤으로 정해 `stamp_id`에 저장한다. 화면에서는 `variant`·`size`·`mini`를 받는 SVG 컴포넌트 하나로 그린다(mini는 문구 없이 틀과 그림만).
+- **도장**: 12종(`p01`–`p12`)을 서버가 정해 `stamp_id`에 저장한다. 그 사용자가 최근 완료한 4번의 도장은 빼고 남은 8개 중 무작위(`pick_stamp`)라 5번 안에는 같은 도장이 다시 나오지 않는다. 화면에서는 `variant`·`size`·`mini`를 받는 SVG 컴포넌트 하나로 그린다(mini는 문구 없이 틀과 그림만).
 - **비주얼**: 크레파스 손그림 + 그림일기 톤. 테두리·구분선은 CSS 직선 대신 SVG 손그림 선(turbulence 필터). 다크 모드는 지원하지 않는다(초기 템플릿의 `prefers-color-scheme: dark` 블록은 제거 대상). `prefers-reduced-motion`이면 페이드만 쓴다. 색·폰트 기준값은 기획서 '디자인 기준값' 표를 따른다.
