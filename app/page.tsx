@@ -38,11 +38,10 @@ export default async function Home() {
           <TodayPanel date={today} holidays={holidays} />
         </section>
 
-        {/* 데스크톱 오른쪽 열은 왼쪽 소제목(32px)과 카드 위 여백(18px)만큼 내려 카드 윗선에 맞춘다. 그 위는 비워 둔다 */}
-        <div className="lg:min-w-0 lg:flex-1 lg:pt-12.5">
-          <div className="hidden lg:block">
-            <WeekStrip today={today} holidays={holidays} />
-          </div>
+        {/* 데스크톱 오른쪽 열은 왼쪽 소제목(32px)과 카드 위 여백(18px)만큼 내려 카드 윗선에 맞춘다. 그 위는 비워 둔다.
+            모바일에는 이 열이 없다(7일 줄과 최근 기록은 연속 달성 화면에만) */}
+        <div className="hidden lg:block lg:min-w-0 lg:flex-1 lg:pt-12.5">
+          <WeekStrip today={today} holidays={holidays} />
           <RecentRecords />
         </div>
       </main>

@@ -5,9 +5,10 @@ import Image from "next/image";
 import { Doodle } from "@/components/ui/Doodle";
 import type { Holidays } from "@/lib/holidays";
 import type { TodayState } from "@/types/api";
+import { RecentRecords } from "./RecentRecords";
 import { WeekStrip } from "./WeekStrip";
 
-// 모바일 연속 달성 화면(화면 설계 '홈 · 연속 달성'): 연속 일수와 오늘 미션, 이번 주 7일 줄, 누적 개수.
+// 모바일 연속 달성 화면(화면 설계 '홈 · 연속 달성'): 연속 일수와 오늘 미션, 이번 주 7일 줄, 최근 기록, 누적 개수.
 // 화면 설계의 이번 달 달력은 기록 화면과 겹쳐 이번 주 7일 줄로 바꿨다.
 // 완료 화면에서 넘어오거나, 오늘 완료한 뒤 홈에 다시 들어오면 이 화면이 보인다. 나타날 때 살짝 페이드인한다.
 export function StreakView({ today, date, holidays }: { today: TodayState; date: string; holidays: Holidays }) {
@@ -27,8 +28,9 @@ export function StreakView({ today, date, holidays }: { today: TodayState; date:
         <WeekStrip today={date} holidays={holidays} />
         <Doodle name="heart" className="absolute -top-3 right-4 size-7 rotate-12" />
       </div>
+      <RecentRecords />
 
-      <p className="mt-4 text-center font-hand text-[21px]">
+      <p className="mt-6 text-center font-hand text-[21px]">
         지금까지 <strong className="text-primary">{today.totalCompleted}개</strong>의 도전을 완료했어요!
       </p>
       <p className="mt-1.5 flex items-center justify-center gap-1.5 font-hand text-2xl font-bold">
