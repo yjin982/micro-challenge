@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Stamp } from "@/components/stamp/Stamp";
 import { SketchLine } from "@/components/ui/sketch";
 import { formatDetailDate, getMonthCells } from "@/lib/date";
@@ -16,10 +17,12 @@ const styles = {
   weekdays: "text-xs lg:text-[13px]",
   grid: "gap-x-0.5 gap-y-1 lg:gap-1",
   cell: "h-15.5 lg:h-18.5",
-  today: "inset-x-0.5 lg:inset-x-2",
+  today: "inset-x-0.5",
   label: "text-[11px] lg:text-xs",
   holiday: "text-[9px] lg:text-[11px]",
   stamp: "size-7.5 lg:size-10.5",
+  // 도장이 없는 시작한 날의 티라노(도장 자리)
+  startMascot: "w-8 lg:w-11",
   // 아직 오지 않은 날은 흐리게(요일·공휴일 색은 유지)
   future: "opacity-50",
 };
@@ -34,6 +37,7 @@ export function dayColor(weekday: number, isHoliday: boolean) {
 
 // 기록 화면의 월간 달력: 요일 줄, 구분선, 날짜 칸. 부모의 flex gap을 그대로 쓰도록 Fragment로 돌려준다.
 // stamps가 있으면 완료한 날에 작은 도장을 찍고, onSelect가 있으면 오늘까지의 날짜를 눌러 고를 수 있다.
+// startDate(시작한 날)에는 기지개 켜는 티라노를 둔다: 도장이 없으면 도장 자리에, 있으면 도장 옆에 작게.
 export function MonthGrid({
   month,
   today,
@@ -41,6 +45,7 @@ export function MonthGrid({
   stamps = {},
   selected = null,
   onSelect,
+  startDate = null,
 }: {
   month: string;
   today: string;
@@ -48,14 +53,22 @@ export function MonthGrid({
   stamps?: Record<string, StampId>;
   selected?: string | null;
   onSelect?: (date: string) => void;
+  startDate?: string | null;
 }) {
   const cells = getMonthCells(month);
 
   return (
     <>
-      <div className={`grid grid-cols-7 gap-0.5 text-center text-ink-muted ${styles.weekdays}`}>
+      <div
+        className={`grid grid-cols-7 gap-0.5 text-center text-ink-muted ${styles.weekdays}`}
+      >
         {WEEKDAYS.map((day, i) => (
-          <span key={day} className={i === 0 ? "text-sunday" : i === 6 ? "text-saturday" : undefined}>
+          <span
+            key={day}
+            className={
+              i === 0 ? "text-sunday" : i === 6 ? "text-saturday" : undefined
+            }
+          >
             {day}
           </span>
         ))}
@@ -69,6 +82,7 @@ export function MonthGrid({
           const stampId = cell ? stamps[cell.date] : undefined;
           const selectable = !!onSelect && !!cell && cell.date <= today;
           const isSelected = !!cell && cell.date === selected;
+          const isStart = !!cell && cell.date === startDate;
           return (
             <div
               key={cell?.date ?? `blank-${i}`}
@@ -76,7 +90,10 @@ export function MonthGrid({
               className={`relative flex flex-col items-center gap-0.5 pt-1 ${styles.cell}`}
             >
               {isSelected && (
-                <span aria-hidden className={`absolute inset-y-0.5 rounded-xl bg-chip-today ${styles.today}`} />
+                <span
+                  aria-hidden
+                  className={`absolute inset-y-0.5 rounded-xl bg-chip-today ${styles.today}`}
+                />
               )}
               {isToday && (
                 <span
@@ -87,12 +104,18 @@ export function MonthGrid({
               {cell && (
                 // 색은 이름과 말풍선까지 물려주고, 흐림(future)은 글자에만 걸어 말풍선까지 흐려지지 않게 한다.
                 // relative: 선택 배경(absolute)보다 위에 그려지게 한다.
-                <span className={`relative flex w-full flex-col items-center ${dayColor(i % 7, holiday?.isHoliday ?? false)}`}>
-                  <span className={`leading-4 ${styles.label} ${future}`}>{cell.day}</span>
+                <span
+                  className={`relative flex w-full flex-col items-center ${dayColor(i % 7, holiday?.isHoliday ?? false)}`}
+                >
+                  <span className={`leading-4 ${styles.label} ${future}`}>
+                    {cell.day}
+                  </span>
                   {holiday && (
                     <HolidayLabel
                       name={holiday.name}
-                      align={i % 7 === 0 ? "start" : i % 7 === 6 ? "end" : "center"}
+                      align={
+                        i % 7 === 0 ? "start" : i % 7 === 6 ? "end" : "center"
+                      }
                       className={`leading-3 ${styles.holiday} ${future}`}
                     />
                   )}
@@ -107,13 +130,28 @@ export function MonthGrid({
                   className={`pointer-events-none absolute bottom-0.5 left-1/2 -translate-x-1/2 ${styles.stamp}`}
                 />
               )}
+              {isStart && (
+                <Image
+                  src="/images/mascot/tyrano-stretching.png"
+                  alt=""
+                  width={186}
+                  height={169}
+                  draggable={false}
+                  className={`pointer-events-none absolute h-auto ${
+                    stampId
+                      ? // 도장 옆에 작게. 모바일은 칸이 좁아 날짜 숫자를 가리지 않게 아래, 데스크톱은 오른쪽 위
+                        "right-0 bottom-0 w-4.5 rotate-12 lg:top-0 lg:right-1 lg:bottom-auto lg:w-6.5"
+                      : `bottom-0.5 left-1/2 -translate-x-1/2 ${styles.startMascot}`
+                  }`}
+                />
+              )}
               {/* 칸 전체를 덮는 선택 버튼. 공휴일 이름(말풍선 버튼)은 z-10으로 이 위에 있어 버튼이 겹치지 않는다 */}
               {cell && selectable && (
                 <button
                   type="button"
                   onClick={() => onSelect(cell.date)}
                   aria-pressed={isSelected}
-                  aria-label={`${formatDetailDate(cell.date)} ${stampId ? "기록 보기" : "보기"}`}
+                  aria-label={`${formatDetailDate(cell.date)}${isStart ? " 시작한 날" : ""} ${stampId ? "기록 보기" : "보기"}`}
                   className="absolute inset-0 rounded-xl focus-visible:outline-2 focus-visible:outline-primary"
                 />
               )}

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Stamp } from "@/components/stamp/Stamp";
+import { Doodle } from "@/components/ui/Doodle";
 import { SketchFrame } from "@/components/ui/sketch";
 import { formatShortDate } from "@/lib/date";
 import { useToday } from "./TodayProvider";
@@ -23,6 +24,7 @@ export function RecentRecords() {
       <div className="flex items-baseline justify-between pt-5.5 pb-2 lg:px-1 lg:pt-6 lg:pb-2.5">
         <h2 id="recent-records-title" className="font-hand text-[22px] font-bold lg:text-2xl">
           최근 기록
+          <Doodle name="sparkle" className="ml-1 inline-block size-4.5 -translate-y-2 -rotate-12" />
         </h2>
         <Link href="/records" className="text-[13px] text-ink-muted">
           전체 보기

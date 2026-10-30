@@ -4,7 +4,9 @@ import { useEffect, useId, useState } from "react";
 import { HolidayLabel } from "@/components/records/HolidayLabel";
 import { dayColor, STAMP_TILTS, WEEKDAYS } from "@/components/records/MonthGrid";
 import { Stamp } from "@/components/stamp/Stamp";
+import { Doodle } from "@/components/ui/Doodle";
 import { SketchFrame } from "@/components/ui/sketch";
+import { Tape, tapeColorFor } from "@/components/ui/Tape";
 import { api } from "@/lib/api";
 import { formatDetailDate, formatShortDate, getWeekDates } from "@/lib/date";
 import type { Holidays } from "@/lib/holidays";
@@ -41,9 +43,12 @@ export function WeekStrip({ today, holidays }: { today: string; holidays: Holida
   return (
     <section aria-labelledby={titleId} className="relative flex flex-col gap-3 bg-paper px-3.5 pt-4 pb-3.5 lg:px-5 lg:pt-4.5 lg:pb-4">
       <SketchFrame />
+      {/* 오른쪽 위 모서리에 주마다 다른 색 테이프(모바일 연속 달성 화면은 왼쪽 위에 티라노가 있다) */}
+      <Tape color={tapeColorFor(week[0])} className="-top-2.5 -right-3 w-14 rotate-30" />
       <div className="flex items-baseline justify-between px-1 lg:px-0">
         <h2 id={titleId} className="font-hand text-[22px] font-bold lg:text-[26px]">
           이번 주
+          <Doodle name="sun" className="ml-1 inline-block size-5 -translate-y-1.5 rotate-12" />
         </h2>
         <span className="text-[13px] text-ink-muted">
           {formatShortDate(week[0])} – {formatShortDate(week[6])}

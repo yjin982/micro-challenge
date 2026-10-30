@@ -2,7 +2,6 @@
 
 import { motion } from "motion/react";
 import Image from "next/image";
-import { Doodle } from "@/components/ui/Doodle";
 import type { Holidays } from "@/lib/holidays";
 import type { TodayState } from "@/types/api";
 import { RecentRecords } from "./RecentRecords";
@@ -24,9 +23,9 @@ export function StreakView({ today, date, holidays }: { today: TodayState; date:
         </div>
       </div>
 
-      <div className="relative mt-4">
+      {/* 7일 줄 오른쪽 위 모서리에는 테이프가 붙어 있다(WeekStrip) */}
+      <div className="mt-4">
         <WeekStrip today={date} holidays={holidays} />
-        <Doodle name="heart" className="absolute -top-3 right-4 size-7 rotate-12" />
       </div>
       <RecentRecords />
 

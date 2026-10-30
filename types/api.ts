@@ -34,8 +34,11 @@ export type TodayState = {
 // GET /api/records?month=YYYY-MM
 export type MonthRecords = {
   month: string;
-  // 처음 쓴 달. 기록이 하나도 없으면 null
+  // 이전 달로 넘길 수 있는 첫 달: 첫 기록 달과 시작한 달 중 이른 달. 기록·계정 정보가 없으면 null
   firstMonth: string | null;
+  // 시작한 날(계정을 만든 날, YYYY-MM-DD). 달력에 작은 티라노로 표시한다.
+  // 20261030020000_start_date.sql 실행 전의 API에는 없다(그때는 표시하지 않는다)
+  startDate?: string | null;
   days: {
     date: string;
     missionText: string;

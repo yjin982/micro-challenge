@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Doodle } from "@/components/ui/Doodle";
 import { SketchFrame } from "@/components/ui/sketch";
+import { tapeColorFor } from "@/components/ui/Tape";
 import type { Mission } from "@/types/api";
 import { CARD_FACE, CardStack, CardTape, FRONT_CARD } from "./CardStack";
 import { MissionBadges } from "./MissionBadges";
@@ -33,7 +34,7 @@ export function MissionCard({
           className={`${CARD_FACE} flex flex-col gap-3.5 px-6.5 pt-6.5 pb-4.5 lg:gap-4 lg:px-7.5 lg:pt-7.5 lg:pb-5`}
         >
           <SketchFrame />
-          <CardTape />
+          <CardTape color={tapeColorFor(mission.id)} />
           <MissionBadges difficulty={mission.difficulty} />
           <p className="font-hand text-[29px] leading-[1.22] font-bold lg:text-[32px]">
             {mission.text}

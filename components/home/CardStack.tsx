@@ -1,6 +1,6 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
 import { SketchFrame } from "@/components/ui/sketch";
+import { Tape, type TapeColor } from "@/components/ui/Tape";
 
 // 카드 폭(가운데 정렬). 카드 위 소제목도 이 폭을 써서 좌우 여백을 카드와 맞춘다
 export const CARD_WIDTH = "mx-auto w-full max-w-85.5 lg:max-w-100";
@@ -26,16 +26,7 @@ export function CardStack({ children }: { children: ReactNode }) {
   );
 }
 
-// 카드 위쪽 가운데에 붙은 노란 테이프
-export function CardTape() {
-  return (
-    <Image
-      src="/images/decor/tape.svg"
-      alt=""
-      width={74}
-      height={22}
-      draggable={false}
-      className="absolute -top-2.5 left-1/2 -translate-x-1/2 -rotate-4"
-    />
-  );
+// 카드 위쪽 가운데에 붙은 테이프(기본 노랑). 도전중 카드는 미션마다, 완료 카드는 도장 색에 맞춰 색을 바꾼다
+export function CardTape({ color = "yellow" }: { color?: TapeColor }) {
+  return <Tape color={color} className="-top-2.5 left-1/2 w-18.5 -translate-x-1/2 -rotate-4" />;
 }

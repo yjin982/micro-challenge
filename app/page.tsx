@@ -3,6 +3,7 @@ import { RecentRecords } from "@/components/home/RecentRecords";
 import { TodayPanel } from "@/components/home/TodayPanel";
 import { TodayProvider } from "@/components/home/TodayProvider";
 import { WeekStrip } from "@/components/home/WeekStrip";
+import { DoodleScene } from "@/components/ui/DoodleScene";
 import { formatDayLabel, getWeekDates } from "@/lib/date";
 import { getHolidaysForDates } from "@/lib/holidays";
 import { getToday } from "@/lib/today";
@@ -43,6 +44,7 @@ export default async function Home() {
         <div className="hidden lg:block lg:min-w-0 lg:flex-1 lg:pt-12.5">
           <WeekStrip today={today} holidays={holidays} />
           <RecentRecords />
+          <DoodleScene variant="walk" className="mt-10 ml-auto" />
         </div>
       </main>
     </TodayProvider>

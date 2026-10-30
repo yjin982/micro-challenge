@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { Stamp } from "@/components/stamp/Stamp";
+import { STAMP_DOODLE, STAMP_TAPE } from "@/components/stamp/stampDoodle";
 import { DiaryFrame } from "@/components/ui/DiaryFrame";
 import type { Mission, StampId } from "@/types/api";
 import { CardTape } from "./CardStack";
@@ -37,7 +38,7 @@ export function DoneCard({
     >
       <DiaryFrame
         ariaLabel="완료한 오늘의 미션"
-        decoration={<CardTape />}
+        decoration={<CardTape color={STAMP_TAPE[stampId]} />}
         note={note}
         pictureLayout="side"
         picture={
@@ -68,16 +69,16 @@ export function DoneCard({
             >
               <Stamp variant={stampId} size={144} className="lg:size-40" />
             </motion.div>
-            {/* 반짝이도 예전 자리: 도장 왼쪽 위에 노란 반짝이, 그림 칸 왼쪽 아래 구석에 파란 별 */}
+            {/* 반짝이도 예전 자리: 도장 왼쪽 위에 노란 반짝이, 그림 칸 왼쪽 아래 구석에 도장과 짝인 낙서(STAMP_DOODLE) */}
             <Sparkle
               src="/images/decor/sparkle.svg"
               celebrate={celebrate}
               className="top-6 left-43 size-10 lg:top-4 lg:left-53"
             />
             <Sparkle
-              src="/images/decor/star.svg"
+              src={`/images/decor/${STAMP_DOODLE[stampId]}.svg`}
               celebrate={celebrate}
-              className="bottom-2 left-0 size-7"
+              className="bottom-1 left-0 size-9 -rotate-6"
             />
           </>
         }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Doodle } from "@/components/ui/Doodle";
 import { formatMonthLabel, shiftMonth } from "@/lib/date";
 
 const chevronClass =
@@ -27,6 +28,7 @@ export function MonthNav({
       </NavArrow>
       <h2 id="records-month" className="text-center font-hand text-2xl font-bold lg:min-w-37.5 lg:text-3xl">
         {formatMonthLabel(`${month}-01`)}
+        <Doodle name="star" className="ml-1 inline-block size-4.5 -translate-y-2.5 rotate-12" />
       </h2>
       <NavArrow
         label="다음 달"

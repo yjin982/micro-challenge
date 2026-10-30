@@ -1,20 +1,34 @@
 "use client";
 
+import Image from "next/image";
 import { ButtonLink } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { formatDetailDate } from "@/lib/date";
 import type { StampId } from "@/types/api";
 import { DiaryFrame } from "@/components/ui/DiaryFrame";
-import { DiaryPage } from "./DiaryPage";
+import { Doodle } from "@/components/ui/Doodle";
+import { DiaryPage, StartMark } from "./DiaryPage";
 
 // 선택한 날의 상태(화면 설계 '데스크톱 · 기록' 보드)
 // - done: 미션을 완료한 날. 그림일기 한 쪽(DiaryPage: 날짜·완료 시각, 그림 칸의 미션 문구와 도장, 원고지 칸의 메모)
 // - today: 오늘인데 아직 완료 전. 같은 그림일기 틀에 '여기에 쾅!'과 빈 원고지, 아래에 '오늘의 미션 하러 가기'
 // - rest: 지난날인데 도장이 없는 날. 같은 틀에 '쉬어 간 날'과 빈 원고지(메모를 쓸 수 없어 버튼이 없다)
+// - start: 시작한 날(계정을 만든 날)인데 도장이 없는 지난날. 쉬어 간 날 대신 기지개 켜는 티라노와 '시작한 날'
+//   (시작한 날에 완료했거나 오늘이면 done·today 카드의 날짜 줄에 '시작한 날'을 붙인다: start)
+// 도장 없는 날도 그림 칸 점선 원 양옆에 낙서를 둔다: 오늘 도장 전은 새싹·해(자라는 중), 쉬어 간 날은 자는 고양이·달
 export type RecordDetailData =
-  | { kind: "done"; date: string; completedAt: string; missionText: string; stampId: StampId; note: string | null }
-  | { kind: "today"; date: string; missionText: string | null }
-  | { kind: "rest"; date: string };
+  | {
+      kind: "done";
+      date: string;
+      completedAt: string;
+      missionText: string;
+      stampId: StampId;
+      note: string | null;
+      start?: boolean;
+    }
+  | { kind: "today"; date: string; missionText: string | null; start?: boolean }
+  | { kind: "rest"; date: string }
+  | { kind: "start"; date: string };
 
 const descClass = "text-[13px] leading-normal text-ink-muted";
 // 그림 칸의 도장 자리 점선 원(오늘·쉬어 간 날). 완료한 날의 도장(120px)과 같은 크기
@@ -66,6 +80,7 @@ export function RecordDetail({
         heading={
           <>
             {date} · <span className="font-bold text-primary">오늘</span>
+            {detail.start && <StartMark />}
           </>
         }
         picture={
@@ -80,9 +95,47 @@ export function RecordDetail({
               <span className="font-hand text-xl leading-none font-bold text-primary">여기에 쾅!</span>
               <span className="text-[11px] text-ink-muted">완료하면 찍혀요</span>
             </div>
+            <Doodle name="sprout" className="absolute bottom-6 left-6 size-9 -rotate-6" />
+            <Doodle name="sun" className="absolute right-6 bottom-20 size-8 rotate-12" />
           </>
         }
         footer={<ButtonLink href="/">오늘의 미션 하러 가기</ButtonLink>}
+      />
+    );
+  }
+
+  if (detail.kind === "start") {
+    return (
+      <DiaryFrame
+        ariaLabel="선택한 날의 그림일기"
+        live
+        heading={
+          <>
+            {date}
+            <StartMark />
+          </>
+        }
+        picture={
+          <>
+            <div className="flex flex-col gap-1.5">
+              <p className={pictureTitleClass}>밍기적 챌린지를 시작한 날</p>
+              <p className={descClass}>
+                이날부터 하루 한 가지,
+                <br />
+                작은 기적을 모으기 시작했어요.
+              </p>
+            </div>
+            <Image
+              src="/images/mascot/tyrano-stretching.png"
+              alt=""
+              width={186}
+              height={169}
+              className="h-auto w-32 self-center"
+            />
+            <Doodle name="sparkle" className="absolute bottom-16 left-6 size-8 -rotate-12" />
+            <Doodle name="star" className="absolute right-7 bottom-24 size-6 rotate-12" />
+          </>
+        }
       />
     );
   }
@@ -105,6 +158,8 @@ export function RecordDetail({
           <div aria-hidden className={`${circleClass} rotate-5 border-line-faint`}>
             <span className="font-hand text-xl leading-none font-bold text-line">쉬어 간 날</span>
           </div>
+          <Doodle name="cat-sleep" className="absolute bottom-5 left-3 size-12" />
+          <Doodle name="moon" className="absolute right-7 bottom-20 size-8 -rotate-12" />
         </>
       }
     />

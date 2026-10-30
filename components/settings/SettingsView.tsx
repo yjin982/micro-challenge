@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Account } from "@/components/auth/useAccount";
 import { useAccount } from "@/components/auth/useAccount";
 import { BackButton } from "@/components/ui/BackButton";
+import { Doodle } from "@/components/ui/Doodle";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { AccountCard } from "./AccountCard";
 import { AppInfoCard } from "./AppInfoCard";
@@ -18,7 +19,10 @@ export function SettingsView({ version }: { version: string }) {
     <main className="mx-auto w-full max-w-120 px-6 pt-5 pb-28 lg:max-w-175 lg:pt-9 lg:pb-12">
       <div className="flex items-center gap-1">
         <BackButton />
-        <h1 className="font-hand text-[32px] leading-[1.1] font-bold lg:text-4xl">설정</h1>
+        <h1 className="font-hand text-[32px] leading-[1.1] font-bold lg:text-4xl">
+          설정
+          <Doodle name="swirl" className="ml-1 inline-block size-5 -translate-y-3 rotate-12" />
+        </h1>
       </div>
 
       <section aria-labelledby="settings-account" className="mt-5 lg:mt-6">

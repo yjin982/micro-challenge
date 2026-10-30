@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { MobileAccountMenu } from "@/components/auth/MobileAccountMenu";
+import { DoodleScene } from "@/components/ui/DoodleScene";
 import { SketchFrame } from "@/components/ui/sketch";
+import { TAPE_COLORS, Tape } from "@/components/ui/Tape";
 import { StatChips, StatChipsSkeleton } from "@/components/ui/StatChips";
 import { api } from "@/lib/api";
 import { lastDateOfMonth } from "@/lib/date";
@@ -23,13 +25,15 @@ function defaultDate(month: string, currentMonth: string, { today, records }: Lo
   return records.days.at(-1)?.date ?? lastDateOfMonth(month);
 }
 
+// 시작한 날: 도장이 없는 지난날이면 '시작한 날' 카드, 완료했거나 오늘이면 그 카드의 날짜 줄에 '시작한 날'을 붙인다
 function toDetail(date: string, { today, records }: Loaded): RecordDetailData {
+  const start = date === records.startDate;
   const day = records.days.find((d) => d.date === date);
-  if (day) return { kind: "done", ...day };
+  if (day) return { kind: "done", ...day, start };
   if (date === today.date) {
-    return { kind: "today", date, missionText: today.state === "challenge" ? (today.mission?.text ?? null) : null };
+    return { kind: "today", date, missionText: today.state === "challenge" ? (today.mission?.text ?? null) : null, start };
   }
-  return { kind: "rest", date };
+  return start ? { kind: "start", date } : { kind: "rest", date };
 }
 
 // 기록 화면 본문. 오늘 상태(누적·연속)와 그 달 기록을 브라우저에서 /api로 불러온다.
@@ -100,6 +104,8 @@ export function RecordsView({
   // 처음 쓴 달 이전으로는 넘기지 않는다. 기록을 불러오기 전이나 한 번도 쓰지 않았으면 막아 둔다.
   const firstMonth = data?.records.firstMonth;
   const canGoPrev = !!firstMonth && month > firstMonth;
+  // 왼쪽 위 테이프는 달마다 색이 바뀐다(오른쪽 아래 보라와 겹치면 다음 색)
+  const monthTape = TAPE_COLORS.filter((color) => color !== "purple")[Number(month.slice(5, 7)) % 4];
 
   return (
     <main className="mx-auto w-full max-w-120 px-6 pt-6.5 pb-28 lg:flex lg:max-w-272 lg:gap-16 lg:pt-7.5 lg:pb-12">
@@ -120,8 +126,12 @@ export function RecordsView({
           </div>
         </div>
 
-        <div className="relative mt-3 flex flex-col gap-2 bg-paper px-3.5 pt-3.5 pb-3 lg:mt-0 lg:px-4.5 lg:pt-4 lg:pb-3.5">
+        <div className="relative mt-4 flex flex-col gap-2 bg-paper px-3.5 pt-3.5 pb-3 lg:mt-0 lg:px-4.5 lg:pt-4 lg:pb-3.5">
           <SketchFrame />
+          {/* 달력을 다이어리에 붙인 것처럼 대각선 두 모서리에 테이프: 왼쪽 위는 달마다 다른 색, 오른쪽 아래는 보라.
+              모바일은 위아래 칩 줄·상세 카드를 가리지 않게 작고 안쪽으로 */}
+          <Tape color={monthTape} className="top-0 -left-2 w-12 -rotate-35 lg:-top-2 lg:-left-4 lg:w-16" />
+          <Tape color="purple" className="-right-2 bottom-0 w-12 -rotate-35 lg:-right-4 lg:-bottom-2 lg:w-16" />
           <MonthGrid
             month={`${month}-01`}
             today={today}
@@ -129,8 +139,10 @@ export function RecordsView({
             stamps={stamps}
             selected={selected}
             onSelect={data && !isEmpty ? setPicked : undefined}
+            startDate={data?.records.startDate}
           />
         </div>
+        <DoodleScene variant="nap" className="mt-4 ml-auto" />
       </section>
 
       <div className="mt-3.5 flex flex-col lg:mt-0 lg:w-84 lg:shrink-0 lg:pt-14">
