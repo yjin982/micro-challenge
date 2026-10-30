@@ -116,7 +116,8 @@ export function RecordsView({
         <MobileAccountMenu />
       </div>
 
-      <section aria-labelledby="records-month" className="lg:flex lg:w-160 lg:shrink-0 lg:flex-col lg:gap-3">
+      {/* 데스크톱 달력 열은 640px이 기본이고, 창이 좁으면(1024~1088px) 줄어들어 가로 스크롤이 생기지 않게 한다(상세 열은 고정) */}
+      <section aria-labelledby="records-month" className="lg:flex lg:w-160 lg:min-w-0 lg:flex-col lg:gap-3">
         <div className="mt-2.5 flex flex-col gap-1.5 lg:mt-0 lg:flex-row lg:items-center lg:justify-between">
           <MonthNav month={month} currentMonth={currentMonth} canGoPrev={canGoPrev} />
           {/* '오늘' 버튼: 모바일은 칩 줄 오른쪽 끝, 데스크톱은 칩 왼쪽 */}
